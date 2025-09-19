@@ -1,6 +1,6 @@
 # Contributing to JuntaDeVecinos
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > Guidelines for contributing to JuntaDeVecinos - Pinto Los Pellines community platform
@@ -21,8 +21,8 @@ Thanks for helping build and maintain JuntaDeVecinos! This guide outlines our de
 ### 1. Local Setup
 ```bash
 # Clone and setup
-git clone https://github.com/YOUR_USERNAME/pintopellines.git
-cd pintopellines
+git clone https://github.com/hinoki-ai/-R-M-C.git
+cd ΛRΛMΛC
 npm install
 
 # Configure environment
@@ -129,7 +129,7 @@ Any additional context or considerations
 
 ## 🐛 Issue Reporting
 
-- **Bug Reports**: Use [GitHub Issues](https://github.com/pintopellines/pintopellines/issues) with bug template
+- **Bug Reports**: Use [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues) with bug template
 - **Feature Requests**: Use feature request template
 - **Security Issues**: Email [security@juntadevecinos.com](mailto:security@juntadevecinos.com)
 

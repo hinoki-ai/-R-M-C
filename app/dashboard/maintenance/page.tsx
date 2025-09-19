@@ -3,10 +3,10 @@
 import {
   IconAlertTriangle,
   IconCalendar,
-  IconCheckCircle,
+  IconCheck,
   IconClock,
   IconTool,
-  IconWrench,
+  IconTools,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -153,7 +153,7 @@ export default function MaintenancePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <IconWrench className="h-5 w-5" />
+              <IconTools className="h-5 w-5" />
               Equipment Status
             </CardTitle>
             <CardDescription>
@@ -316,7 +316,7 @@ export default function MaintenancePage() {
             <CardTitle className="text-sm font-medium">
               Completed Today
             </CardTitle>
-            <IconCheckCircle className="h-4 w-4 text-green-500" />
+            <IconCheck className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">3</div>

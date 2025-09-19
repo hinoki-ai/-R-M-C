@@ -243,7 +243,7 @@ Now that you have the project running:
 ## Support
 
 - 📧 **Email**: <support@juntadevecinos.com>
-- 💬 **Discord**: [Join our community](https://discord.gg/pintopellines)
+- 💬 **Discord**: [Join our community](https://discord.gg/hinoki-ai)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 - 📚 **Wiki**: [Project Wiki](https://github.com/hinoki-ai/-R-M-C/wiki)
 

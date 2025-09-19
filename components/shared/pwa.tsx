@@ -20,7 +20,7 @@ export function PWA() {
     const cacheCriticalResources = async () => {
       if ('caches' in window) {
         try {
-          const cache = await caches.open('pintopellines-critical-v1');
+          const cache = await caches.open('ΛRΛMΛC-critical-v1');
           await cache.addAll([
             '/',
             '/offline.html',
@@ -39,7 +39,7 @@ export function PWA() {
     const initializeOfflineStorage = () => {
       if ('indexedDB' in window) {
         // Initialize IndexedDB for offline data storage
-        const request = indexedDB.open('pintopellines-offline', 1);
+        const request = indexedDB.open('ΛRΛMΛC-offline', 1);
 
         request.onupgradeneeded = (event) => {
           const db = (event.target as IDBOpenDBRequest).result;

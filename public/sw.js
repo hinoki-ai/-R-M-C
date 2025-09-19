@@ -1,5 +1,5 @@
 // Simple Service Worker for Pinto Pellines PWA
-const CACHE_NAME = 'pintopellines-v1.0.0';
+const CACHE_NAME = 'ΛRΛMΛC-v1.0.0';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [

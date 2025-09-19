@@ -5,7 +5,7 @@ export default function Home() {
         <div className='text-center space-y-8'>
           <div className='space-y-4'>
             <h1 className='text-4xl md:text-6xl font-bold text-gray-900'>
-              PintoPellines
+              ΛRΛMΛC
             </h1>
             <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
               Plataforma comunitaria avanzada para Pinto Los Pellines
