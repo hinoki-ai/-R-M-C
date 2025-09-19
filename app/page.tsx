@@ -1,31 +1,20 @@
-'use client';
-
-import CustomClerkPricing from '@/components/forms/custom-clerk-pricing';
-
-import CallToAction from './(landing)/call-to-action';
-import FAQs from './(landing)/faqs';
-import FeaturesOne from './(landing)/features-one';
-import Footer from './(landing)/footer';
-import HeroSection from './(landing)/hero-section';
-
-
 export default function Home() {
   return (
-    <div>
-      <HeroSection />
-      <FeaturesOne />
-      <section className='bg-muted/50 py-16 md:py-32'>
-        <div className='mx-auto max-w-7xl px-6'>
-          <div className='mb-12 mx-auto max-w-2xl space-y-6 text-center'>
-              <h1 className='text-center text-4xl font-semibold lg:text-5xl'>Apoyo y Colaboración Comunitaria</h1>
-              <p>Tu contribución hace posible el desarrollo de Pinto Los Pellines. Conoce las formas en que puedes apoyar y participar en el crecimiento de nuestra comunidad.</p>
-          </div>
-          <CustomClerkPricing />
+    <div className='min-h-screen bg-gradient-to-br from-green-600 via-amber-600 to-red-600 flex items-center justify-center'>
+      <div className='text-center text-white p-8'>
+        <h1 className='text-6xl font-bold mb-4'>🇨🇱</h1>
+        <h2 className='text-4xl font-bold mb-2'>Junta de Vecinos</h2>
+        <h3 className='text-2xl font-semibold mb-8'>Pinto Los Pellines</h3>
+        <p className='text-lg mb-8'>Bienvenidos a nuestra comunidad</p>
+        <div className='space-x-4'>
+          <a href='/dashboard' className='bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors'>
+            Ir al Dashboard
+          </a>
+          <a href='/anuncios' className='bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition-colors'>
+            Ver Anuncios
+          </a>
         </div>
-      </section>
-      <CallToAction />
-      <FAQs />
-      <Footer />
+      </div>
     </div>
   );
 }

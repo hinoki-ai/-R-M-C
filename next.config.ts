@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
 
   // Disable static optimization to avoid build issues
   trailingSlash: true,
+  output: 'standalone',
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
