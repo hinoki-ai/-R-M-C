@@ -1,5 +1,4 @@
 'use client';
-import { cn } from '@/lib/utils';
 import {
   AnimatePresence,
   motion
@@ -11,6 +10,8 @@ import type {
   Variants,
 } from 'motion/react'
 import React from 'react';
+
+import { cn } from '@/lib/utils';
 
 export type PresetType = 'blur' | 'fade-in-blur' | 'scale' | 'fade' | 'slide';
 
@@ -180,7 +181,7 @@ const createVariantsWithTransition = (
 ): Variants => {
   if (!transition) return baseVariants;
 
-  const { exit: _, ...mainTransition } = transition;
+  const { exit, ...mainTransition } = transition;
 
   return {
     ...baseVariants,

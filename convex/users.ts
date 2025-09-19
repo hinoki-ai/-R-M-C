@@ -1,65 +1,78 @@
-import { internalMutation, query, QueryCtx } from "./_generated/server";
-import { UserJSON } from "@clerk/backend";
-import { v, Validator } from "convex/values";
+import { query } from "./_generated/server";
+import { v } from "convex/values";
 
+// Get all users (for admin purposes)
+export const listUsers = query({
+  args: {},
+  returns: v.array(v.object({
+    _id: v.id("users"),
+    name: v.string(),
+    externalId: v.string(),
+  })),
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+
+    return users.map(user => ({
+      _id: user._id,
+      name: user.name,
+      externalId: user.externalId,
+    }));
+  },
+});
+
+// Get user by external ID (Clerk ID)
+export const getUserByExternalId = query({
+  args: {
+    externalId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.externalId))
+      .first();
+
+    if (!user) return null;
+
+    return {
+      _id: user._id,
+      name: user.name,
+      externalId: user.externalId,
+    };
+  },
+});
+
+// Get current user (authenticated user)
 export const current = query({
   args: {},
   handler: async (ctx) => {
-    return await getCurrentUser(ctx);
+    const userId = await ctx.auth.getUserIdentity();
+    if (!userId) return null;
+
+    return await ctx.db
+      .query("users")
+      .withIndex("byExternalId", (q: any) => q.eq("externalId", userId.subject))
+      .first();
   },
 });
 
-export const upsertFromClerk = internalMutation({
-  args: { data: v.any() as Validator<UserJSON> }, // no runtime validation, trust Clerk
-  async handler(ctx, { data }) {
-    const userAttributes = {
-      name: `${data.first_name} ${data.last_name}`,
-      externalId: data.id,
-    };
-
-    const user = await userByExternalId(ctx, data.id);
-    if (user === null) {
-      await ctx.db.insert("users", userAttributes);
-    } else {
-      await ctx.db.patch(user._id, userAttributes);
-    }
-  },
-});
-
-export const deleteFromClerk = internalMutation({
-  args: { clerkUserId: v.string() },
-  async handler(ctx, { clerkUserId }) {
-    const user = await userByExternalId(ctx, clerkUserId);
-
-    if (user !== null) {
-      await ctx.db.delete(user._id);
-    } else {
-      console.warn(
-        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`,
-      );
-    }
-  },
-});
-
-
-
-export async function getCurrentUserOrThrow(ctx: QueryCtx) {
-  const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new Error("Can't get current user");
-  return userRecord;
-}
-
-export async function getCurrentUser(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (identity === null) {
-    return null;
+// Get current user or throw error if not authenticated
+export const getCurrentUserOrThrow = async (ctx: any) => {
+  const userId = await ctx.auth.getUserIdentity();
+  if (!userId) {
+    throw new Error('User not authenticated');
   }
-  return await userByExternalId(ctx, identity.subject);
-}
 
-async function userByExternalId(ctx: QueryCtx, externalId: string) {
-  return await ctx.db
+  const user = await ctx.db
     .query("users")
-    .withIndex("byExternalId", (q) => q.eq("externalId", externalId))
-    .unique();
-}
+    .withIndex("byExternalId", (q) => q.eq("externalId", userId.subject))
+    .first();
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user;
+};
+
+// Alias for listUsers to match calendar component expectations
+export const list = listUsers;

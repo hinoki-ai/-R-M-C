@@ -1,98 +1,87 @@
 import { cn } from '@/lib/utils'
 
-const MESCHAC_AVATAR = 'https://avatars.githubusercontent.com/u/47919550?v=4'
-const BERNARD_AVATAR = 'https://avatars.githubusercontent.com/u/31113941?v=4'
-const THEO_AVATAR = 'https://avatars.githubusercontent.com/u/68236786?v=4'
-const GLODIE_AVATAR = 'https://avatars.githubusercontent.com/u/99137927?v=4'
-
 export const Table = ({ className }: { className?: string }) => {
-    const customers = [
+    const activities = [
         {
             id: 1,
-            date: '10/31/2023',
-            status: 'Paid',
-            statusVariant: 'success',
-            name: 'Bernard Ng',
-            avatar: BERNARD_AVATAR,
-            revenue: '$43.99',
+            date: '22/09/2025',
+            type: 'Feria',
+            status: 'Próxima',
+            statusVariant: 'warning',
+            title: 'Feria Artesanal Pinto',
+            participants: '120+',
         },
         {
             id: 2,
-            date: '10/21/2023',
-            status: 'Ref',
-            statusVariant: 'warning',
-            name: 'Méschac Irung',
-            avatar: MESCHAC_AVATAR,
-            revenue: '$19.99',
+            date: '15/09/2025',
+            type: 'Asamblea',
+            status: 'Completada',
+            statusVariant: 'success',
+            title: 'Asamblea Ordinaria',
+            participants: '67',
         },
         {
             id: 3,
-            date: '10/15/2023',
-            status: 'Paid',
+            date: '13/09/2025',
+            type: 'Seguridad',
+            status: 'Completada',
             statusVariant: 'success',
-            name: 'Glodie Ng',
-            avatar: GLODIE_AVATAR,
-            revenue: '$99.99',
+            title: 'Ronda Vecinal Nocturna',
+            participants: '18',
         },
         {
             id: 4,
-            date: '10/12/2023',
-            status: 'Cancelled',
-            statusVariant: 'danger',
-            name: 'Theo Ng',
-            avatar: THEO_AVATAR,
-            revenue: '$19.99',
+            date: '06/09/2025',
+            type: 'Mantenimiento',
+            status: 'Completada',
+            statusVariant: 'success',
+            title: 'Limpieza Plaza Principal',
+            participants: '32',
         },
     ]
 
     return (
         <div className={cn('bg-background shadow-foreground/5 inset-ring-1 inset-ring-background ring-foreground/5 relative w-full overflow-hidden rounded-xl border border-transparent p-6 shadow-md ring-1', className)}>
-            <div className="mb-6">
-                <div className="flex gap-1.5">
-                    <div className="bg-muted size-2 rounded-full border border-black/5"></div>
-                    <div className="bg-muted size-2 rounded-full border border-black/5"></div>
-                    <div className="bg-muted size-2 rounded-full border border-black/5"></div>
+            <div className='mb-6'>
+                <div className='flex gap-1.5'>
+                    <div className='bg-muted size-2 rounded-full border border-black/5'></div>
+                    <div className='bg-muted size-2 rounded-full border border-black/5'></div>
+                    <div className='bg-muted size-2 rounded-full border border-black/5'></div>
                 </div>
-                <div className="mt-3 text-lg font-medium">Customers</div>
-                <p className="mt-1 text-sm">New users by First user primary channel group (Default Channel Group)</p>
+                <div className='mt-3 text-lg font-medium'>Actividades Recientes</div>
+                <p className='mt-1 text-sm'>Últimas actividades y eventos de nuestra comunidad</p>
             </div>
             <table
-                className="w-max table-auto border-collapse lg:w-full"
-                data-rounded="medium">
-                <thead className="dark:bg-background bg-gray-950/5">
-                    <tr className="*:border *:p-3 *:text-left *:text-sm *:font-medium">
-                        <th className="rounded-l-[--card-radius]">#</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Customer</th>
-                        <th className="rounded-r-[--card-radius]">Revenue</th>
+                className='w-max table-auto border-collapse lg:w-full'
+                data-rounded='medium'>
+                <thead className='dark:bg-background bg-gray-950/5'>
+                    <tr className='*:border *:p-3 *:text-left *:text-sm *:font-medium'>
+                        <th className='rounded-l-[--card-radius]'>#</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Actividad</th>
+                        <th className='rounded-r-[--card-radius]'>Participantes</th>
                     </tr>
                 </thead>
-                <tbody className="text-sm">
-                    {customers.map((customer, index) => (
+                <tbody className='text-sm'>
+                    {activities.map((activity) => (
                         <tr
-                            key={customer.id}
-                            className="*:border *:p-2">
-                            <td>{customer.id}</td>
-                            <td>{customer.date}</td>
+                            key={activity.id}
+                            className='*:border *:p-2'>
+                            <td>{activity.id}</td>
+                            <td>{activity.date}</td>
                             <td>
-                                <span className={cn('rounded-full px-2 py-1 text-xs', customer.statusVariant == 'success' && 'bg-lime-500/15 text-lime-800', customer.statusVariant == 'danger' && 'bg-red-500/15 text-red-800', customer.statusVariant == 'warning' && 'bg-yellow-500/15 text-yellow-800')}>{customer.status}</span>
+                                <span className='rounded-full px-2 py-1 text-xs bg-blue-500/15 text-blue-800'>{activity.type}</span>
                             </td>
                             <td>
-                                <div className="text-title flex items-center gap-2">
-                                    <div className="size-6 overflow-hidden rounded-full">
-                                        <img
-                                            src={customer.avatar}
-                                            alt={customer.name}
-                                            width="120"
-                                            height="120"
-                                            loading="lazy"
-                                        />
+                                <div className='text-title'>
+                                    <span className='text-foreground font-medium'>{activity.title}</span>
+                                    <div className='mt-1'>
+                                        <span className={cn('rounded-full px-2 py-0.5 text-xs', activity.statusVariant == 'success' && 'bg-lime-500/15 text-lime-800', activity.statusVariant == 'danger' && 'bg-red-500/15 text-red-800', activity.statusVariant == 'warning' && 'bg-yellow-500/15 text-yellow-800')}>{activity.status}</span>
                                     </div>
-                                    <span className="text-foreground">{customer.name}</span>
                                 </div>
                             </td>
-                            <td>{customer.revenue}</td>
+                            <td>{activity.participants}</td>
                         </tr>
                     ))}
                 </tbody>

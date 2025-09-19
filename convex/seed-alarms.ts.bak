@@ -1,0 +1,196 @@
+import { action } from "./_generated/server";
+import { api } from "./_generated/api";
+import { v } from "convex/values";
+
+// Action to seed default alarms for a user
+export const seedUserAlarms = action({
+  args: {
+    userId: v.id("users"),
+  },
+  returns: v.array(v.id("alarms")),
+  handler: async (ctx, args) => {
+    // Check if user already has alarms
+    const existingAlarms = await ctx.runQuery(api.alarms.getAlarms, {
+      userId: args.userId
+    });
+
+    if (existingAlarms.length > 0) {
+      return existingAlarms.map(alarm => alarm._id as any);
+    }
+
+    const now = Date.now();
+    const alarmIds = [];
+
+    // Emergency Alarm - Always active, no schedule
+    const emergencyAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Alerta de Emergencia',
+      description: 'Notificaciones críticas de seguridad y emergencias',
+      type: 'emergency',
+      isActive: true,
+      isRecurring: false,
+      soundEnabled: true,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'critical',
+      userId: args.userId,
+    });
+    alarmIds.push(emergencyAlarmId);
+
+    // Weather Alarm - Active during day hours
+    const weatherAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Pronóstico del Tiempo',
+      description: 'Alertas meteorológicas importantes y cambios climáticos',
+      type: 'weather',
+      isActive: true,
+      isRecurring: true,
+      schedule: {
+        startTime: '06:00',
+        endTime: '22:00',
+        daysOfWeek: [0, 1, 2, 3, 4, 5, 6] // All days
+      },
+      soundEnabled: true,
+      vibrationEnabled: false,
+      notificationEnabled: true,
+      priority: 'medium',
+      userId: args.userId,
+    });
+    alarmIds.push(weatherAlarmId);
+
+    // Community Alarm - Active during business hours
+    const communityAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Anuncios Comunidad',
+      description: 'Nuevos avisos, reuniones y noticias locales',
+      type: 'community',
+      isActive: true,
+      isRecurring: true,
+      schedule: {
+        startTime: '08:00',
+        endTime: '20:00',
+        daysOfWeek: [1, 2, 3, 4, 5, 6, 0] // Monday to Sunday
+      },
+      soundEnabled: false,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'low',
+      userId: args.userId,
+    });
+    alarmIds.push(communityAlarmId);
+
+    // Maintenance Alarm - Active during work hours
+    const maintenanceAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Mantenimiento Programado',
+      description: 'Recordatorios de trabajos en infraestructura y mantenimientos',
+      type: 'maintenance',
+      isActive: false,
+      isRecurring: true,
+      schedule: {
+        startTime: '09:00',
+        endTime: '17:00',
+        daysOfWeek: [1, 2, 3, 4, 5] // Monday to Friday
+      },
+      soundEnabled: true,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'medium',
+      userId: args.userId,
+    });
+    alarmIds.push(maintenanceAlarmId);
+
+    // Security Alarm - Always active for security alerts
+    const securityAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Alertas de Seguridad',
+      description: 'Notificaciones de seguridad vecinal y vigilancia',
+      type: 'security',
+      isActive: true,
+      isRecurring: false,
+      soundEnabled: true,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'high',
+      userId: args.userId,
+    });
+    alarmIds.push(securityAlarmId);
+
+    // Medical Alarm - Always active for medical emergencies
+    const medicalAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Emergencias Médicas',
+      description: 'Alertas relacionadas con emergencias médicas',
+      type: 'medical',
+      isActive: true,
+      isRecurring: false,
+      soundEnabled: true,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'critical',
+      userId: args.userId,
+    });
+    alarmIds.push(medicalAlarmId);
+
+    // Fire Alarm - Always active for fire emergencies
+    const fireAlarmId = await ctx.runMutation(api.alarms.createAlarm, {
+      title: 'Emergencias de Incendio',
+      description: 'Alertas relacionadas con incendios y evacuaciones',
+      type: 'fire',
+      isActive: true,
+      isRecurring: false,
+      soundEnabled: true,
+      vibrationEnabled: true,
+      notificationEnabled: true,
+      priority: 'critical',
+      userId: args.userId,
+    });
+    alarmIds.push(fireAlarmId);
+
+    // Create default alarm settings for the user
+    await ctx.runMutation(api.alarms.updateAlarmSettings, {
+      userId: args.userId,
+      globalSoundEnabled: true,
+      globalVibrationEnabled: true,
+      globalNotificationEnabled: true,
+      emergencyOverride: true,
+      quietHours: {
+        enabled: false,
+        startTime: '22:00',
+        endTime: '07:00',
+        daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
+      }
+    });
+
+    return alarmIds;
+  },
+});
+
+// Action to seed alarms for all existing users
+export const seedAllUsersAlarms = action({
+  args: {},
+  returns: v.object({
+    totalUsers: v.number(),
+    seededUsers: v.number(),
+    totalAlarms: v.number(),
+  }),
+  handler: async (ctx) => {
+    const users = await ctx.runQuery(api.users.listUsers, {});
+    let seededUsers = 0;
+    let totalAlarms = 0;
+
+    for (const user of users) {
+      const existingAlarms = await ctx.runQuery(api.alarms.getAlarms, {
+        userId: user._id
+      });
+
+      if (existingAlarms.length === 0) {
+        const alarmIds = await ctx.runAction(api.seedAlarms.seedUserAlarms, {
+          userId: user._id
+        });
+        seededUsers++;
+        totalAlarms += alarmIds.length;
+      }
+    }
+
+    return {
+      totalUsers: users.length,
+      seededUsers,
+      totalAlarms,
+    };
+  },
+});

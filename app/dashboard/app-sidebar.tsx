@@ -1,31 +1,52 @@
-"use client"
+"use client";
 
-import * as React from "react"
 import {
-  IconCamera,
+  IconActivity,
+  IconAlertTriangle,
+  IconBolt,
+  IconBrain,
+  IconBuilding,
+  IconCalendar,
+  IconCalendarEvent,
+  IconCalendarPlus,
   IconChartBar,
+  IconChartLine,
+  IconChartPie,
+  IconClipboardList,
+  IconConfetti,
+  IconCpu,
+  IconCreditCard,
   IconDashboard,
   IconDatabase,
-  IconMessageCircle,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
+  IconDesk,
+  IconDeviceMobile,
+  IconDog,
+  IconEye,
+  IconFileReport,
+  IconFileText,
+  IconFileTypography,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
+  IconHome,
+  IconMail,
+  IconMapPin,
+  IconMessageCircle,
+  IconReceipt,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
+  IconShield,
   IconSparkles,
-  IconBrandOpenai,
-} from "@tabler/icons-react"
+  IconStar,
+  IconTool,
+  IconTrendingUp,
+  IconUser,
+  IconUsers,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 
-import { NavDocuments } from "@/app/dashboard/nav-documents"
-import { NavMain } from "@/app/dashboard/nav-main"
-import { NavSecondary } from "@/app/dashboard/nav-secondary"
-import { NavUser } from "@/app/dashboard/nav-user"
+import { NavMain } from "@/app/dashboard/nav-main";
+import { NavSecondary } from "@/app/dashboard/nav-secondary";
+import { NavUser } from "@/app/dashboard/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -34,74 +55,129 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { ChatMaxingIconColoured } from "@/components/logo"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
-    },
-    {
-      title: "Payment gated",
-      url: "/dashboard/payment-gated",
-      icon: IconSparkles,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
+interface SidebarProps {
+  children?: React.ReactNode;
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar(props: SidebarProps) {
+  const data = {
+    navMain: [
+      {
+        title: "Parking Dashboard",
+        url: "/dashboard",
+        icon: IconDashboard,
+        items: [
+          {
+            title: "Overview",
+            url: "/dashboard",
+            icon: IconHome,
+          },
+          {
+            title: "Analytics",
+            url: "/dashboard/analytics",
+            icon: IconChartBar,
+          },
+          {
+            title: "Parking Monitor",
+            url: "/dashboard/monitor",
+            icon: IconEye,
+          },
+        ],
+      },
+      {
+        title: "Operations",
+        url: "/dashboard/operations",
+        icon: IconActivity,
+        items: [
+          {
+            title: "Revenue Management",
+            url: "/dashboard/revenue",
+            icon: IconCreditCard,
+          },
+          {
+            title: "Maintenance",
+            url: "/dashboard/maintenance",
+            icon: IconTool,
+          },
+          {
+            title: "Customer Management",
+            url: "/dashboard/customers",
+            icon: IconUsers,
+          },
+          {
+            title: "Infractions",
+            url: "/dashboard/infractions",
+            icon: IconAlertTriangle,
+          },
+        ],
+      },
+      {
+        title: "Reports",
+        url: "/dashboard/reports",
+        icon: IconFileReport,
+        items: [
+          {
+            title: "Automated Reports",
+            url: "/dashboard/reports/automated",
+            icon: IconFileText,
+          },
+          {
+            title: "Custom Reports",
+            url: "/dashboard/reports/custom",
+            icon: IconClipboardList,
+          },
+        ],
+      },
+      {
+        title: "Settings",
+        url: "/dashboard/settings",
+        icon: IconSettings,
+        items: [
+          {
+            title: "General Settings",
+            url: "/dashboard/settings",
+            icon: IconSettings,
+          },
+          {
+            title: "Pricing Engine",
+            url: "/dashboard/settings/pricing",
+            icon: IconTrendingUp,
+          },
+        ],
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Help & Support",
+        url: "/dashboard/help",
+        icon: IconHelp,
+      },
+      {
+        title: "Search",
+        url: "/dashboard/search",
+        icon: IconSearch,
+      },
+    ],
+  };
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <Link href="/">
-                <ChatMaxingIconColoured className="!size-6" />
-                <span className="text-base font-semibold">Starter DIY</span>
-                <Badge variant="outline" className="text-muted-foreground  text-xs">Demo</Badge>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/dashboard">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <IconBuilding className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Parking Manager</span>
+                  <span className="truncate text-xs">Pinto Los Pellines</span>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -109,12 +185,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
-  )
+  );
 }

@@ -1,0 +1,1 @@
+// Motion detection feature removed for simplified architecture

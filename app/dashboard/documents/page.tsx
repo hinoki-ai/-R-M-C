@@ -1,0 +1,202 @@
+'use client'
+
+import { useUser } from '@clerk/nextjs'
+import { motion } from 'framer-motion'
+import { Suspense, useState } from 'react'
+
+import { DocumentDashboardLayout } from '@/components/dashboard/layout/dashboard-layout'
+import { DocumentFilter, DocumentList } from '@/components/dashboard/shared/document-card'
+import { DocumentHeader } from '@/components/dashboard/shared/section-header'
+import { Document } from '@/types/dashboard'
+
+
+// No mock data - using real documents only
+
+function DocumentsContent() {
+  const { user } = useUser()
+
+  // Use real data only - no mock data
+  const documents: Document[] = []
+  const loading = false
+
+  // State for filters
+  const [selectedType, setSelectedType] = useState<Document['type'] | undefined>(undefined)
+
+  // Calculate document counts by type
+  const documentCounts = documents.reduce((acc, doc) => {
+    acc[doc.type] = (acc[doc.type] || 0) + 1
+    return acc
+  }, {} as Record<Document['type'], number>)
+
+  const handleDownload = async (documentId: string) => {
+    const doc = documents.find(d => d.id === documentId)
+    if (doc) {
+      // In a real app, this would trigger a download
+      console.log('Downloading document:', doc.title)
+      // Simulate download
+      const link = window.document.createElement('a')
+      link.href = doc.fileUrl
+      link.download = doc.title
+      window.document.body.appendChild(link)
+      link.click()
+      window.document.body.removeChild(link)
+    }
+  }
+
+  const handleView = async (documentId: string) => {
+    const doc = documents.find(d => d.id === documentId)
+    if (doc) {
+      // In a real app, this could open in a new tab or modal
+      console.log('Viewing document:', doc.title)
+      window.open(doc.fileUrl, '_blank')
+    }
+  }
+
+  if (!user) {
+    return (
+      <DocumentDashboardLayout user={{ id: '', name: 'Usuario', email: '', role: 'user', isAdmin: false }} currentSection='documents'>
+        <div className='text-center py-12'>
+          <p className='text-gray-600 dark:text-gray-400'>Cargando...</p>
+        </div>
+      </DocumentDashboardLayout>
+    )
+  }
+
+  return (
+    <DocumentDashboardLayout
+      user={{
+        id: user.id,
+        name: user.firstName || user.username || 'Usuario',
+        email: user.primaryEmailAddress?.emailAddress || '',
+        role: 'user',
+        isAdmin: user.publicMetadata?.role === 'admin' || false
+      }}
+      currentSection='documents'
+    >
+      <div className='space-y-6'>
+        <DocumentHeader count={documents.length} />
+
+        {/* Document Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <DocumentFilter
+            selectedType={selectedType}
+            onTypeChange={setSelectedType}
+            documentCounts={documentCounts}
+          />
+        </motion.div>
+
+        {/* Documents List */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <DocumentList
+            documents={documents}
+            onDownload={handleDownload}
+            onView={handleView}
+            loading={loading}
+            compact={false}
+            filterByType={selectedType}
+          />
+        </motion.div>
+
+        {/* Document Statistics */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className='bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-950/20 rounded-lg p-6 border border-indigo-200 dark:border-indigo-800'
+        >
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+            📊 Estadísticas de Documentos
+          </h3>
+          <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-indigo-600'>{documents.length}</div>
+              <div className='text-sm text-gray-600 dark:text-gray-400'>Total de Documentos</div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-green-600'>
+                {documents.filter(doc => doc.isPublic).length}
+              </div>
+              <div className='text-sm text-gray-600 dark:text-gray-400'>Públicos</div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-orange-600'>
+                {(documents.reduce((sum, doc) => {
+                  const size = parseFloat(doc.fileSize.split(' ')[0])
+                  const unit = doc.fileSize.split(' ')[1]
+                  return sum + (unit === 'MB' ? size : size / 1024)
+                }, 0)).toFixed(1)} MB
+              </div>
+              <div className='text-sm text-gray-600 dark:text-gray-400'>Tamaño Total</div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-purple-600'>
+                {new Set(documents.map(doc => doc.author)).size}
+              </div>
+              <div className='text-sm text-gray-600 dark:text-gray-400'>Autores</div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className='bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-950/20 dark:to-slate-950/20 rounded-lg p-6 border border-gray-200 dark:border-gray-700'
+        >
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+            🕐 Actividad Reciente
+          </h3>
+          <div className='space-y-3'>
+            {documents
+              .sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime())
+              .slice(0, 3)
+              .map(document => (
+                <div key={document.id} className='flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border'>
+                  <div className='flex items-center space-x-3'>
+                    <div className='p-2 bg-blue-100 dark:bg-blue-900 rounded-lg'>
+                      <span className='text-blue-600 dark:text-blue-400 text-sm'>📄</span>
+                    </div>
+                    <div>
+                      <h4 className='font-medium text-gray-900 dark:text-white text-sm'>
+                        {document.title}
+                      </h4>
+                      <p className='text-xs text-gray-600 dark:text-gray-400'>
+                        Subido por {document.author} • {new Date(document.uploadDate).toLocaleDateString('es-CL')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className='text-xs text-gray-500'>
+                    {document.fileSize}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </motion.div>
+      </div>
+    </DocumentDashboardLayout>
+  )
+}
+
+export default function DocumentsPage() {
+  return (
+    <Suspense fallback={
+      <DocumentDashboardLayout user={{ id: '', name: 'Usuario', email: '', role: 'user', isAdmin: false }} currentSection='documents'>
+        <div className='text-center py-12'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
+          <p className='text-gray-600 dark:text-gray-400'>Cargando documentos...</p>
+        </div>
+      </DocumentDashboardLayout>
+    }>
+      <DocumentsContent />
+    </Suspense>
+  )
+}
