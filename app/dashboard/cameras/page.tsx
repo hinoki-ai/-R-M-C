@@ -1,8 +1,11 @@
 'use client'
 
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic'
+
 import { useUser } from '@clerk/nextjs'
 import {
-  IconCamera,
+  IconEye,
   IconCircleCheckFilled,
   IconHelp,
   IconPlus,
@@ -93,7 +96,7 @@ export default function CamerasPage() {
       <div className='flex items-center justify-between mb-8'>
         <div>
           <h1 className='text-3xl font-bold flex items-center gap-3'>
-            <IconCamera className='h-8 w-8' />
+            <IconEye className='h-8 w-8' />
             Security Cameras
           </h1>
           <p className='text-gray-600 dark:text-gray-400 mt-2'>
@@ -117,7 +120,7 @@ export default function CamerasPage() {
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Total Cameras</p>
                 <p className='text-2xl font-bold'>{loading ? '...' : cameras.length}</p>
               </div>
-              <IconCamera className='h-8 w-8 text-blue-500' />
+              <IconEye className='h-8 w-8 text-blue-500' />
             </div>
           </CardContent>
         </Card>
@@ -186,7 +189,7 @@ export default function CamerasPage() {
         </div>
       ) : cameras.length === 0 ? (
         <div className='text-center py-12'>
-          <IconCamera className='h-16 w-16 text-gray-400 mx-auto mb-4' />
+          <IconEye className='h-16 w-16 text-gray-400 mx-auto mb-4' />
           <h3 className='text-xl font-semibold mb-2'>No cameras found</h3>
           <p className='text-gray-600 dark:text-gray-400 mb-6'>
             Get started by adding your first security camera
@@ -229,7 +232,7 @@ export default function CamerasPage() {
               </CardHeader>
               <CardContent>
                 <div className='aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg mb-4 flex items-center justify-center'>
-                  <IconCamera className='h-12 w-12 text-gray-400' />
+                  <IconEye className='h-12 w-12 text-gray-400' />
                 </div>
 
                 <div className='space-y-2 mb-4'>

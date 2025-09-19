@@ -1,11 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function LoadingBar() {
-  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsLoading(true);
@@ -17,9 +17,7 @@ export function LoadingBar() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
-      <div className="h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500">
-        <div className="h-full bg-white animate-pulse" />
-      </div>
+      <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-pulse" />
     </div>
   );
 }

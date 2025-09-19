@@ -1,8 +1,11 @@
 'use client'
 
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic'
+
 import { motion } from 'framer-motion'
 
-import { useDashboardNavigation } from '@/lib/dashboard-navigation'
+import { useDashboardNavigation } from '@/lib/utils/dashboard-navigation'
 import { DashboardLayoutProps } from '@/types/dashboard'
 
 interface DashboardLayoutPropsExtended extends DashboardLayoutProps {

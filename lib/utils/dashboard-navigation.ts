@@ -1,4 +1,5 @@
 import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { DASHBOARD_SECTIONS, type DashboardSection, NAVIGATION_GROUPS, type User } from '@/types/dashboard'
 
@@ -25,8 +26,16 @@ export const getNavigationConfig = (user: User) => {
 export const useDashboardNavigation = () => {
   const router = useRouter()
   const pathname = usePathname()
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const getCurrentSection = (): string => {
+    // Only run on client side
+    if (!isClient || !pathname) return 'overview'
+
     const pathSegments = pathname.split('/')
     const lastSegment = pathSegments[pathSegments.length - 1]
 
@@ -49,7 +58,7 @@ export const useDashboardNavigation = () => {
     const currentSection = getCurrentSection()
 
     // Special handling for cameras sub-routes
-    if (sectionId === 'cameras' && (pathname.includes('/cameras') || currentSection === 'lsvision')) {
+    if (sectionId === 'cameras' && isClient && pathname && (pathname.includes('/cameras') || currentSection === 'lsvision')) {
       return true
     }
 
@@ -84,7 +93,7 @@ export const useDashboardNavigation = () => {
     isActive,
     getSectionInfo,
     getBreadcrumbs,
-    pathname
+    pathname: isClient ? pathname : ''
   }
 }
 

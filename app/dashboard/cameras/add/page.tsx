@@ -1,6 +1,6 @@
 'use client'
 
-import { IconCamera, IconChevronLeft, IconPlus } from '@tabler/icons-react'
+import { IconEye, IconChevronLeft, IconPlus } from '@tabler/icons-react'
 import { useMutation } from 'convex/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -116,7 +116,7 @@ export default function AddCameraPage() {
         <Card>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
-              <IconCamera className='h-5 w-5' />
+              <IconEye className='h-5 w-5' />
               IP Camera Configuration
             </CardTitle>
             <p className='text-sm text-gray-600 dark:text-gray-400'>

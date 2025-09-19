@@ -20,82 +20,141 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-// Mock data for charts
-const revenueData = [
-  { month: "Jan", revenue: 12000000, sessions: 1200 },
-  { month: "Feb", revenue: 15000000, sessions: 1350 },
-  { month: "Mar", revenue: 18000000, sessions: 1500 },
-  { month: "Apr", revenue: 22000000, sessions: 1650 },
-  { month: "May", revenue: 25000000, sessions: 1800 },
-  { month: "Jun", revenue: 28000000, sessions: 1950 },
-];
+// Real data from Convex database - shows 0 when no data exists
+const useParticipationData = () => {
+  const events = useQuery(api.calendar.getEvents, {}) || [];
+  const announcements = useQuery(api.community.getAnnouncements) || [];
 
-const occupancyData = [
-  { time: "00:00", occupancy: 15 },
-  { time: "04:00", occupancy: 8 },
-  { time: "08:00", occupancy: 45 },
-  { time: "12:00", occupancy: 78 },
-  { time: "16:00", occupancy: 92 },
-  { time: "20:00", occupancy: 65 },
-];
+  // Group by month for the last 6 months
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      month: date.toLocaleDateString('es-ES', { month: 'short' }),
+      monthNum: date.getMonth(),
+      year: date.getFullYear()
+    });
+  }
 
-const infractionsData = [
-  { day: "Mon", count: 2 },
-  { day: "Tue", count: 1 },
-  { day: "Wed", count: 3 },
-  { day: "Thu", count: 2 },
-  { day: "Fri", count: 4 },
-  { day: "Sat", count: 6 },
-  { day: "Sun", count: 3 },
-];
+  return months.map(({ month, monthNum, year }) => {
+    const monthEvents = events.filter(event => {
+      const eventDate = new Date(event.startDate);
+      return eventDate.getMonth() === monthNum && eventDate.getFullYear() === year;
+    });
+
+    const monthAnnouncements = announcements.filter(announcement => {
+      const announcementDate = new Date(announcement._creationTime);
+      return announcementDate.getMonth() === monthNum && announcementDate.getFullYear() === year;
+    });
+
+    // Calculate attendance from events (if available)
+    const totalAttendance = monthEvents.reduce((sum, event) =>
+      sum + (event.attendance || 0), 0
+    );
+
+    return {
+      month,
+      eventos: monthEvents.length,
+      asistencia: totalAttendance,
+      anuncios: monthAnnouncements.length
+    };
+  });
+};
+
+const useMaintenanceData = () => {
+  // This would need a maintenance requests query - for now showing 0
+  const maintenanceRequests = useQuery(api.community.getMaintenanceRequests) || [];
+
+  // Group by weeks for current month
+  const now = new Date();
+  const weeks = [];
+  for (let i = 0; i < 4; i++) {
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), i * 7 + 1);
+    const weekEnd = new Date(now.getFullYear(), now.getMonth(), (i + 1) * 7 + 1);
+    weeks.push({ weekStart, weekEnd });
+  }
+
+  return weeks.map((week, index) => {
+    const weekRequests = maintenanceRequests.filter(request => {
+      const requestDate = new Date(request._creationTime);
+      return requestDate >= week.weekStart && requestDate < week.weekEnd;
+    });
+
+    const completedRequests = weekRequests.filter(request => request.status === 'completed');
+
+    return {
+      semana: `Sem ${index + 1}`,
+      solicitudes: weekRequests.length,
+      completadas: completedRequests.length
+    };
+  });
+};
+
+const useEngagementData = () => {
+  // This would need engagement tracking - for now showing 0
+  const engagementData = useQuery(api.community.getEngagementStats) || [];
+
+  const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+  return days.map((dia, index) => {
+    // Find data for this day of week
+    const dayData = engagementData.find(d => d.dayOfWeek === index) || { views: 0, interactions: 0 };
+
+    return {
+      dia,
+      vistas: dayData.views,
+      interacciones: dayData.interactions
+    };
+  });
+};
 
 export function DashboardCharts() {
+  const participationData = useParticipationData();
+  const maintenanceData = useMaintenanceData();
+  const engagementData = useEngagementData();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Analytics Overview</h2>
+          <h2 className="text-lg font-semibold">Estadísticas Comunidad</h2>
           <p className="text-sm text-muted-foreground">
-            Key performance indicators and trends
+            Indicadores clave de participación y actividad comunitaria (datos reales - muestra 0 si no hay datos)
           </p>
         </div>
       </div>
 
-      <Tabs defaultValue="revenue" className="space-y-4">
+      <Tabs defaultValue="participacion" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="revenue">Revenue & Sessions</TabsTrigger>
-          <TabsTrigger value="occupancy">Occupancy Trends</TabsTrigger>
-          <TabsTrigger value="infractions">Infractions</TabsTrigger>
+          <TabsTrigger value="participacion">Participación</TabsTrigger>
+          <TabsTrigger value="mantenimiento">Mantenimiento</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="revenue" className="space-y-4">
+        <TabsContent value="participacion" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Monthly Revenue</CardTitle>
+                <CardTitle>Eventos y Asistencia</CardTitle>
                 <CardDescription>
-                  Revenue trends over the last 6 months
+                  Participación en eventos comunitarios últimos 6 meses (datos reales)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={revenueData}>
+                  <AreaChart data={participationData}>
                     <XAxis dataKey="month" />
                     <YAxis />
-                    <Tooltip
-                      formatter={(value) => [
-                        new Intl.NumberFormat('es-CL', {
-                          style: 'currency',
-                          currency: 'CLP',
-                        }).format(value as number),
-                      ]}
-                    />
+                    <Tooltip />
                     <Area
                       type="monotone"
-                      dataKey="revenue"
-                      stroke="#8884d8"
-                      fill="#8884d8"
+                      dataKey="asistencia"
+                      stroke="#10b981"
+                      fill="#10b981"
                       fillOpacity={0.6}
                     />
                   </AreaChart>
@@ -105,18 +164,18 @@ export function DashboardCharts() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Parking Sessions</CardTitle>
+                <CardTitle>Anuncios Publicados</CardTitle>
                 <CardDescription>
-                  Number of parking sessions per month
+                  Número de anuncios publicados por mes (datos reales)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={revenueData}>
+                  <BarChart data={participationData}>
                     <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="sessions" fill="#82ca9d" />
+                    <Bar dataKey="anuncios" fill="#82ca9d" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -124,49 +183,44 @@ export function DashboardCharts() {
           </div>
         </TabsContent>
 
-        <TabsContent value="occupancy" className="space-y-4">
+        <TabsContent value="mantenimiento" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Daily Occupancy Pattern</CardTitle>
+              <CardTitle>Solicitudes de Mantenimiento</CardTitle>
               <CardDescription>
-                Average occupancy rate throughout the day
+                Solicitudes y trabajos completados por semana (datos reales)
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={occupancyData}>
-                  <XAxis dataKey="time" />
+                <BarChart data={maintenanceData}>
+                  <XAxis dataKey="semana" />
                   <YAxis />
-                  <Tooltip
-                    formatter={(value) => [`${value}%`, "Occupancy"]}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="occupancy"
-                    stroke="#ff7300"
-                    strokeWidth={2}
-                  />
-                </LineChart>
+                  <Tooltip />
+                  <Bar dataKey="solicitudes" fill="#3b82f6" />
+                  <Bar dataKey="completadas" fill="#10b981" />
+                </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="infractions" className="space-y-4">
+        <TabsContent value="engagement" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Weekly Infractions</CardTitle>
+              <CardTitle>Engagement Diario</CardTitle>
               <CardDescription>
-                Number of parking violations per day
+                Vistas e interacciones por día de la semana (datos reales)
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={infractionsData}>
-                  <XAxis dataKey="day" />
+                <BarChart data={engagementData}>
+                  <XAxis dataKey="dia" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="count" fill="#ff6b6b" />
+                  <Bar dataKey="vistas" fill="#8b5cf6" />
+                  <Bar dataKey="interacciones" fill="#06b6d4" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

@@ -1,9 +1,9 @@
 # JuntaDeVecinos Theme System
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
-[![Themes](https://img.shields.io/badge/themes-light/dark/system-green.svg)](#key-features)
-[![Accessibility](https://img.shields.io/badge/accessibility-WCAG--AA-blue.svg)](#accessibility-excellence)
-[![TypeScript](https://img.shields.io/badge/typescript-first-orange.svg)](#technical-implementation)
+[![Themes](https://img.shields.io/badge/themes-light/dark/system-green.svg)]
+[![Accessibility](https://img.shields.io/badge/accessibility-WCAG--AA-blue.svg)]
+[![TypeScript](https://img.shields.io/badge/typescript-first-orange.svg)]
 
 > World-class theme system with advanced accessibility, cross-platform support, and enterprise-grade features
 
@@ -11,7 +11,7 @@
 
 1. [Overview](#overview)
 2. [Key Features](#key-features)
-3. [Technical Architecture](#technical-architecture)
+3. [Technical Architecture](#technical-implementation)
 4. [Installation & Setup](#installation--setup)
 5. [Usage Guide](#usage-guide)
 6. [Advanced Features](#advanced-features)
@@ -20,7 +20,7 @@
 9. [Customization](#customization)
 10. [Testing](#testing)
 11. [Troubleshooting](#troubleshooting)
-12. [Performance](#performance)
+12. [Performance](#performance-optimizations)
 13. [Migration Guide](#migration-guide)
 
 ## 📋 Overview
@@ -30,12 +30,14 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 ## ✨ Key Features
 
 ### 🎨 Core Functionality
+
 - **3 Theme Modes**: Light, Dark, and System (follows OS preference)
 - **Instant Switching**: CSS class-based theming for zero flash
 - **Persistent Storage**: Remembers user preferences across sessions
 - **System Integration**: Automatically syncs with OS theme changes
 
 ### ♿ Accessibility Excellence
+
 - **WCAG AA Compliant**: All color combinations tested for accessibility
 - **Reduced Motion Support**: Respects `prefers-reduced-motion`
 - **High Contrast Mode**: Enhanced contrast for users with visual impairments
@@ -43,6 +45,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 - **Screen Reader Support**: Comprehensive ARIA labels and descriptions
 
 ### 🎯 Developer Experience
+
 - **TypeScript First**: Full type safety throughout
 - **Error Boundaries**: Graceful error handling and recovery
 - **Analytics Integration**: Usage tracking and insights
@@ -50,6 +53,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 - **Preview System**: Live theme preview before applying
 
 ### 📱 Cross-Platform
+
 - **Mobile Optimized**: Works seamlessly in Capacitor apps
 - **PWA Ready**: Full Progressive Web App support
 - **Responsive Design**: Adapts to all screen sizes
@@ -59,7 +63,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 
 ### Architecture
 
-```
+```bash
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   User Input    │────│  Theme Provider  │────│   CSS Classes   │
 │                 │    │                  │    │                 │
@@ -81,6 +85,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 ### Core Components
 
 #### `ThemeProvider` (Enhanced)
+
 ```tsx
 <ThemeProvider
   enableKeyboardShortcuts={true}    // Ctrl+Shift+T support
@@ -94,11 +99,13 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 ```
 
 #### `ModeToggle` (Advanced)
+
 ```tsx
 <ModeToggle /> // Includes dropdown with advanced options
 ```
 
 #### `ThemeErrorBoundary`
+
 ```tsx
 <ThemeErrorBoundary fallback={ThemeFallback}>
   <App />
@@ -212,6 +219,7 @@ function UtilityExample() {
 ## 📊 Analytics & Insights
 
 The theme system tracks:
+
 - **Usage Statistics**: Theme switches, preferences, timestamps
 - **Performance Metrics**: Transition times, error rates
 - **Accessibility Usage**: Reduced motion and high contrast adoption
@@ -337,6 +345,7 @@ The theme system works seamlessly with Capacitor:
 ### OKLCH Color Space
 
 The theme uses modern OKLCH color space for:
+
 - **Perceptual Uniformity**: Colors appear consistent across devices
 - **Wide Gamut Support**: Better color accuracy on modern displays
 - **Accessibility**: Improved contrast calculations
@@ -361,17 +370,20 @@ The theme uses modern OKLCH color space for:
 ## 🚀 Performance Optimizations
 
 ### Bundle Optimization
+
 - **Tree Shaking**: Unused theme code eliminated
 - **Code Splitting**: Theme utilities loaded on demand
 - **Lazy Loading**: Theme components loaded as needed
 
 ### Runtime Performance
+
 - **CSS Class Switching**: Instant theme changes
 - **Memory Efficient**: Minimal state management
 - **Debounced Updates**: Prevents excessive re-renders
 - **Optimized Selectors**: Fast CSS rule application
 
 ### Caching Strategy
+
 - **Local Storage**: Persistent theme preferences
 - **Memory Cache**: Fast access to computed values
 - **CDN Optimization**: Static assets cached globally
@@ -379,20 +391,23 @@ The theme uses modern OKLCH color space for:
 ## 🧪 Testing
 
 ### Unit Tests
+
 ```bash
-npm run test:theme
+npm run test
 # Tests theme utilities, hooks, and components
 ```
 
 ### Integration Tests
+
 ```bash
-npm run test:e2e:theme
+npm run test:integration
 # Tests full theme switching workflow
 ```
 
 ### Accessibility Tests
+
 ```bash
-npm run test:a11y:theme
+npm run test:coverage
 # Tests WCAG compliance and keyboard navigation
 ```
 
@@ -433,6 +448,7 @@ npm run test:a11y:theme
 ## 🔮 Future Enhancements
 
 ### Planned Features
+
 - **Theme Marketplace**: Community theme sharing
 - **Advanced Customization**: Real-time theme editor
 - **Theme Scheduling**: Time-based theme switching
@@ -440,6 +456,7 @@ npm run test:a11y:theme
 - **AI Theme Generation**: ML-powered theme creation
 
 ### Extensibility
+
 - **Plugin System**: Custom theme providers
 - **Theme Presets**: Pre-built theme collections
 - **Dynamic Themes**: API-driven theme updates
@@ -467,6 +484,7 @@ npm run test:a11y:theme
 **🎉 Enterprise-grade theme system successfully implemented!** This theme system represents the current best practices in web theming, combining modern web standards with exceptional user experience and developer ergonomics.
 
 ### Implementation Highlights
+
 - ✅ **World-Class Accessibility**: WCAG AA compliant with comprehensive screen reader support
 - ✅ **Cross-Platform Perfection**: Seamless experience across web, mobile, and PWA
 - ✅ **Enterprise Performance**: Sub-millisecond theme switching with zero flash

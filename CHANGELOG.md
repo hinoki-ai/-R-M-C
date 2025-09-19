@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Comprehensive documentation standardization and organization
 - Centralized documentation index for improved navigation
 - Consolidated deployment guides to reduce duplication
@@ -18,18 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved main README with clearer structure and links
 
 ### Changed
+
 - Reorganized documentation structure for better discoverability
 - Updated CONTRIBUTING.md to remove references to non-existent files
 - Consolidated mobile deployment content into dedicated guide
 - Standardized formatting and tone across all documentation
 
 ### Fixed
+
 - Removed broken references to missing documentation files
 - Fixed inconsistent formatting and information organization
 
 ## [1.0.0] - 2024-12-XX
 
-### Added
+### Features
+
 - Initial release of JuntaDeVecinos community platform
 - Core features: community management, security cameras, announcements
 - Cross-platform support (Web, Android, iOS via Capacitor)
@@ -40,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Progressive Web App (PWA) capabilities
 
 ### Technical Implementation
+
 - React 19 with Next.js 15 framework
 - TypeScript for type safety
 - Tailwind CSS for styling
@@ -48,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mobile deployment to App Store and Google Play
 
 ### Documentation
+
 - Complete setup and development guides
 - Architecture documentation
 - Deployment instructions for all platforms

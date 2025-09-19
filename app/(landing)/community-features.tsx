@@ -1,6 +1,6 @@
 import { Calendar, Grape, Heart, Mountain, Shield, Sun, TreePine, Users } from 'lucide-react'
 
-import PixelCard from '@/components/react-bits/pixel-card'
+import { Card } from '@/components/ui/card'
 
 const countrysideFeatures = [
   {
@@ -100,13 +100,13 @@ export default function CommunityFeatures() {
       <div className='relative mx-auto max-w-7xl px-6'>
         {/* Main Title */}
         <div className='text-center mb-16'>
-          <PixelCard variant='yellow' className='mx-auto w-fit mb-8 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200'>
+          <Card className='mx-auto w-fit mb-8 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200'>
             <div className='flex items-center gap-3 px-8 py-4'>
               <Sun className='w-6 h-6 text-yellow-600' />
               <span className='font-bold text-amber-800 text-lg'>Orgullo de Nuestra Tierra</span>
               <TreePine className='w-6 h-6 text-green-600' />
             </div>
-          </PixelCard>
+          </Card>
 
           <h2 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-green-700 via-amber-700 to-red-700 bg-clip-text text-transparent'>
             🇨🇱 Belleza Campesina
@@ -122,9 +122,8 @@ export default function CommunityFeatures() {
           {countrysideFeatures.map((feature, index) => {
             const Icon = feature.icon
             return (
-              <PixelCard
+              <Card
                 key={index}
-                variant={feature.variant}
                 className={`${feature.bgColor} ${feature.borderColor} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}
               >
                 <div className='p-8 text-center'>
@@ -136,7 +135,7 @@ export default function CommunityFeatures() {
                     {feature.description}
                   </p>
                 </div>
-              </PixelCard>
+              </Card>
             )
           })}
         </div>
@@ -152,9 +151,8 @@ export default function CommunityFeatures() {
             {countrysideHighlights.map((highlight, index) => {
               const Icon = highlight.icon
               return (
-                <PixelCard
+                <Card
                   key={index}
-                  variant='default'
                   className='bg-white/90 backdrop-blur-sm border-gray-200 hover:shadow-xl transition-all duration-300'
                 >
                   <div className='p-6'>
@@ -166,7 +164,7 @@ export default function CommunityFeatures() {
                       {highlight.description}
                     </p>
                   </div>
-                </PixelCard>
+                </Card>
               )
             })}
           </div>
@@ -174,7 +172,7 @@ export default function CommunityFeatures() {
 
         {/* Countryside Quote */}
         <div className='text-center'>
-          <PixelCard variant='blue' className='mx-auto max-w-4xl bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
+          <Card className='mx-auto max-w-4xl bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
             <div className='p-8'>
               <blockquote className='text-2xl font-medium text-gray-800 mb-6 leading-relaxed'>
                 &quot;En Pinto Los Pellines, no solo vivimos en un lugar hermoso, sino que somos parte de una historia viva.
@@ -190,7 +188,7 @@ export default function CommunityFeatures() {
                 </div>
               </footer>
             </div>
-          </PixelCard>
+          </Card>
         </div>
       </div>
     </section>

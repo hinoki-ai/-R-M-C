@@ -9,10 +9,12 @@ import {
   IconCalendar,
   IconCalendarEvent,
   IconCalendarPlus,
+  IconCamera,
   IconChartBar,
   IconChartLine,
   IconChartPie,
   IconClipboardList,
+  IconCloud,
   IconConfetti,
   IconCpu,
   IconCreditCard,
@@ -38,6 +40,7 @@ import {
   IconSparkles,
   IconStar,
   IconTool,
+  IconTrophy,
   IconTrendingUp,
   IconUser,
   IconUsers,
@@ -58,16 +61,19 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   children?: React.ReactNode;
 }
 
 export function AppSidebar(props: SidebarProps) {
+  const pathname = usePathname();
+
   const data = {
     navMain: [
       {
-        title: "Parking Dashboard",
+        title: "Dashboard",
         url: "/dashboard",
         icon: IconDashboard,
         items: [
@@ -77,26 +83,9 @@ export function AppSidebar(props: SidebarProps) {
             icon: IconHome,
           },
           {
-            title: "Analytics",
-            url: "/dashboard/analytics",
-            icon: IconChartBar,
-          },
-          {
-            title: "Parking Monitor",
-            url: "/dashboard/monitor",
-            icon: IconEye,
-          },
-        ],
-      },
-      {
-        title: "Operations",
-        url: "/dashboard/operations",
-        icon: IconActivity,
-        items: [
-          {
-            title: "Revenue Management",
-            url: "/dashboard/revenue",
-            icon: IconCreditCard,
+            title: "Announcements",
+            url: "/dashboard/announcements",
+            icon: IconFileText,
           },
           {
             title: "Maintenance",
@@ -104,50 +93,66 @@ export function AppSidebar(props: SidebarProps) {
             icon: IconTool,
           },
           {
-            title: "Customer Management",
-            url: "/dashboard/customers",
-            icon: IconUsers,
+            title: "Events",
+            url: "/dashboard/events",
+            icon: IconCalendar,
           },
           {
-            title: "Infractions",
-            url: "/dashboard/infractions",
+            title: "Emergencies",
+            url: "/dashboard/emergencies",
             icon: IconAlertTriangle,
           },
-        ],
-      },
-      {
-        title: "Reports",
-        url: "/dashboard/reports",
-        icon: IconFileReport,
-        items: [
           {
-            title: "Automated Reports",
-            url: "/dashboard/reports/automated",
-            icon: IconFileText,
-          },
-          {
-            title: "Custom Reports",
-            url: "/dashboard/reports/custom",
-            icon: IconClipboardList,
-          },
-        ],
-      },
-      {
-        title: "Settings",
-        url: "/dashboard/settings",
-        icon: IconSettings,
-        items: [
-          {
-            title: "General Settings",
+            title: "Settings",
             url: "/dashboard/settings",
             icon: IconSettings,
           },
+        ],
+      },
+      {
+        title: "Admin",
+        url: "#",
+        icon: IconShield,
+        isActive: pathname?.startsWith('/dashboard/admin'),
+        items: [
           {
-            title: "Pricing Engine",
-            url: "/dashboard/settings/pricing",
-            icon: IconTrendingUp,
+            title: "Comunicados",
+            url: "/dashboard/admin/announcements",
+            icon: IconFileText,
           },
         ],
+      },
+      {
+        title: "Quick Access",
+        url: "#",
+        icon: IconBolt,
+        items: [
+          {
+            title: "Weather",
+            url: "/dashboard/weather",
+            icon: IconCloud,
+          },
+          {
+            title: "Cameras",
+            url: "/dashboard/cameras",
+            icon: IconCamera,
+          },
+          {
+            title: "Announcements",
+            url: "/dashboard/announcements",
+            icon: IconFileText,
+          },
+          {
+            title: "Maintenance",
+            url: "/dashboard/maintenance",
+            icon: IconTool,
+          },
+        ],
+      },
+      {
+        title: "Ranking",
+        url: "/dashboard/ranking",
+        icon: IconTrophy,
       },
     ],
     navSecondary: [
@@ -157,26 +162,26 @@ export function AppSidebar(props: SidebarProps) {
         icon: IconHelp,
       },
       {
-        title: "Search",
-        url: "/dashboard/search",
-        icon: IconSearch,
+        title: "Feedback",
+        url: "/dashboard/help",
+        icon: IconMessageCircle,
       },
     ],
   };
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <IconBuilding className="size-4" />
+                  <IconDashboard className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Parking Manager</span>
-                  <span className="truncate text-xs">Pinto Los Pellines</span>
+                  <span className="truncate font-semibold">Pellines</span>
+                  <span className="truncate text-xs">Dashboard</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -185,10 +190,10 @@ export function AppSidebar(props: SidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

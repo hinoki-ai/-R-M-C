@@ -8,7 +8,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 
 import { HeroHeader } from './header'
-import PixelCard from '@/components/react-bits/pixel-card'
+import { Card } from '@/components/ui/card'
 
 
 export default function HeroSection() {
@@ -55,7 +55,7 @@ export default function HeroSection() {
 
                                     {/* Call to Action Buttons */}
                                     <div className='flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 px-4 sm:px-0 w-full max-w-md sm:max-w-none'>
-                                        <PixelCard variant='blue' className='bg-blue-600 hover:bg-blue-700 transition-colors w-full sm:w-auto'>
+                                        <Card className='bg-blue-600 hover:bg-blue-700 transition-colors w-full sm:w-auto'>
                                             <Button
                                                 asChild
                                                 size='lg'
@@ -65,9 +65,9 @@ export default function HeroSection() {
                                                     <span className='text-center'>Únete a la Comunidad</span>
                                                 </Link>
                                             </Button>
-                                        </PixelCard>
+                                        </Card>
 
-                                        <PixelCard variant='default' className='bg-white/10 backdrop-blur-sm border-white/30 w-full sm:w-auto'>
+                                        <Card className='bg-white/10 backdrop-blur-sm border-white/30 w-full sm:w-auto'>
                                             <Button
                                                 asChild
                                                 size='lg'
@@ -78,30 +78,30 @@ export default function HeroSection() {
                                                     <span className='text-center'>Conoce Más</span>
                                                 </Link>
                                             </Button>
-                                        </PixelCard>
+                                        </Card>
 
                                     {/* Countryside Stats */}
                                     <div className='grid grid-cols-3 gap-4 sm:gap-8 mt-16 max-w-2xl mx-auto px-4 sm:px-0'>
-                                        <PixelCard variant='yellow' className='bg-amber-50/80 border-amber-200 hover:shadow-lg transition-all duration-300'>
+                                        <Card className='bg-amber-50/80 border-amber-200 hover:shadow-lg transition-all duration-300'>
                                             <div className='text-center p-3 sm:p-4'>
                                                 <div className='text-xl sm:text-2xl font-bold text-amber-800'>342</div>
                                                 <div className='text-xs sm:text-sm text-amber-700'>Familias</div>
                                             </div>
-                                        </PixelCard>
+                                        </Card>
 
-                                        <PixelCard variant='blue' className='bg-blue-50/80 border-blue-200 hover:shadow-lg transition-all duration-300'>
+                                        <Card className='bg-blue-50/80 border-blue-200 hover:shadow-lg transition-all duration-300'>
                                             <div className='text-center p-3 sm:p-4'>
                                                 <div className='text-xl sm:text-2xl font-bold text-blue-800'>25</div>
                                                 <div className='text-xs sm:text-sm text-blue-700'>Años de Tradición</div>
                                             </div>
-                                        </PixelCard>
+                                        </Card>
 
-                                        <PixelCard variant='pink' className='bg-red-50/80 border-red-200 hover:shadow-lg transition-all duration-300'>
+                                        <Card className='bg-red-50/80 border-red-200 hover:shadow-lg transition-all duration-300'>
                                             <div className='text-center p-3 sm:p-4'>
                                                 <div className='text-xl sm:text-2xl font-bold text-red-800'>1</div>
                                                 <div className='text-xs sm:text-sm text-red-700'>Comunidad Unida</div>
                                             </div>
-                                        </PixelCard>
+                                        </Card>
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +110,7 @@ export default function HeroSection() {
                         {/* Countryside App Preview */}
                         <div className='relative z-20 mt-12 sm:mt-16'>
                             <div className='mx-auto max-w-4xl px-4 sm:px-6'>
-                                <PixelCard variant='default' className='bg-white/95 backdrop-blur-md border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-2'>
+                                <Card className='bg-white/95 backdrop-blur-md border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-2'>
                                     <div className='p-3 sm:p-6'>
                                         <Image
                                             src='/hero-section-main-app-dark.png'
@@ -122,7 +122,7 @@ export default function HeroSection() {
                                             sizes='(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw'
                                         />
                                     </div>
-                                </PixelCard>
+                                </Card>
                             </div>
                         </div>
                         </div>

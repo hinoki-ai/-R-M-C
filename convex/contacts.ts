@@ -22,7 +22,7 @@ export const getContactsByType = query({
     return await ctx.db
       .query('contacts')
       .withIndex('byType', (q) => q.eq('type', args.type))
-      .withIndex('byActive', (q) => q.eq('isActive', true))
+      .filter((q) => q.eq(q.field('isActive'), true))
       .order('asc')
       .collect()
   },
@@ -109,9 +109,9 @@ export const updateContact = mutation({
     }
 
     // Add only provided fields
-    Object.keys(args).forEach(key => {
-      if (key !== 'contactId' && args[key] !== undefined) {
-        updateData[key] = args[key]
+    Object.keys(args).forEach((key: string) => {
+      if (key !== 'contactId' && (args as any)[key] !== undefined) {
+        updateData[key] = (args as any)[key]
       }
     })
 

@@ -8,6 +8,7 @@ export default defineSchema({
       name: v.string(),
       // this the Clerk ID, stored in the subject JWT field
       externalId: v.string(),
+      role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
     }).index('byExternalId', ['externalId']),
 
     paymentAttempts: defineTable(paymentAttemptSchemaValidator)

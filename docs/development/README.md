@@ -79,20 +79,25 @@ This document outlines the comprehensive development standards for the JuntaDeVe
 ### Naming Conventions
 
 #### Files and Directories
+
 - **Components**: `PascalCase` (e.g., `UserProfile.tsx`)
 - **Hooks**: `camelCase` with `use` prefix (e.g., `useUserProfile.ts`)
 - **Utilities**: `camelCase` (e.g., `formatDate.ts`)
 - **Types**: `PascalCase` with descriptive names (e.g., `UserProfile.ts`)
 - **Directories**: `kebab-case` (e.g., `user-profile/`)
 
+
 #### Variables and Functions
+
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_RETRY_ATTEMPTS`)
 - **Variables**: `camelCase` (e.g., `userProfile`)
 - **Functions**: `camelCase` (e.g., `formatUserName`)
 - **Components**: `PascalCase` (e.g., `UserProfile`)
 - **Enums**: `PascalCase` (e.g., `UserRole`)
 
+
 #### Database and API
+
 - **Tables**: `snake_case` (e.g., `user_profiles`)
 - **Columns**: `snake_case` (e.g., `first_name`)
 - **API Endpoints**: `kebab-case` (e.g., `/api/user-profiles`)
@@ -171,6 +176,7 @@ ComponentName.displayName = 'ComponentName';
 ### Component Patterns
 
 #### Container/Presentational Pattern
+
 ```typescript
 // 📄 UserProfileContainer.tsx (Container)
 export function UserProfileContainer() {
@@ -208,6 +214,7 @@ export function UserProfile({ user, onUpdate }: UserProfileProps) {
 ```
 
 #### Compound Component Pattern
+
 ```typescript
 interface SelectContextValue {
   value: string;
@@ -294,6 +301,7 @@ export const userSchema = defineTable({
 ### Function Patterns
 
 #### Query Functions
+
 ```typescript
 /**
  * Get current user with platform-specific data
@@ -327,6 +335,7 @@ export const currentUser = query({
 ```
 
 #### Mutation Functions
+
 ```typescript
 /**
  * Update user profile with cross-platform sync
@@ -387,6 +396,7 @@ export const updateUserProfile = mutation({
 ### Error Handling
 
 #### Standardized Error Types
+
 ```typescript
 export enum ErrorCode {
   UNAUTHORIZED = 'UNAUTHORIZED',
@@ -409,6 +419,7 @@ export interface StandardizedError {
 ## Configuration Standards
 
 ### ESLint Configuration
+
 ```javascript
 module.exports = {
   extends: [
@@ -434,6 +445,7 @@ module.exports = {
 ```
 
 ### Prettier Configuration
+
 ```json
 {
   "semi": true,
@@ -449,6 +461,7 @@ module.exports = {
 ```
 
 ### Tailwind CSS Configuration
+
 ```typescript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -508,6 +521,7 @@ module.exports = {
 ## Testing Standards
 
 ### Component Testing
+
 ```typescript
 // 📄 Button.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -537,6 +551,7 @@ describe('Button', () => {
 ```
 
 ### Backend Testing
+
 ```typescript
 // 📄 convex/functions/queries/__tests__/users.test.ts
 describe('users queries', () => {
@@ -571,6 +586,7 @@ describe('users queries', () => {
 ## Documentation Standards
 
 ### Component Documentation
+
 ```typescript
 /**
  * Button component for user interactions
@@ -619,6 +635,7 @@ interface ButtonProps {
 ```
 
 ### Function Documentation
+
 ```typescript
 /**
  * Get current authenticated user with cross-platform data

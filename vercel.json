@@ -33,5 +33,10 @@
     "env": {
       "NODE_ENV": "production"
     }
+  },
+  "functions": {
+    "app/dashboard/**/*.js": {
+      "runtime": "@vercel/node"
+    }
   }
 }

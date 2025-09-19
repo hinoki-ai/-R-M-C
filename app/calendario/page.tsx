@@ -19,8 +19,8 @@ export default function CalendarioPage() {
   // Get current user info
   const userId = useQuery(api.users?.current) // Assuming this exists
 
-  const handleEventClick = (eventId: string) => {
-    setSelectedEventId(eventId)
+  const handleEventClick = (event: any) => {
+    setSelectedEventId(event._id)
     setCurrentView('details')
   }
 
@@ -93,7 +93,7 @@ export default function CalendarioPage() {
           <CalendarView
             onEventClick={handleEventClick}
             onCreateEvent={handleCreateEvent}
-            selectedDate={selectedDate}
+            selectedDate={selectedDate || undefined}
             onDateSelect={setSelectedDate}
           />
         )

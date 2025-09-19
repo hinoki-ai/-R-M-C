@@ -22,26 +22,31 @@ This guide covers the deployment process for both web and mobile platforms of th
 ### Vercel Deployment (Recommended)
 
 #### Prerequisites
+
 - Vercel account ([vercel.com](https://vercel.com))
 - Project connected to GitHub
 
 #### Automatic Deployment
+
 1. **Connect Repository**: Link your GitHub repository to Vercel
 2. **Configure Environment**: Set environment variables in Vercel dashboard:
-   ```
-   NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+
+```bash
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
    NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-app.clerk.accounts.dev
    CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
    NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
    ```
 
-3. **Deploy**: Push to main branch or use Vercel CLI:
-   ```bash
-   npm i -g vercel
-   vercel --prod
-   ```
+1. **Deploy**: Push to main branch or use Vercel CLI:
+
+```bash
+npm i -g vercel
+vercel --prod
+```
 
 #### Manual Deployment
+
 ```bash
 # Build the application
 npm run build
@@ -52,14 +57,16 @@ npm run start
 
 ### Environment-Specific Deployments
 
+For staging and production deployments, use environment variables to configure the target environment:
+
 ```bash
 # Staging deployment
-npm run build:staging
-npm run deploy:staging
+NODE_ENV=staging npm run build
+NODE_ENV=production npm run start
 
 # Production deployment
-npm run build:production
-npm run deploy:production
+NODE_ENV=production npm run build
+NODE_ENV=production npm run start
 ```
 
 ## 📱 Mobile Deployment
@@ -68,12 +75,14 @@ For comprehensive mobile deployment instructions, see our detailed [Mobile Deplo
 
 ### Quick Mobile Deployment
 
-#### Prerequisites
+#### Mobile Prerequisites
+
 - Capacitor CLI installed: `npm install -g @capacitor/cli`
 - Android Studio (for Android)
 - Xcode (for iOS, macOS only)
 
 #### Build Preparation
+
 ```bash
 # Build web assets for mobile
 npm run build:mobile
@@ -87,16 +96,17 @@ npx cap sync
 ```
 
 #### Platform-Specific Deployment
+
 - **Android**: Follow [Google Play Store guide](mobile-deployment.md#android-deployment)
 - **iOS**: Follow [App Store guide](mobile-deployment.md#ios-deployment)
 - **PWA**: Automatic with web deployment
-
 
 ## Environment Configuration
 
 ### Environment Variables by Platform
 
 #### Web Platform
+
 ```bash
 # Required
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
@@ -109,6 +119,7 @@ NEXT_PUBLIC_GA_TRACKING_ID=GA_MEASUREMENT_ID
 ```
 
 #### Mobile Platform (Capacitor)
+
 ```bash
 # Android
 CAPACITOR_APP_ID=com.juntadevecinos.app
@@ -125,6 +136,7 @@ ONESIGNAL_APP_ID=your_onesignal_app_id
 ### Platform-Specific Variables
 
 #### Development
+
 ```bash
 NODE_ENV=development
 MOBILE_BUILD=false
@@ -132,6 +144,7 @@ VITE_DEBUG=true
 ```
 
 #### Staging
+
 ```bash
 NODE_ENV=staging
 MOBILE_BUILD=false
@@ -139,6 +152,7 @@ NEXT_PUBLIC_API_BASE_URL=https://api-staging.juntadevecinos.com
 ```
 
 #### Production
+
 ```bash
 NODE_ENV=production
 MOBILE_BUILD=false
@@ -204,17 +218,20 @@ jobs:
 
 ### Convex Deployment
 
-#### Development
+#### Development Environment
+
 ```bash
 npx convex dev
 ```
 
-#### Production
+#### Production Environment
+
 ```bash
 npx convex deploy
 ```
 
 #### Environment Management
+
 ```bash
 # Switch between environments
 npx convex env switch production
@@ -228,11 +245,13 @@ npx convex env list
 ### Performance Monitoring
 
 #### Web Vitals
+
 - Core Web Vitals are automatically tracked
 - Configure alerting in your monitoring platform
 - Set up dashboards for performance metrics
 
 #### Mobile Performance
+
 - Use platform-specific monitoring tools
 - Track app startup time, memory usage, battery impact
 - Monitor API response times
@@ -240,6 +259,7 @@ npx convex env list
 ## Rollback Strategy
 
 ### Web Rollback
+
 ```bash
 # Using Vercel CLI
 vercel rollback
@@ -251,6 +271,7 @@ vercel rollback
 ```
 
 ### Mobile Rollback
+
 ```bash
 # iOS - via App Store Connect
 # 1. Go to app version history
@@ -266,6 +287,7 @@ vercel rollback
 ## Post-Deployment Checklist
 
 ### Web Deployment
+
 - [ ] Application loads correctly
 - [ ] Authentication works
 - [ ] Database connections established
@@ -274,6 +296,7 @@ vercel rollback
 - [ ] Performance metrics collected
 
 ### Mobile Deployment
+
 - [ ] App installs on test devices
 - [ ] Authentication flows work
 - [ ] Push notifications enabled
@@ -282,6 +305,7 @@ vercel rollback
 - [ ] App Store/Play Store listing updated
 
 ### General
+
 - [ ] Documentation updated
 - [ ] Team notified of deployment
 - [ ] Monitoring alerts configured
@@ -293,6 +317,7 @@ vercel rollback
 ### Common Web Deployment Issues
 
 #### Build Failures
+
 ```bash
 # Clear build cache
 rm -rf .next
@@ -305,6 +330,7 @@ npm run build
 ```
 
 #### Runtime Errors
+
 - Check server logs in Vercel dashboard
 - Verify environment variables
 - Test API endpoints
@@ -313,6 +339,7 @@ npm run build
 ### Common Mobile Deployment Issues
 
 #### Capacitor Sync Issues
+
 ```bash
 # Clean and rebuild
 rm -rf node_modules package-lock.json
@@ -322,10 +349,12 @@ npx cap sync
 ```
 
 #### Platform-Specific Build Errors
+
 - **Android**: Check Android Studio logs, verify SDK versions
 - **iOS**: Check Xcode logs, verify code signing certificates
 
 #### App Store Submission Issues
+
 - Verify app icons and screenshots
 - Check privacy policy URL
 - Ensure test flight beta testing if required

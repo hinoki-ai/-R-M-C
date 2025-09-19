@@ -218,24 +218,47 @@ export const triggerAlarm = mutation({
   },
 });
 
+// Get a single alarm by ID
+export const getAlarm = query({
+  args: {
+    alarmId: v.id("alarms")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.alarmId);
+  },
+});
+
+// Get a single alarm trigger by ID
+export const getTrigger = query({
+  args: {
+    triggerId: v.id("alarmTriggers")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.triggerId);
+  },
+});
+
 // Get alarm settings for a user
 export const getAlarmSettings = query({
   args: {
     userId: v.id("users")
   },
-  returns: v.optional(v.object({
-    _id: v.id("alarmSettings"),
-    globalSoundEnabled: v.boolean(),
-    globalVibrationEnabled: v.boolean(),
-    globalNotificationEnabled: v.boolean(),
-    quietHours: v.optional(v.object({
-      enabled: v.boolean(),
-      startTime: v.string(),
-      endTime: v.string(),
-      daysOfWeek: v.array(v.number())
-    })),
-    emergencyOverride: v.boolean(),
-  })),
+  returns: v.union(
+    v.object({
+      _id: v.id("alarmSettings"),
+      globalSoundEnabled: v.boolean(),
+      globalVibrationEnabled: v.boolean(),
+      globalNotificationEnabled: v.boolean(),
+      quietHours: v.optional(v.object({
+        enabled: v.boolean(),
+        startTime: v.string(),
+        endTime: v.string(),
+        daysOfWeek: v.array(v.number())
+      })),
+      emergencyOverride: v.boolean(),
+    }),
+    v.null()
+  ),
   handler: async (ctx, args) => {
     const settings = await ctx.db
       .query("alarmSettings")

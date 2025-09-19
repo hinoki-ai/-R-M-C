@@ -170,7 +170,7 @@ export const getEvents = query({
       name: v.string(),
     }),
     attendeeCount: v.number(),
-    userAttendanceStatus: v.optional(v.string()),
+    userAttendanceStatus: v.union(v.string(), v.null()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })),
@@ -200,11 +200,11 @@ export const getEvents = query({
     // Filter by user events if userId provided
     if (args.userId) {
       const attendeeEvents = await ctx.db.query('eventAttendees')
-        .withIndex('byUser', q => q.eq('userId', args.userId))
+        .withIndex('byUser', q => q.eq('userId', args.userId!))
         .collect();
       const eventIds = attendeeEvents.map(att => att.eventId);
       eventsQuery = eventsQuery.filter(q => q.or(
-        q.eq(q.field('organizerId'), args.userId),
+        q.eq(q.field('organizerId'), args.userId!),
         ...eventIds.map(eventId => q.eq(q.field('_id'), eventId))
       ));
     }
@@ -382,15 +382,18 @@ export const respondToEvent = mutation({
 // Calendar Settings
 export const getCalendarSettings = query({
   args: {},
-  returns: v.optional(v.object({
-    defaultView: v.string(),
-    workingHoursStart: v.string(),
-    workingHoursEnd: v.string(),
-    weekStartsOn: v.number(),
-    timeZone: v.string(),
-    showWeekends: v.boolean(),
-    defaultReminderTime: v.number(),
-  })),
+  returns: v.union(
+    v.object({
+      defaultView: v.string(),
+      workingHoursStart: v.string(),
+      workingHoursEnd: v.string(),
+      weekStartsOn: v.number(),
+      timeZone: v.string(),
+      showWeekends: v.boolean(),
+      defaultReminderTime: v.number(),
+    }),
+    v.null()
+  ),
   handler: async (ctx) => {
     const userId = await ctx.auth.getUserIdentity();
     if (!userId) return null;

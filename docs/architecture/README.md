@@ -31,14 +31,14 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 ## Technology Stack
 
 ### Frontend (Shared)
-- **Framework**: React 19 with TypeScript
-- **Styling**: Tailwind CSS with custom design system
+- **Framework**: React 19 with TypeScript 5.x
+- **Styling**: Tailwind CSS 3.4.x with custom design system
 - **State Management**: Zustand for client state
 - **Form Handling**: React Hook Form with Zod validation
 - **UI Components**: Radix UI primitives with custom theming
 
 ### Web Platform
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 15.3.5 (App Router)
 - **Build Tool**: Turbopack
 - **Deployment**: Vercel
 - **Animations**: Framer Motion and Motion Primitives

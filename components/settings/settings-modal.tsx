@@ -25,10 +25,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getModifiedSettings, hasUnsavedChanges, settingsReducer } from '@/lib/settings-reducer';
+import { getModifiedSettings, hasUnsavedChanges, settingsReducer } from '@/lib/stores/settings-reducer';
 import { DEFAULT_SETTINGS, SettingsState, SystemHealth } from '@/types/settings';
 
-import SettingsPanels from './SettingsPanels';
+import SettingsPanels from './settings-panels';
 
 
 interface SettingsModalProps {

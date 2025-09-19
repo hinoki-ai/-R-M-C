@@ -56,11 +56,11 @@ const getContactTypeLabel = (type: string) => {
 export default function ContactosPage() {
   // Fetch contacts from database
   const allContacts = useQuery(api.contacts.getContacts) || []
-  const directivaContacts = allContacts.filter(c => c.type === 'directiva')
-  const seguridadContacts = allContacts.filter(c => c.type === 'seguridad')
-  const socialContacts = allContacts.filter(c => c.type === 'social')
-  const municipalContacts = allContacts.filter(c => ['municipal', 'health', 'police', 'fire'].includes(c.type))
-  const serviceContacts = allContacts.filter(c => c.type === 'service')
+  const directivaContacts = allContacts.filter((c: any) => c.type === 'directiva')
+  const seguridadContacts = allContacts.filter((c: any) => c.type === 'seguridad')
+  const socialContacts = allContacts.filter((c: any) => c.type === 'social')
+  const municipalContacts = allContacts.filter((c: any) => ['municipal', 'health', 'police', 'fire'].includes(c.type))
+  const serviceContacts = allContacts.filter((c: any) => c.type === 'service')
 
   // Combine directiva, seguridad, and social for community contacts
   const communityContacts = [...directivaContacts, ...seguridadContacts, ...socialContacts]
@@ -189,7 +189,7 @@ export default function ContactosPage() {
             🏢 Servicios Municipales
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-            {municipalContacts.map((contact, index) => (
+            {municipalContacts.map((contact: any, index: number) => (
               <motion.div
                 key={contact._id}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
@@ -256,7 +256,7 @@ export default function ContactosPage() {
             🏘️ Servicios Comunitarios
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-            {serviceContacts.map((service, index) => (
+            {serviceContacts.map((service: any, index: number) => (
               <motion.div
                 key={service._id}
                 initial={{ opacity: 0, scale: 0.9 }}

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { SystemStats } from '@/types/dashboard'
+import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
 
 interface StatsGridProps {
   stats: SystemStats[]
@@ -11,18 +12,12 @@ interface StatsGridProps {
 }
 
 export function StatsGrid({ stats, columns = 4 }: StatsGridProps) {
-  const gridCols = {
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className={`grid ${gridCols[columns]} gap-6 mb-8`}
+      className={`${DASHBOARD_SPACING.grid.cols[columns]} ${DASHBOARD_SPACING.grid.gap} mb-8`}
     >
       {stats.map((stat, index) => {
         const Icon = stat.icon
@@ -34,7 +29,7 @@ export function StatsGrid({ stats, columns = 4 }: StatsGridProps) {
             transition={{ delay: 0.3 + index * 0.1 }}
           >
             <Card className='hover:shadow-lg transition-shadow'>
-              <CardContent className='p-6'>
+              <CardContent className={DASHBOARD_SPACING.card.padding}>
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>

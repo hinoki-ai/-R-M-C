@@ -1,5 +1,6 @@
 import { action, query, mutation, internalAction, internalQuery, internalMutation } from './_generated/server'
 import { v } from 'convex/values'
+import { api, internal } from './_generated/api'
 
 // Get upcoming events for notifications
 export const getUpcomingEvents = query({
@@ -20,7 +21,7 @@ export const getUpcomingEvents = query({
     organizer: v.object({
       name: v.string(),
     }),
-    userAttendanceStatus: v.optional(v.string()),
+    userAttendanceStatus: v.union(v.string(), v.null()),
   })),
   handler: async (ctx, args) => {
     const userId = await ctx.auth.getUserIdentity()
@@ -98,7 +99,7 @@ export const sendEventReminders = action({
   returns: v.null(),
   handler: async (ctx) => {
     // Actions should call mutations for database operations
-    await ctx.runMutation(internal.sendEventRemindersMutation, {})
+    await ctx.runMutation(api.calendar_notifications.sendEventRemindersMutation, {})
   },
 })
 
@@ -150,8 +151,8 @@ export const createEventReminder = action({
     method: v.union(v.literal('notification'), v.literal('email'), v.literal('sms')),
   },
   returns: v.id('eventReminders'),
-  handler: async (ctx, args) => {
-    return await ctx.runMutation(internal.createEventReminderMutation, args)
+  handler: async (ctx: any, args: any) => {
+    return await ctx.runMutation(api.calendar_notifications.createEventReminderMutation, args)
   },
 })
 

@@ -1,5 +1,6 @@
 import { action } from './_generated/server'
 import { v } from 'convex/values'
+import { api } from './_generated/api'
 
 // Generate ICS calendar export
 export const exportCalendarICS = action({
@@ -9,15 +10,15 @@ export const exportCalendarICS = action({
     categoryId: v.optional(v.id('eventCategories')),
   },
   returns: v.string(),
-  handler: async (ctx, args) => {
-    const events = await ctx.runQuery('calendar.getEvents', {
+  handler: async (ctx: any, args: any): Promise<string> => {
+    const events = await ctx.runQuery(api.calendar.getEvents, {
       startDate: args.startDate,
       endDate: args.endDate,
       categoryId: args.categoryId,
       userId: undefined,
     })
 
-    const icsEvents = events.map(event => {
+    const icsEvents: string = events.map((event: any) => {
       const startDateTime = event.isAllDay
         ? event.startDate.replace(/-/g, '')
         : event.startDate.replace(/-/g, '') + 'T' + (event.startTime || '00:00').replace(':', '') + '00'
@@ -42,7 +43,7 @@ ORGANIZER;CN=${event.organizer.name}
 END:VEVENT`
     }).join('\n')
 
-    const icsContent = `BEGIN:VCALENDAR
+    const icsContent: string = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Pinto Los Pellines//Calendario Comunitario//ES
 CALSCALE:GREGORIAN
@@ -62,12 +63,12 @@ export const exportEventICS = action({
     eventId: v.id('calendarEvents'),
   },
   returns: v.string(),
-  handler: async (ctx, args) => {
-    const events = await ctx.runQuery('calendar.getEvents', {
+  handler: async (ctx: any, args: any): Promise<string> => {
+    const events = await ctx.runQuery(api.calendar.getEvents, {
       userId: undefined,
     })
 
-    const event = events.find(e => e._id === args.eventId)
+    const event = events.find((e: any) => e._id === args.eventId)
     if (!event) throw new Error('Event not found')
 
     const startDateTime = event.isAllDay
@@ -82,7 +83,7 @@ export const exportEventICS = action({
         })()
       : event.endDate.replace(/-/g, '') + 'T' + (event.endTime || '23:59').replace(':', '') + '00'
 
-    const icsContent = `BEGIN:VCALENDAR
+    const icsContent: string = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Pinto Los Pellines//Calendario Comunitario//ES
 CALSCALE:GREGORIAN

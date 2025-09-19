@@ -13,10 +13,12 @@ Before you begin, ensure you have the following installed:
 ### Platform-Specific Prerequisites
 
 #### Web Development
+
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 - Code editor (VS Code, WebStorm, etc.)
 
 #### Mobile Development
+
 - **Android Studio** (for Android development)
 - **Xcode** (for iOS development, macOS only)
 - **Capacitor CLI**: `npm install -g @capacitor/cli`
@@ -66,21 +68,25 @@ CONVEX_ADMIN_KEY=your_convex_admin_key_here
 ### 4. Setup Services
 
 #### Convex Database Setup
+
 1. Sign up at [convex.dev](https://convex.dev)
 2. Create a new project
 3. Copy your deployment URL to `.env.local`
 4. Run the initial database setup:
+
    ```bash
    npx convex dev --once
    ```
 
 #### Clerk Authentication Setup
+
 1. Sign up at [clerk.com](https://clerk.com)
 2. Create a new application
 3. Copy your API keys to `.env.local`
 4. Configure your webhook endpoint in Clerk dashboard
 
 #### Optional: Weather Integration
+
 1. Sign up at [openweathermap.org](https://openweathermap.org/api)
 2. Get a free API key
 3. Add it to `.env.local`
@@ -116,13 +122,14 @@ npm run quality-check
 ```
 
 This command runs:
+
 - TypeScript type checking
 - ESLint linting
 - Jest tests
 - Structure validation
 - Configuration validation
 
-## Mobile Development
+## Mobile App Development
 
 ### Capacitor Setup
 
@@ -160,7 +167,7 @@ npx cap open ios
 
 ## Project Structure
 
-```
+```bash
 juntadevecinos/
 ├── app/                    # Next.js app directory
 │   ├── (landing)/         # Landing page components
@@ -184,12 +191,14 @@ juntadevecinos/
 ## Environment-Specific Configurations
 
 ### Development Environment
+
 - Hot reload enabled
 - Detailed error messages
 - Development database
 - Mock data where applicable
 
 ### Production Environment
+
 - Optimized builds
 - Minified assets
 - Production database
@@ -200,6 +209,7 @@ juntadevecinos/
 ### Common Issues
 
 #### Port Already in Use
+
 ```bash
 # Find process using port 3000
 lsof -ti:3000 | xargs kill -9
@@ -209,16 +219,19 @@ npm run dev -- -p 3001
 ```
 
 #### Database Connection Issues
+
 1. Verify your `NEXT_PUBLIC_CONVEX_URL` in `.env.local`
 2. Ensure Convex CLI is authenticated: `npx convex login`
 3. Check Convex dashboard for connection status
 
 #### Authentication Issues
+
 1. Verify Clerk API keys in `.env.local`
 2. Check Clerk dashboard for correct domain settings
 3. Ensure webhook URL is correctly configured
 
 #### Build Failures
+
 ```bash
 # Clear Next.js cache
 rm -rf .next

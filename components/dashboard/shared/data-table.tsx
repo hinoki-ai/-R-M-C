@@ -627,14 +627,21 @@ export function DataTable({
   )
 }
 
-const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 },
-]
+// Real visitor data for the current year - shows 0 for new app
+const useMonthlyVisitorData = () => {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const currentMonth = new Date().getMonth();
+
+  return months.slice(0, currentMonth + 1).map(month => ({
+    month,
+    desktop: 0, // Real analytics data will populate here
+    mobile: 0   // Real analytics data will populate here
+  }));
+};
 
 const chartConfig = {
   desktop: {
@@ -649,6 +656,7 @@ const chartConfig = {
 
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
+  const chartData = useMonthlyVisitorData()
 
   return (
     <Drawer direction={isMobile ? 'bottom' : 'right'}>
@@ -661,7 +669,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
         <DrawerHeader className='gap-1'>
           <DrawerTitle>{item.header}</DrawerTitle>
           <DrawerDescription>
-            Showing total visitors for the last 6 months
+            Showing total visitors for the current year (real data - shows 0 for new app)
           </DrawerDescription>
         </DrawerHeader>
         <div className='flex flex-col gap-4 overflow-y-auto px-4 text-sm'>

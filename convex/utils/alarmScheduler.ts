@@ -18,10 +18,7 @@ export const checkScheduledAlarms = internalAction({
     let triggeredCount = 0;
 
     // Get all active alarms with schedules
-    const alarms = await ctx.db
-      .query("alarms")
-      .filter((q: any) => q.eq(q.field("isActive"), true))
-      .collect();
+    const alarms = await ctx.runQuery(internal.alarms.getActiveAlarmsToTrigger, {});
 
     for (const alarm of alarms) {
       if (!alarm.schedule) continue;
@@ -42,10 +39,7 @@ export const checkScheduledAlarms = internalAction({
         }
 
         // Check user's settings
-        const settings = await ctx.db
-          .query("alarmSettings")
-          .withIndex("byUser", (q: any) => q.eq("userId", alarm.userId))
-          .first();
+        const settings = await ctx.runQuery(internal.alarms.getAlarmSettings, { userId: alarm.userId });
 
         const soundEnabled = (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
         const vibrationEnabled = (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
@@ -68,7 +62,7 @@ export const checkScheduledAlarms = internalAction({
 
         if (shouldTrigger && (soundEnabled || vibrationEnabled || notificationEnabled)) {
           // Create trigger record
-          const triggerId = await ctx.db.insert("alarmTriggers", {
+          const triggerId = await ctx.runMutation(internal.alarms.createAlarmTrigger, {
             alarmId: alarm._id,
             userId: alarm.userId,
             triggerType: "scheduled",
@@ -78,9 +72,9 @@ export const checkScheduledAlarms = internalAction({
           });
 
           // Update last triggered
-          await ctx.db.patch(alarm._id, {
+          await ctx.runMutation(internal.alarms.updateAlarmLastTriggered, {
+            alarmId: alarm._id,
             lastTriggered: now.getTime(),
-            updatedAt: now.getTime(),
           });
 
           // Send notification if enabled

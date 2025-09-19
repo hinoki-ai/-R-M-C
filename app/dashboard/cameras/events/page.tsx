@@ -1,7 +1,8 @@
 'use client'
+export const dynamic = "force-dynamic";
 
 import {
-  IconCamera,
+  IconEye,
   IconCircleCheckFilled,
   IconHelp,
   IconLoader,
@@ -40,13 +41,13 @@ export default function CameraEventsPage() {
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
       case 'motion_detected':
-        return <IconCamera className='h-4 w-4' />
+        return <IconEye className='h-4 w-4' />
       case 'connection_lost':
         return <IconLoader className='h-4 w-4' />
       case 'connection_restored':
         return <IconCircleCheckFilled className='h-4 w-4' />
       case 'recording_started':
-        return <IconCamera className='h-4 w-4' />
+        return <IconEye className='h-4 w-4' />
       case 'recording_stopped':
         return <IconLoader className='h-4 w-4' />
       case 'alert':

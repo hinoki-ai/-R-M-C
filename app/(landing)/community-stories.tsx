@@ -1,6 +1,6 @@
 import { BookOpen, Grape, Heart, Mountain, Star, TreePine, Users } from 'lucide-react'
 
-import PixelCard from '@/components/react-bits/pixel-card'
+import { Card } from '@/components/ui/card'
 
 const communityStories = [
   {
@@ -69,13 +69,13 @@ export default function CommunityStories() {
       <div className='relative mx-auto max-w-7xl px-6'>
         {/* Section Header */}
         <div className='text-center mb-16'>
-          <PixelCard variant='yellow' className='mx-auto w-fit mb-8 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'>
+          <Card className='mx-auto w-fit mb-8 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'>
             <div className='flex items-center gap-3 px-8 py-4'>
               <BookOpen className='w-6 h-6 text-amber-600' />
               <span className='font-bold text-amber-800 text-lg'>Historias de Nuestra Tierra</span>
               <Heart className='w-6 h-6 text-red-600' />
             </div>
-          </PixelCard>
+          </Card>
 
           <h2 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-700 via-red-700 to-green-700 bg-clip-text text-transparent'>
             🇨🇱 Relatos Ñublensinos
@@ -91,9 +91,8 @@ export default function CommunityStories() {
           {communityStories.map((story, index) => {
             const Icon = story.icon
             return (
-              <PixelCard
+              <Card
                 key={index}
-                variant={story.variant}
                 className={`${story.bgColor} ${story.borderColor} hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group`}
               >
                 <div className='p-8'>
@@ -121,14 +120,14 @@ export default function CommunityStories() {
                     </div>
                   </div>
                 </div>
-              </PixelCard>
+              </Card>
             )
           })}
         </div>
 
         {/* Heritage Quote */}
         <div className='text-center'>
-          <PixelCard variant='default' className='mx-auto max-w-4xl bg-gradient-to-r from-white/95 to-amber-50/95 border-gray-200 backdrop-blur-sm'>
+          <Card className='mx-auto max-w-4xl bg-gradient-to-r from-white/95 to-amber-50/95 border-gray-200 backdrop-blur-sm'>
             <div className='p-8'>
               <blockquote className='text-2xl font-medium text-gray-800 mb-6 leading-relaxed italic'>
                 &quot;En Pinto Los Pellines, nuestras historias no se pierden en el tiempo, sino que se transmiten de generación en generación,
@@ -144,7 +143,7 @@ export default function CommunityStories() {
                 </div>
               </footer>
             </div>
-          </PixelCard>
+          </Card>
         </div>
       </div>
     </section>

@@ -7,7 +7,7 @@ import { api } from '@/convex/_generated/api'
 // Initialize Stripe and Convex
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-08-27.basil',
 }) : null
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL
@@ -26,7 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.text()
-    const sig = headers().get('stripe-signature')
+    const headersList = await headers()
+    const sig = headersList.get('stripe-signature')
 
     let event: Stripe.Event
 
@@ -76,7 +77,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
     console.log('Processing successful payment:', paymentIntent.id)
 
     // Update payment status in database
-    await convex.mutation(api.community.updatePaymentStatus, {
+    await convex!.mutation(api.community.updatePaymentStatus, {
       paymentIntentId: paymentIntent.id,
       status: 'completed',
       paidAt: Date.now(),
@@ -84,8 +85,8 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
 
     // If this is a project contribution, update the project raised amount
     if (paymentIntent.metadata?.projectId) {
-      await convex.mutation(api.community.addProjectContribution, {
-        projectId: paymentIntent.metadata.projectId,
+      await convex!.mutation(api.community.addProjectContribution, {
+        projectId: paymentIntent.metadata.projectId as any,
         amount: paymentIntent.amount,
         paymentMethod: 'stripe',
         referenceId: paymentIntent.id,
@@ -103,7 +104,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
     console.log('Processing failed payment:', paymentIntent.id)
 
     // Update payment status in database
-    await convex.mutation(api.community.updatePaymentStatus, {
+    await convex!.mutation(api.community.updatePaymentStatus, {
       paymentIntentId: paymentIntent.id,
       status: 'failed',
     })

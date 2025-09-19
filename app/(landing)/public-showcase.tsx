@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Award, Heart, Shield, Star, TreePine, Trophy, Users, Zap } from 'lucide-react'
 
-import PixelCard from '@/components/react-bits/pixel-card'
+import { Card } from '@/components/ui/card'
 
 const showcaseItems = [
   {
@@ -91,13 +91,13 @@ export default function PublicShowcase() {
       <div className='relative mx-auto max-w-7xl px-6'>
         {/* Section Header */}
         <div className='text-center mb-16'>
-          <PixelCard variant='blue' className='mx-auto w-fit mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
+          <Card className='mx-auto w-fit mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
             <div className='flex items-center gap-3 px-8 py-4'>
               <Trophy className='w-6 h-6 text-blue-600' />
               <span className='font-bold text-blue-800 text-lg'>Orgullo Comunitario</span>
               <Award className='w-6 h-6 text-yellow-600' />
             </div>
-          </PixelCard>
+          </Card>
 
           <h2 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-700 via-green-700 to-red-700 bg-clip-text text-transparent'>
             🇨🇱 Pinto Los Pellines en Números
@@ -119,8 +119,7 @@ export default function PublicShowcase() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <PixelCard
-                  variant={item.variant}
+                <Card
                   className={`${item.bgColor} ${item.borderColor} hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 group cursor-pointer`}
                 >
                   <div className='p-8 text-center'>
@@ -137,7 +136,7 @@ export default function PublicShowcase() {
                       {item.description}
                     </p>
                   </div>
-                </PixelCard>
+                </Card>
               </motion.div>
             )
           })}
@@ -145,7 +144,7 @@ export default function PublicShowcase() {
 
         {/* Call to Action */}
         <div className='text-center'>
-          <PixelCard variant='default' className='mx-auto max-w-4xl bg-gradient-to-r from-white/95 to-blue-50/95 border-gray-200 backdrop-blur-sm'>
+          <Card className='mx-auto max-w-4xl bg-gradient-to-r from-white/95 to-blue-50/95 border-gray-200 backdrop-blur-sm'>
             <div className='p-8'>
               <h3 className='text-2xl font-bold text-gray-800 mb-4'>¿Quieres ser parte de esta historia?</h3>
               <p className='text-lg text-gray-700 mb-6 leading-relaxed'>
@@ -158,7 +157,7 @@ export default function PublicShowcase() {
                 <Heart className='w-4 h-4 text-red-500' />
               </div>
             </div>
-          </PixelCard>
+          </Card>
         </div>
       </div>
     </section>

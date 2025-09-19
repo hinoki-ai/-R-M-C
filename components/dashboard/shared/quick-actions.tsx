@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { QuickAction } from '@/types/dashboard'
+import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
 
 interface QuickActionsProps {
   actions: QuickAction[]
@@ -21,12 +22,6 @@ export function QuickActions({
   columns = 2,
   loading = false
 }: QuickActionsProps) {
-  const gridCols = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-  }
 
   if (loading) {
     return <LoadingState type='actions' count={columns * 2} />
@@ -41,7 +36,7 @@ export function QuickActions({
       <h2 className='text-2xl font-semibold text-gray-900 dark:text-white mb-4'>
         {title}
       </h2>
-      <div className={`grid ${gridCols[columns]} gap-4 mb-8`}>
+      <div className={`${DASHBOARD_SPACING.grid.cols[columns]} ${DASHBOARD_SPACING.grid.gap} mb-8`}>
         {actions.map((action, index) => (
           <motion.div
             key={action.id}
@@ -54,13 +49,13 @@ export function QuickActions({
             <Card className={`cursor-pointer hover:shadow-lg transition-all border-l-4 ${
               action.priority === 'high' ? 'border-l-red-500' : 'border-l-blue-500'
             }`}>
-              <CardContent className='p-6'>
+              <CardContent className={DASHBOARD_SPACING.card.padding}>
                 <div className='flex items-start space-x-4'>
-                  <div className={`p-3 rounded-lg ${action.color} text-white group-hover:scale-110 transition-transform flex-shrink-0`}>
+                  <div className={`${DASHBOARD_SPACING.component.icon} rounded-lg ${action.color} text-white group-hover:scale-110 transition-transform flex-shrink-0`}>
                     <action.icon className='h-6 w-6' />
                   </div>
                   <div className='flex-1 min-w-0'>
-                    <div className='flex items-center space-x-2 mb-2'>
+                    <div className={`flex items-center ${DASHBOARD_SPACING.element.tight} mb-3`}>
                       <h3 className='font-semibold text-gray-900 dark:text-white truncate'>
                         {action.title}
                       </h3>
@@ -70,7 +65,7 @@ export function QuickActions({
                         </Badge>
                       )}
                     </div>
-                    <p className='text-sm text-gray-600 dark:text-gray-400 mb-3'>
+                    <p className={`text-sm text-gray-600 dark:text-gray-400 ${DASHBOARD_SPACING.element.tight}`}>
                       {action.description}
                     </p>
                     <Button

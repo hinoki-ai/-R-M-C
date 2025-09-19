@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { DashboardData, UseDashboardDataReturn, User, MaintenanceRequest, PaymentRecord } from '@/types/dashboard'
 import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
+import { delay } from '@/lib/utils/utils'
 
 
 // Specialized hooks for different data types

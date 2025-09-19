@@ -121,7 +121,7 @@ npm install
 npm run build:mobile
 
 # Create/sync Android project
-npm run cap:add:android
+npx cap add android
 npm run cap:sync:android
 
 # Open Android Studio
@@ -193,7 +193,7 @@ npm install
 npm run build:mobile
 
 # Create/sync iOS project
-npm run cap:add:ios
+npx cap add ios
 npm run cap:sync:ios
 
 # Open Xcode
@@ -319,8 +319,8 @@ export default config
 | `npm run cap:open:ios` | Open Xcode |
 | `npm run cap:build:android` | Complete Android build workflow |
 | `npm run cap:build:ios` | Complete iOS build workflow |
-| `npm run cap:add:android` | Add Android platform |
-| `npm run cap:add:ios` | Add iOS platform |
+| `npx cap add android` | Add Android platform |
+| `npx cap add ios` | Add iOS platform |
 
 ## 🧪 Testing Strategy
 
@@ -338,17 +338,17 @@ export default config
 
 ### Cross-Platform Testing
 ```bash
-# Run comprehensive mobile test suite
-npm run test:mobile
+# Run comprehensive test suite
+npm run test
 
-# Test PWA functionality
-npm run test:pwa
+# Integration testing
+npm run test:integration
 
-# Test native app builds
-npm run test:native
+# Test coverage analysis
+npm run test:coverage
 
-# Performance testing
-npm run test:performance
+# Quality checks
+npm run quality-check
 ```
 
 ### Test Coverage Areas

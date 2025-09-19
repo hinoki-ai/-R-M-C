@@ -2,8 +2,6 @@
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Web Platform](https://img.shields.io/badge/platform-web-lightblue.svg)](#web-platform)
-[![Mobile Platform](https://img.shields.io/badge/platform-mobile-orange.svg)](#mobile-platform)
 
 > A unified community management platform with true cross-platform user experience for Pinto Los Pellines, Ñuble, Chile
 
@@ -63,11 +61,12 @@ Explore our comprehensive documentation:
 - **💬 Discord**: [Join our community](https://discord.gg/hinoki-ai)
 - **🐛 Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 - **📚 Documentation**: [Complete Docs](docs/README.md)
-- **🤝 Contributing**: [Contributing Guide](CONTRIBUTING.md)
+- **🤝 Contributing**: [Contributing Guide](docs/contributing/README.md)
 
 ## 🙏 Acknowledgments
 
 Built with ❤️ for Pinto Los Pellines by the community, powered by:
+
 - [Next.js](https://nextjs.org/) - React framework
 - [Convex](https://convex.dev/) - Real-time database
 - [Clerk](https://clerk.com/) - Authentication
