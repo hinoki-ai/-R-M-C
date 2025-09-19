@@ -1,6 +1,6 @@
 "use node";
 
-import { action, internalAction } from "../_generated/server";
+import { action, internalAction, internalMutation } from "../_generated/server";
 import { api, internal } from "../_generated/api";
 import { v } from "convex/values";
 
@@ -102,6 +102,31 @@ export const triggerEmergencyAlarm = action({
   },
   returns: v.number(), // Returns number of users notified
   handler: async (ctx, args) => {
+    return await ctx.runMutation(internal.alarmScheduler.triggerEmergencyAlarmMutation, args);
+  },
+});
+
+// Internal action to trigger weather-based alarms
+export const triggerWeatherAlarm = internalAction({
+  args: {
+    weatherAlertId: v.id("weatherAlerts"),
+  },
+  returns: v.number(),
+  handler: async (ctx, args) => {
+    return await ctx.runMutation(internal.alarmScheduler.triggerWeatherAlarmMutation, args);
+  },
+});
+
+// Mutations for database operations
+
+// Internal mutation to trigger emergency alarm
+export const triggerEmergencyAlarmMutation = internalMutation({
+  args: {
+    message: v.string(),
+    triggeredBy: v.id("users"),
+  },
+  returns: v.number(),
+  handler: async (ctx, args) => {
     // Get all users
     const users = await ctx.db.query("users").collect();
     let notifiedCount = 0;
@@ -156,8 +181,8 @@ export const triggerEmergencyAlarm = action({
   },
 });
 
-// Internal action to trigger weather-based alarms
-export const triggerWeatherAlarm = internalAction({
+// Internal mutation to trigger weather alarm
+export const triggerWeatherAlarmMutation = internalMutation({
   args: {
     weatherAlertId: v.id("weatherAlerts"),
   },
@@ -225,8 +250,8 @@ export const triggerWeatherAlarm = internalAction({
   },
 });
 
-// Action to test an alarm
-export const testAlarm = action({
+// Internal mutation to test alarm
+export const testAlarmMutation = internalMutation({
   args: {
     alarmId: v.id("alarms"),
   },
@@ -269,5 +294,16 @@ export const testAlarm = action({
     });
 
     return true;
+  },
+});
+
+// Action to test an alarm
+export const testAlarm = action({
+  args: {
+    alarmId: v.id("alarms"),
+  },
+  returns: v.boolean(),
+  handler: async (ctx, args) => {
+    return await ctx.runMutation(internal.alarmScheduler.testAlarmMutation, args);
   },
 });
