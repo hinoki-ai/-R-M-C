@@ -2,13 +2,13 @@
 import {
   AnimatePresence,
   motion
-} from 'motion/react';
+} from 'framer-motion';
 import type {
   TargetAndTransition,
   Transition,
   Variant,
   Variants,
-} from 'motion/react'
+} from 'framer-motion'
 import React from 'react';
 
 import { cn } from '@/lib/utils';

@@ -1,5 +1,3 @@
-"use node";
-
 import { action, internalAction, internalMutation } from "../_generated/server";
 import { api, internal } from "../_generated/api";
 import { v } from "convex/values";
@@ -101,7 +99,7 @@ export const triggerEmergencyAlarm = action({
     triggeredBy: v.id("users"),
   },
   returns: v.number(), // Returns number of users notified
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<number> => {
     return await ctx.runMutation(internal.alarmScheduler.triggerEmergencyAlarmMutation, args);
   },
 });
@@ -112,7 +110,7 @@ export const triggerWeatherAlarm = internalAction({
     weatherAlertId: v.id("weatherAlerts"),
   },
   returns: v.number(),
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<number> => {
     return await ctx.runMutation(internal.alarmScheduler.triggerWeatherAlarmMutation, args);
   },
 });
@@ -303,7 +301,7 @@ export const testAlarm = action({
     alarmId: v.id("alarms"),
   },
   returns: v.boolean(),
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<boolean> => {
     return await ctx.runMutation(internal.alarmScheduler.testAlarmMutation, args);
   },
 });

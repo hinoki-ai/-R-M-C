@@ -99,7 +99,7 @@ export function ThemeProvider({
         event.preventDefault()
 
         // Get current theme and cycle through options
-        const currentTheme = localStorage.getItem('theme') || 'system'
+        const currentTheme = localStorage.getItem('theme') || 'light'
         const nextTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'system' : 'light'
 
         // Update analytics
@@ -144,14 +144,14 @@ export function ThemeProvider({
 
   // Mobile theme integration
   React.useEffect(() => {
-    const currentTheme = localStorage.getItem('junta-theme') || 'system'
+    const currentTheme = localStorage.getItem('theme') || 'light'
     UnifiedTheme.setTheme(currentTheme as 'light' | 'dark' | 'system')
   }, [])
 
   React.useEffect(() => {
     const handleUnifiedThemeSync = (event: Event) => {
       const detail = (event as CustomEvent<{ theme?: string }>).detail
-      const nextTheme = detail?.theme || localStorage.getItem('junta-theme') || 'system'
+      const nextTheme = detail?.theme || localStorage.getItem('theme') || 'light'
       UnifiedTheme.setTheme(nextTheme as 'light' | 'dark' | 'system')
     }
 
@@ -161,7 +161,8 @@ export function ThemeProvider({
 
   return (
     <NextThemesProvider
-      storageKey='junta-theme'
+      attribute="class"
+      defaultTheme="light"
       enableSystem
       disableTransitionOnChange={reducedMotion}
       {...props}

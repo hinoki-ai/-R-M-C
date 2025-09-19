@@ -6,6 +6,9 @@ import { AppSidebar } from "@/app/dashboard/app-sidebar";
 import { LoadingBar } from "@/app/dashboard/loading-bar";
 import { SiteHeader } from "@/app/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function SidebarContent({ children }: { children: React.ReactNode }) {
   return (
@@ -31,13 +34,37 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isLoaded, isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  // Show loading state while auth is loading
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not signed in (will redirect)
+  if (!isSignedIn) {
+    return null;
+  }
+
   return (
     <SidebarProvider
       style={
         {
-          // 64 * 0.25rem = 16rem to match default desktop sidebar width
-          "--sidebar-width": "calc(var(--spacing) * 64)",
-          "--header-height": "calc(var(--spacing) * 12)",
+          // 16rem = 256px for desktop sidebar width
+          "--sidebar-width": "16rem",
+          "--sidebar-width-icon": "3rem",
+          "--header-height": "3rem",
         } as React.CSSProperties
       }
       className="group/layout"

@@ -100,6 +100,18 @@ const config: Config = {
         xl: 'var(--shadow-xl)',
         '2xl': 'var(--shadow-2xl)',
       },
+      width: {
+        'sidebar': 'var(--sidebar-width)',
+        'sidebar-icon': 'var(--sidebar-width-icon)',
+      },
+      minWidth: {
+        'sidebar': 'var(--sidebar-width)',
+        'sidebar-icon': 'var(--sidebar-width-icon)',
+      },
+      maxWidth: {
+        'sidebar': 'var(--sidebar-width)',
+        'sidebar-icon': 'var(--sidebar-width-icon)',
+      },
     },
   },
   plugins: [],

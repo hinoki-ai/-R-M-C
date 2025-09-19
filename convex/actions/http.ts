@@ -119,7 +119,7 @@ http.route({
 
       case 'paymentAttempt.updated': {
         const paymentAttemptData = transformWebhookData((event as any).data);
-        await ctx.runMutation(internal.paymentAttempts.savePaymentAttempt, {
+        await ctx.runMutation(internal.payment_attempts.savePaymentAttempt, {
           paymentAttemptData,
         });
         break;
