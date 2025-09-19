@@ -26,8 +26,8 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/pintopellines/pintopellines.git
-cd pintopellines
+git clone https://github.com/hinoki-ai/-R-M-C.git
+cd ΛRΛMΛC
 ```
 
 ### 2. Install Dependencies
@@ -244,7 +244,7 @@ Now that you have the project running:
 
 - 📧 **Email**: <support@juntadevecinos.com>
 - 💬 **Discord**: [Join our community](https://discord.gg/pintopellines)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/pintopellines/pintopellines/issues)
-- 📚 **Wiki**: [Project Wiki](https://github.com/pintopellines/pintopellines/wiki)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
+- 📚 **Wiki**: [Project Wiki](https://github.com/hinoki-ai/-R-M-C/wiki)
 
 Welcome aboard! 🎉

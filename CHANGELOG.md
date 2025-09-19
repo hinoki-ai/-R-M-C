@@ -1,6 +1,6 @@
 # Changelog
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > All notable changes to JuntaDeVecinos will be documented in this file

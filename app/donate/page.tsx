@@ -69,7 +69,7 @@ export default function DonatePage() {
         window.open('https://www.paypal.com/donate?hosted_button_id=PINTOPELLINES_DONATE', '_blank')
         break
       case 'github':
-        window.open('https://github.com/sponsors/pintopellines', '_blank')
+        window.open('https://github.com/sponsors/hinoki-ai', '_blank')
         break
       case 'patreon':
         window.open('https://www.patreon.com/pintopellines', '_blank')

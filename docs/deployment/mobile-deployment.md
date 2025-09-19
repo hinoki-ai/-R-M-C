@@ -1,6 +1,6 @@
 # JuntaDeVecinos Mobile Deployment
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![PWA](https://img.shields.io/badge/PWA-supported-green.svg)](#progressive-web-app-pwa)
 [![Android](https://img.shields.io/badge/Android-supported-green.svg)](#android-deployment)
 [![iOS](https://img.shields.io/badge/iOS-supported-green.svg)](#ios-deployment)

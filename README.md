@@ -1,6 +1,6 @@
 # JuntaDeVecinos
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Web Platform](https://img.shields.io/badge/platform-web-lightblue.svg)](#web-platform)
 [![Mobile Platform](https://img.shields.io/badge/platform-mobile-orange.svg)](#mobile-platform)
@@ -26,8 +26,8 @@ Get started quickly with our comprehensive setup guide:
 
 ```bash
 # Clone and setup
-git clone https://github.com/pintopellines/pintopellines.git
-cd pintopellines
+git clone https://github.com/hinoki-ai/-R-M-C.git
+cd ΛRΛMΛC
 npm install
 cp .env.example .env.local
 
@@ -61,7 +61,7 @@ Explore our comprehensive documentation:
 
 - **📧 Email**: [support@juntadevecinos.com](mailto:support@juntadevecinos.com)
 - **💬 Discord**: [Join our community](https://discord.gg/pintopellines)
-- **🐛 Issues**: [GitHub Issues](https://github.com/pintopellines/pintopellines/issues)
+- **🐛 Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 - **📚 Documentation**: [Complete Docs](docs/README.md)
 - **🤝 Contributing**: [Contributing Guide](CONTRIBUTING.md)
 

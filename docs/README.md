@@ -1,6 +1,6 @@
 # JuntaDeVecinos Documentation
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](../LICENSE)
 
 > Complete documentation for JuntaDeVecinos - Pinto Los Pellines community management platform
@@ -98,7 +98,7 @@ JuntaDeVecinos is a comprehensive community management platform designed specifi
 
 - **📧 Email**: [support@juntadevecinos.com](mailto:support@juntadevecinos.com)
 - **💬 Discord**: [Join our community](https://discord.gg/pintopellines)
-- **🐛 Issues**: [GitHub Issues](https://github.com/pintopellines/pintopellines/issues)
+- **🐛 Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 
 ## 📄 License
 

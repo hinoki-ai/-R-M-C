@@ -1,6 +1,6 @@
 # JuntaDeVecinos Theme System
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/your-org/junta-de-vecinos)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![Themes](https://img.shields.io/badge/themes-light/dark/system-green.svg)](#key-features)
 [![Accessibility](https://img.shields.io/badge/accessibility-WCAG--AA-blue.svg)](#accessibility-excellence)
 [![TypeScript](https://img.shields.io/badge/typescript-first-orange.svg)](#technical-implementation)

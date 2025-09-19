@@ -1,6 +1,6 @@
 # Deployment Guide
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/pintopellines/pintopellines)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![Web](https://img.shields.io/badge/web-vercel-blue.svg)](#web-deployment)
 [![Android](https://img.shields.io/badge/android-google--play-green.svg)](#mobile-deployment)
 [![iOS](https://img.shields.io/badge/iOS-app--store-blue.svg)](#mobile-deployment)
