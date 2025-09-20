@@ -18,9 +18,20 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader({ tab }: { tab?: string }) {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const getTitle = () => {
     // Prefer explicit prop if provided; otherwise derive from path
@@ -130,7 +141,10 @@ export function SiteHeader({ tab }: { tab?: string }) {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className={cn(
+      "sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 transition-all duration-300 ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+      isScrolled && "bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm"
+    )}>
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />

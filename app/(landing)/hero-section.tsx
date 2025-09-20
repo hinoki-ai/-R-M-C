@@ -62,7 +62,7 @@ export default function HeroSection() {
                                             },
                                         },
                                     },
-                                    ...transitionVariants,
+                                    item: transitionVariants.item,
                                 }}
                                 className="mt-12">
                                 <form

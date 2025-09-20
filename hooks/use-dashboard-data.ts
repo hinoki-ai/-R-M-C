@@ -214,34 +214,34 @@ export function useDashboardData(): UseDashboardDataReturn {
       {
         label: 'Vecinos Registrados',
         value: stats.totalUsers.toString(),
-        change: '+0%', // Would need historical data to calculate
+        change: stats.userGrowth || '0%', // Use real growth data
         icon: 'Users',
         color: 'text-blue-600',
-        trend: 'neutral'
+        trend: stats.userGrowth && parseFloat(stats.userGrowth) > 0 ? 'up' : 'stable'
       },
       {
         label: 'Proyectos Activos',
         value: stats.activeProjects.toString(),
-        change: '+0%',
+        change: stats.projectGrowth || '0%', // Use real project growth data
         icon: 'Activity',
         color: 'text-green-600',
-        trend: 'neutral'
+        trend: stats.projectGrowth && parseFloat(stats.projectGrowth) > 0 ? 'up' : 'stable'
       },
       {
         label: 'Solicitudes Pendientes',
         value: stats.pendingMaintenance.toString(),
-        change: '+0%',
+        change: stats.maintenanceChange || '0%', // Use real maintenance change data
         icon: 'AlertCircle',
         color: 'text-purple-600',
-        trend: 'neutral'
+        trend: stats.maintenanceChange && parseFloat(stats.maintenanceChange) > 0 ? 'up' : 'stable'
       },
       {
         label: 'Aportes Totales',
         value: `$${(stats.totalContributions / 100).toLocaleString()}`,
-        change: '+0%',
+        change: stats.contributionGrowth || '0%', // Use real contribution growth data
         icon: 'DollarSign',
         color: 'text-orange-600',
-        trend: 'neutral'
+        trend: stats.contributionGrowth && parseFloat(stats.contributionGrowth) > 0 ? 'up' : 'stable'
       }
     ],
     announcements: announcements.map(announcement => ({
@@ -263,8 +263,8 @@ export function useDashboardData(): UseDashboardDataReturn {
       location: event.location || 'Por confirmar',
       organizer: currentUser.name, // Simplified - would need to join with users table
       category: event.categoryId, // Would need to resolve category name
-      isMandatory: false, // Default value
-      attendees: 0 // Would need to count attendees
+      isMandatory: event.isMandatory || false, // Use real data from event
+      attendees: event.attendeeCount || 0 // Use real attendee count from event
     })),
     pendingMaintenance: pendingMaintenance.map(request => ({
       id: request._id,
@@ -302,9 +302,10 @@ export function useDashboardData(): UseDashboardDataReturn {
   const loading = !currentUser || !stats || !announcements || !recentEvents || !pendingMaintenance || !recentPayments || !activeProjects
   const error = null // Convex handles errors internally
 
-  const refetch = useCallback(() => {
+  const refetch = useCallback(async () => {
     // Convex queries automatically refetch when dependencies change
     // No manual refetch needed - real-time updates handled by Convex
+    return Promise.resolve()
   }, [])
 
   return {

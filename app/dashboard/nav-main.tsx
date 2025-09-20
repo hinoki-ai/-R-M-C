@@ -42,6 +42,17 @@ export function NavMain({
 }) {
   const pathname = usePathname();
 
+  const isItemActive = (item: { url: string; items?: any[] }) => {
+    if (pathname === item.url) return true;
+    if (item.items) {
+      return item.items.some(subItem => 
+        subItem.url === pathname || 
+        (subItem.items && subItem.items.some((nestedItem: any) => nestedItem.url === pathname))
+      );
+    }
+    return false;
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -50,12 +61,15 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={isItemActive(item)}
             className="group/collapsible"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton 
+                  tooltip={item.title}
+                  isActive={isItemActive(item)}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                   {item.items && (
@@ -72,7 +86,7 @@ export function NavMain({
                           <Collapsible asChild>
                             <div>
                               <CollapsibleTrigger asChild>
-                                <SidebarMenuSubButton>
+                                <SidebarMenuSubButton isActive={pathname === subItem.url}>
                                   {subItem.icon && <subItem.icon />}
                                   <span>{subItem.title}</span>
                                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -82,7 +96,7 @@ export function NavMain({
                                 <SidebarMenuSub>
                                   {subItem.items?.map((nestedItem) => (
                                     <SidebarMenuSubItem key={nestedItem.title}>
-                                      <SidebarMenuSubButton asChild>
+                                      <SidebarMenuSubButton asChild isActive={pathname === nestedItem.url}>
                                         <Link href={nestedItem.url}>
                                           {nestedItem.icon && <nestedItem.icon />}
                                           <span>{nestedItem.title}</span>
@@ -95,7 +109,7 @@ export function NavMain({
                             </div>
                           </Collapsible>
                         ) : (
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
                             <Link href={subItem.url}>
                               {subItem.icon && <subItem.icon />}
                               <span>{subItem.title}</span>

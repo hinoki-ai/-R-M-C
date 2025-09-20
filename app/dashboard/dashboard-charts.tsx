@@ -41,18 +41,18 @@ const useParticipationData = () => {
   }
 
   return months.map(({ month, monthNum, year }) => {
-    const monthEvents = events.filter(event => {
+    const monthEvents = events.filter((event: any) => {
       const eventDate = new Date(event.startDate);
       return eventDate.getMonth() === monthNum && eventDate.getFullYear() === year;
     });
 
-    const monthAnnouncements = announcements.filter(announcement => {
+    const monthAnnouncements = announcements.filter((announcement: any) => {
       const announcementDate = new Date(announcement._creationTime);
       return announcementDate.getMonth() === monthNum && announcementDate.getFullYear() === year;
     });
 
     // Calculate attendance from events (if available)
-    const totalAttendance = monthEvents.reduce((sum, event) =>
+    const totalAttendance = monthEvents.reduce((sum: number, event: any) =>
       sum + (event.attendance || 0), 0
     );
 
@@ -79,12 +79,12 @@ const useMaintenanceData = () => {
   }
 
   return weeks.map((week, index) => {
-    const weekRequests = maintenanceRequests.filter(request => {
+    const weekRequests = maintenanceRequests.filter((request: any) => {
       const requestDate = new Date(request._creationTime);
       return requestDate >= week.weekStart && requestDate < week.weekEnd;
     });
 
-    const completedRequests = weekRequests.filter(request => request.status === 'completed');
+    const completedRequests = weekRequests.filter((request: any) => request.status === 'completed');
 
     return {
       semana: `Sem ${index + 1}`,
@@ -102,7 +102,7 @@ const useEngagementData = () => {
 
   return days.map((dia, index) => {
     // Find data for this day of week
-    const dayData = engagementData.find(d => d.dayOfWeek === index) || { views: 0, interactions: 0 };
+    const dayData = engagementData.find((d: any) => d.dayOfWeek === index) || { views: 0, interactions: 0 };
 
     return {
       dia,

@@ -10,8 +10,10 @@ export type SettingsState = {
   sessionTimeout: number;
   passwordMinLength: number;
   twoFactorRequired: boolean;
+  twoFactorAuth: boolean;
   rateLimitingEnabled: boolean;
   securityAlerts: boolean;
+  securityLogs: boolean;
 
   // Database Settings
   dbConnectionPool: number;
@@ -27,9 +29,12 @@ export type SettingsState = {
 
   // Performance Settings
   cacheEnabled: boolean;
+  cacheTTL: number;
   maxWorkers: number;
   memoryLimit: number;
   compressionEnabled: boolean;
+  imageCompression: boolean;
+  lazyLoading: boolean;
   quality: 'low' | 'medium' | 'high' | 'ultra';
 
   // UI/UX Settings
@@ -51,6 +56,7 @@ export type SettingsState = {
   experimentalFeatures: boolean;
   telemetryEnabled: boolean;
   developerMode: boolean;
+  apiRateLimit: number;
 };
 
 // COMPREHENSIVE DEFAULTS
@@ -63,8 +69,10 @@ export const DEFAULT_SETTINGS: SettingsState = {
   sessionTimeout: 30,
   passwordMinLength: 8,
   twoFactorRequired: true,
+  twoFactorAuth: true,
   rateLimitingEnabled: true,
   securityAlerts: true,
+  securityLogs: true,
 
   dbConnectionPool: 20,
   dbQueryTimeout: 30,
@@ -77,9 +85,12 @@ export const DEFAULT_SETTINGS: SettingsState = {
   notificationFrequency: 'immediate',
 
   cacheEnabled: true,
+  cacheTTL: 300,
   maxWorkers: 4,
   memoryLimit: 512,
   compressionEnabled: true,
+  imageCompression: true,
+  lazyLoading: true,
   quality: 'high',
 
   animationsEnabled: true,
@@ -98,6 +109,7 @@ export const DEFAULT_SETTINGS: SettingsState = {
   experimentalFeatures: false,
   telemetryEnabled: false,
   developerMode: false,
+  apiRateLimit: 100,
 };
 
 // SETTINGS ACTIONS

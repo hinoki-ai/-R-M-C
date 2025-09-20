@@ -31,7 +31,7 @@ export default function DashboardLayout({
       }
       className='group/layout'
     >
-      <AppSidebar variant='inset' />
+      <AppSidebar />
       <SidebarInset>
         <LoadingBar />
         <SiteHeader />

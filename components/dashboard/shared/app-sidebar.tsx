@@ -1,29 +1,28 @@
 'use client'
 
 import {
-  IconBell,
-  IconCalendar,
-  IconCamera,
-  IconCloud,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileText,
-  IconFileWord,
-  IconHelp,
-  IconMessageCircle,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconHelp as IconShield,
-  IconSparkles,
-  IconTrendingUp,
-  IconUsers,
-} from '@tabler/icons-react'
+  Bell,
+  Calendar,
+  Camera,
+  Cloud,
+  LayoutDashboard,
+  Database,
+  FileText,
+  FileText as FileText,
+  HelpCircle,
+  MessageCircle,
+  BarChart3,
+  Search,
+  Settings,
+  Shield,
+  Sparkles,
+  TrendingUp,
+  Users,
+} from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
 
-import { NavDocuments } from '@/app/dashboard/nav-documents'
+import { NavDocuments } from '@/components/dashboard/shared/nav-documents'
 import { NavMain } from '@/app/dashboard/nav-main'
 import { NavSecondary } from '@/app/dashboard/nav-secondary'
 import { NavUser } from '@/app/dashboard/nav-user'
@@ -44,106 +43,106 @@ const data = {
     {
       title: 'Panel General',
       url: '/dashboard',
-      icon: IconDashboard,
+      icon: LayoutDashboard,
     },
     {
       title: 'Cámaras de Seguridad',
       url: '/dashboard/cameras',
-      icon: IconCamera,
+      icon: Camera,
     },
     {
       title: 'Monitoreo LS Vision',
       url: '/dashboard/cameras/lsvision',
-      icon: IconShield,
+      icon: Shield,
     },
     {
       title: 'Comunidad',
       url: '/dashboard/community',
-      icon: IconUsers,
+      icon: Users,
     },
     {
       title: 'Eventos Comunidad',
       url: '/dashboard/events',
-      icon: IconCalendar,
+      icon: Calendar,
     },
     {
       title: 'Documentos',
       url: '/dashboard/documents',
-      icon: IconFileText,
+      icon: FileText,
     },
     {
       title: 'Mantenimiento',
       url: '/dashboard/maintenance',
-      icon: IconSettings,
+      icon: Settings,
     },
     {
       title: 'Contribuciones',
       url: '/dashboard/payment-gated',
-      icon: IconSparkles,
+      icon: Sparkles,
     },
     {
       title: 'Clima Comunidad',
       url: '/dashboard/weather',
-      icon: IconCloud,
+      icon: Cloud,
     },
     {
       title: 'Monitoreo de Rendimiento',
       url: '/dashboard/performance',
-      icon: IconTrendingUp,
+      icon: TrendingUp,
     },
     {
       title: 'Notificaciones',
       url: '/dashboard/notifications',
-      icon: IconBell,
+      icon: Bell,
     },
   ],
   navSecondary: [
     {
       title: 'Anuncios',
       url: '/dashboard/announcements',
-      icon: IconMessageCircle,
+      icon: MessageCircle,
     },
     {
       title: 'Aportes',
       url: '/dashboard/payments',
-      icon: IconTrendingUp,
+      icon: TrendingUp,
     },
     {
       title: 'Configuración',
       url: '/dashboard/settings',
-      icon: IconSettings,
+      icon: Settings,
     },
     {
       title: 'Ayuda',
       url: '#',
-      icon: IconHelp,
+      icon: HelpCircle,
     },
     {
       title: 'Buscar',
       url: '#',
-      icon: IconSearch,
+      icon: Search,
     },
   ],
   documents: [
     {
       name: 'Biblioteca de Datos',
       url: '#',
-      icon: IconDatabase,
+      icon: Database,
     },
     {
       name: 'Eventos de Cámaras',
       url: '/dashboard/cameras/events',
-      icon: IconReport,
+      icon: BarChart3,
     },
     {
       name: 'Transmisiones',
       url: '/dashboard/cameras/feeds',
-      icon: IconFileAi,
+      icon: FileText,
     },
     {
       name: 'Asistente Documental',
       url: '#',
-      icon: IconFileWord,
+      icon: FileText,
     },
   ],
 }

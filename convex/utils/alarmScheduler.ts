@@ -15,8 +15,17 @@ export const checkScheduledAlarms = internalAction({
     const currentDay = now.getDay();
     let triggeredCount = 0;
 
-    // Get all active alarms with schedules
-    const alarms = await ctx.runQuery(internal.alarms.getActiveAlarmsToTrigger, {});
+    // Get all users first
+    const users = await ctx.runQuery(api.users.listUsers, {});
+    
+    // Get all active alarms for all users
+    const allAlarms = [];
+    for (const user of users) {
+      const userAlarms = await ctx.runQuery(api.alarms.getActiveAlarmsToTrigger, { userId: user._id });
+      allAlarms.push(...userAlarms);
+    }
+    
+    const alarms = allAlarms;
 
     for (const alarm of alarms) {
       if (!alarm.schedule) continue;
@@ -37,7 +46,7 @@ export const checkScheduledAlarms = internalAction({
         }
 
         // Check user's settings
-        const settings = await ctx.runQuery(internal.alarms.getAlarmSettings, { userId: alarm.userId });
+        const settings = await ctx.runQuery(api.alarms.getAlarmSettings, { userId: alarm.userId });
 
         const soundEnabled = (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
         const vibrationEnabled = (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
@@ -60,7 +69,7 @@ export const checkScheduledAlarms = internalAction({
 
         if (shouldTrigger && (soundEnabled || vibrationEnabled || notificationEnabled)) {
           // Create trigger record
-          const triggerId = await ctx.runMutation(internal.alarms.createAlarmTrigger, {
+          const triggerId = await ctx.runMutation(api.alarms.createAlarmTrigger, {
             alarmId: alarm._id,
             userId: alarm.userId,
             triggerType: "scheduled",
@@ -70,7 +79,7 @@ export const checkScheduledAlarms = internalAction({
           });
 
           // Update last triggered
-          await ctx.runMutation(internal.alarms.updateAlarmLastTriggered, {
+          await ctx.runMutation(api.alarms.updateAlarmLastTriggered, {
             alarmId: alarm._id,
             lastTriggered: now.getTime(),
           });
@@ -100,7 +109,7 @@ export const triggerEmergencyAlarm = action({
   },
   returns: v.number(), // Returns number of users notified
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(internal.alarmScheduler.triggerEmergencyAlarmMutation, args);
+    return await ctx.runMutation(api.alarmScheduler.triggerEmergencyAlarmMutation, args);
   },
 });
 
@@ -111,7 +120,7 @@ export const triggerWeatherAlarm = internalAction({
   },
   returns: v.number(),
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(internal.alarmScheduler.triggerWeatherAlarmMutation, args);
+    return await ctx.runMutation(api.alarmScheduler.triggerWeatherAlarmMutation, args);
   },
 });
 
@@ -302,6 +311,6 @@ export const testAlarm = action({
   },
   returns: v.boolean(),
   handler: async (ctx, args): Promise<boolean> => {
-    return await ctx.runMutation(internal.alarmScheduler.testAlarmMutation, args);
+    return await ctx.runMutation(api.alarmScheduler.testAlarmMutation, args);
   },
 });

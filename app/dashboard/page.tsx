@@ -484,8 +484,8 @@ function DashboardContent() {
 
       {/* Dashboard Summary Metrics */}
       <div className={DASHBOARD_SPACING.page.header}>
-        <div className={`${DASHBOARD_SPACING.grid.cols[4]} ${DASHBOARD_SPACING.grid.gap}`}>
-          <Card>
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Alertas Activas</CardTitle>
               <IconAlertTriangle className="h-4 w-4 text-red-600" />
@@ -495,7 +495,7 @@ function DashboardContent() {
               <p className="text-xs text-muted-foreground">Requieren atención inmediata</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Solicitudes Pendientes</CardTitle>
               <IconAlertCircle className="h-4 w-4 text-orange-600" />
@@ -505,7 +505,7 @@ function DashboardContent() {
               <p className="text-xs text-muted-foreground">Mantenimiento y reparaciones</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Eventos Próximos</CardTitle>
               <IconCalendar className="h-4 w-4 text-blue-600" />
@@ -515,7 +515,7 @@ function DashboardContent() {
               <p className="text-xs text-muted-foreground">Esta semana</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Participación</CardTitle>
               <IconUsers className="h-4 w-4 text-green-600" />

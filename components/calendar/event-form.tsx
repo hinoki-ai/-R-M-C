@@ -58,7 +58,7 @@ const defaultFormData: FormData = {
   isAllDay: false,
   isRecurring: false,
   recurrenceRule: null,
-  maxAttendees: 0,
+  maxAttendees: 50, // Default reasonable limit
   isPublic: true,
   requiresApproval: false,
   inviteUserIds: [],

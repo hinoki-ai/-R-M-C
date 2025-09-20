@@ -19,8 +19,7 @@ export default function FeaturesOne() {
                             <h3 className="text-foreground text-xl font-semibold">Marketing Campaigns</h3>
                             <p className="text-muted-foreground my-4 text-lg">Effortlessly plan and execute your marketing campaigns organized.</p>
                             <Card
-                                className="aspect-video overflow-hidden px-6"
-                                variant="soft">
+                                className="aspect-video overflow-hidden px-6 bg-muted/50">
                                 <Card className="h-full translate-y-6" />
                             </Card>
                         </div>
@@ -28,8 +27,7 @@ export default function FeaturesOne() {
                             <h3 className="text-foreground text-xl font-semibold">AI Meeting Scheduler</h3>
                             <p className="text-muted-foreground my-4 text-lg">Effortlessly book and manage your meetings. Stay on top of your schedule.</p>
                             <Card
-                                className="aspect-video overflow-hidden"
-                                variant="soft">
+                                className="aspect-video overflow-hidden bg-muted/50">
                                 <Card className="translate-6 h-full" />
                             </Card>
                         </div>
