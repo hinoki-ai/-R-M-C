@@ -20,18 +20,23 @@ export interface OfflineState {
 class OfflineManager {
   private queuedRequests: OfflineRequest[] = []
   private listeners: Set<(state: OfflineState) => void> = new Set()
-  private isOnline = navigator.onLine
+  private isOnline = typeof window !== 'undefined' ? navigator.onLine : true
   private lastOnlineTime: number | null = this.isOnline ? Date.now() : null
   private lastOfflineTime: number | null = this.isOnline ? null : Date.now()
   private syncInProgress = false
 
   constructor() {
-    this.loadQueuedRequests()
-    this.setupNetworkListeners()
-    this.setupVisibilityListener()
+    // Only initialize on client side
+    if (typeof window !== 'undefined') {
+      this.loadQueuedRequests()
+      this.setupNetworkListeners()
+      this.setupVisibilityListener()
+    }
   }
 
   private setupNetworkListeners() {
+    if (typeof window === 'undefined') return
+
     window.addEventListener('online', () => {
       this.isOnline = true
       this.lastOnlineTime = Date.now()
