@@ -51,6 +51,8 @@ export function ThemeProvider({
 
   // Enhanced system preference detection
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const updateSystemTheme = () => {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       setSystemTheme(prefersDark ? 'dark' : 'light')
@@ -66,7 +68,7 @@ export function ThemeProvider({
 
   // Reduced motion detection
   React.useEffect(() => {
-    if (!enableReducedMotion) return
+    if (!enableReducedMotion || typeof window === 'undefined') return
 
     const updateReducedMotion = () => {
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -83,7 +85,7 @@ export function ThemeProvider({
 
   // High contrast detection
   React.useEffect(() => {
-    if (!enableHighContrast) return
+    if (!enableHighContrast || typeof window === 'undefined') return
 
     const updateHighContrast = () => {
       const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches
@@ -103,6 +105,8 @@ export function ThemeProvider({
 
   // Apply theme transition duration
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
     if (reducedMotion) {
       document.documentElement.style.setProperty('--theme-transition', '0s')
     } else {
@@ -112,6 +116,8 @@ export function ThemeProvider({
 
   // Apply high contrast adjustments
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
     if (highContrast) {
       document.documentElement.classList.add('high-contrast')
     } else {
@@ -121,6 +127,8 @@ export function ThemeProvider({
 
   // Initialize UnifiedTheme on mount with stored theme
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
     // Get stored theme from localStorage (next-themes uses 'theme' key)
     const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel' | null
 
@@ -139,7 +147,7 @@ export function ThemeProvider({
 
   // Handle theme changes and sync with UnifiedTheme (for mobile features only)
   const handleThemeChange = React.useCallback((theme: string | undefined) => {
-    if (theme) {
+    if (theme && typeof window !== 'undefined') {
       // Remove all custom theme classes first
       const customThemes = ['vineyard', 'ocean', 'mountain', 'patagonia', 'pastel']
       customThemes.forEach(themeClass => {

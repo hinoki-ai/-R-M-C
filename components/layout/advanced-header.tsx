@@ -85,6 +85,8 @@ export const AdvancedHeader = () => {
   const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
 
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }

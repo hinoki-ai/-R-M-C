@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Activity,
   AlertTriangle,
@@ -19,7 +21,6 @@ import Link from 'next/link'
 import { ModeToggle } from '@/components/layout/mode-toggle'
 import { PublicLayout } from '@/components/layout/public-layout'
 import { PulsatingButton } from '@/components/magicui/pulsating-button'
-import { MobileAppDownload } from '@/components/mobile-app-download'
 import { InfiniteSlider } from '@/components/motion-primitives/infinite-slider'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Badge } from '@/components/ui/badge'
@@ -27,6 +28,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TextEffect } from '@/components/ui/text-effect'
 
+// Force dynamic rendering to avoid SSR issues
+export const dynamic = 'force-dynamic'
 
 export default function Home() {
   return (
@@ -791,8 +794,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MOBILE APP DOWNLOAD SECTION */}
-      <MobileAppDownload />
+      {/* MOBILE APP DOWNLOAD SECTION - Temporarily disabled for deployment */}
+      {/* <MobileAppDownload /> */}
 
     </main>
     </PublicLayout>

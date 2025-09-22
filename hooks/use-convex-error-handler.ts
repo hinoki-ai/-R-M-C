@@ -370,6 +370,53 @@ export function useConvexQueriesWithError<T extends Record<string, any>>(
   }
 }
 
+// Simple hook for Convex operations with error handling
+export function useConvexErrorHandler<T = any>(
+  convexFunction: any,
+  options: UseConvexErrorHandlerOptions & { args?: any } = {}
+) {
+  const { args, ...errorOptions } = options
+
+  // For queries, use useConvexQueryWithError
+  if (convexFunction.kind === 'query' || typeof convexFunction === 'function') {
+    return useConvexQueryWithError(convexFunction, args, errorOptions)
+  }
+
+  // For mutations/actions, we need a different approach since they don't return data directly
+  // This is a simplified version that just wraps the mutation call
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<ConvexError | null>(null)
+  const [data, setData] = useState<T | undefined>(undefined)
+
+  const mutate = useCallback(async (mutationArgs?: any) => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await convexFunction(mutationArgs || args || {})
+      setData(result)
+      errorOptions.onSuccess?.(result)
+      return result
+    } catch (err) {
+      const categorizedError = categorizeConvexError(err)
+      setError(categorizedError)
+      errorOptions.onError?.(categorizedError)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }, [convexFunction, args, errorOptions])
+
+  return {
+    mutate,
+    data,
+    error,
+    isLoading,
+    isError: error !== null,
+    isSuccess: data !== undefined && error === null
+  }
+}
+
 // Hook for offline detection and cached data fallback
 export function useOfflineFallback<T>(
   onlineQuery: any,

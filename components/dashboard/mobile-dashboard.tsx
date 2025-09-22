@@ -2,12 +2,12 @@ import React from 'react';
 
 export const MobileDashboard: React.FC = () => {
   return (
-    <div style={{ backgroundColor: 'red', padding: '20px', margin: '10px' }}>
+    <div className="bg-red-500 p-5 m-2.5">
       <h1>Mobile Dashboard</h1>
-      <div style={{ border: '1px solid black', width: '100%', height: '200px' }}>
+      <div className="border border-black w-full h-50">
         Content here
       </div>
-      <button style={{ color: 'blue', fontSize: '16px' }}>
+      <button className="text-blue-500 text-base">
         Click me
       </button>
     </div>
@@ -16,7 +16,7 @@ export const MobileDashboard: React.FC = () => {
 
 export const MobileCard: React.FC = () => {
   return (
-    <div style={{ backgroundColor: 'yellow', borderRadius: '8px', padding: '15px' }}>
+    <div className="bg-yellow-400 rounded-lg p-4">
       Mobile Card
     </div>
   );
@@ -24,7 +24,7 @@ export const MobileCard: React.FC = () => {
 
 export const TouchButton: React.FC = () => {
   return (
-    <button style={{ backgroundColor: 'green', border: 'none', padding: '10px 20px' }}>
+    <button className="bg-green-500 border-none py-2.5 px-5">
       Touch Button
     </button>
   );

@@ -14,6 +14,9 @@ if (typeof window === 'undefined') {
 
 
 const nextConfig: NextConfig = {
+  // Force dynamic rendering to avoid SSR issues
+  output: 'standalone',
+
   // Enable experimental features for better mobile support
   experimental: {
     optimizePackageImports: ['@capacitor/core', '@capacitor/android', '@capacitor/ios'],
@@ -23,14 +26,9 @@ const nextConfig: NextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
-  serverExternalPackages: [],
 
   // Configure for Capacitor compatibility
   trailingSlash: true,
-  output: process.env.MOBILE_BUILD === 'true' ? 'export' : 'standalone',
-  generateBuildId: async () => {
-    return 'build-' + Date.now()
-  },
 
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
