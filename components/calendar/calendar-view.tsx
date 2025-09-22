@@ -1,5 +1,7 @@
 'use client'
 
+/* eslint-disable react/forbid-dom-props */
+
 import { useAction, useQuery } from 'convex/react'
 import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -157,11 +159,10 @@ export function CalendarView({ onEventClick, onCreateEvent, selectedDate, onDate
                 {dayEvents.slice(0, 3).map(event => (
                   <div
                     key={event._id}
-                    className='text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity'
-                    // eslint-disable-next-line react/forbid-dom-props
+                    className='text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity border-l-4'
                     style={{
                       backgroundColor: event.category.color + '20',
-                      borderLeft: `3px solid ${event.category.color}`,
+                      borderLeftColor: event.category.color,
                       color: event.category.color
                     }}
                     onClick={(e) => {
@@ -169,7 +170,7 @@ export function CalendarView({ onEventClick, onCreateEvent, selectedDate, onDate
                       onEventClick?.(event)
                     }}
                   >
-                    <div className='font-medium' style={{ color: event.category.color }}> {/* eslint-disable-line react/forbid-dom-props */}
+                    <div className='font-medium' style={{ color: event.category.color }}>
                       {event.title}
                     </div>
                     {event.startTime && !event.isAllDay && (

@@ -5,13 +5,13 @@ import { dark } from '@clerk/themes'
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             🇨🇱 Junta de Vecinos
           </h1>
-          <p className="text-gray-300">
+          <p className="text-muted-foreground">
             Únete a Pinto Los Pellines, Ñuble
           </p>
         </div>

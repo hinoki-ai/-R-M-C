@@ -168,24 +168,27 @@ const RankingPageContent = memo(function RankingPageContent() {
     }
   )
 
+  // Type assertion for rankingsQuery
+  const typedRankingsQuery = rankingsQuery as MemberRanking[] | null
+
   // Memoized calculations
   const stats = useMemo(() => {
-    if (!rankingsQuery) return null
+    if (!typedRankingsQuery) return null
 
-    const rankCounts = rankingsQuery.reduce((acc, member) => {
+    const rankCounts = typedRankingsQuery.reduce((acc, member) => {
       acc[member.rank] = (acc[member.rank] || 0) + 1
       return acc
     }, {} as Record<string, number>)
 
-    const totalDonations = rankingsQuery.reduce((sum, member) => sum + member.totalDonations, 0)
+    const totalDonations = typedRankingsQuery.reduce((sum, member) => sum + member.totalDonations, 0)
 
     return {
-      totalMembers: rankingsQuery.length,
+      totalMembers: typedRankingsQuery.length,
       totalDonations,
       apellinadoCount: rankCounts['Apellinado'] || 0,
       rankCounts
     }
-  }, [rankingsQuery])
+  }, [typedRankingsQuery])
 
   // Handle loading state
   if (isLoading) {
@@ -205,7 +208,7 @@ const RankingPageContent = memo(function RankingPageContent() {
   }
 
   // Handle empty state
-  if (rankingsQuery && rankingsQuery.length === 0) {
+  if (typedRankingsQuery && typedRankingsQuery.length === 0) {
     return (
       <div className='space-y-6'>
         <div className='text-center py-8'>
@@ -285,7 +288,7 @@ const RankingPageContent = memo(function RankingPageContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rankingsQuery.map((member, index) => (
+                {typedRankingsQuery?.map((member, index) => (
                   <TableRow key={member.userId}>
                     <TableCell className='font-medium'>#{index + 1}</TableCell>
                     <TableCell className='font-medium'>{member.userName}</TableCell>

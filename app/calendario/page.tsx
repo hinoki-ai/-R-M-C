@@ -10,12 +10,13 @@ import { EventForm } from '@/components/calendar/event-form'
 import { ModeToggle } from '@/components/layout/mode-toggle'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 
 type ViewMode = 'calendar' | 'create' | 'edit' | 'details'
 
 export default function CalendarioPage() {
   const [currentView, setCurrentView] = useState<ViewMode>('calendar')
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<Id<"calendarEvents"> | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   // Get current user info
@@ -31,12 +32,12 @@ export default function CalendarioPage() {
     setCurrentView('create')
   }
 
-  const handleEditEvent = (eventId: string) => {
+  const handleEditEvent = (eventId: Id<"calendarEvents">) => {
     setSelectedEventId(eventId)
     setCurrentView('edit')
   }
 
-  const handleSaveEvent = (eventId: string) => {
+  const handleSaveEvent = (eventId: Id<"calendarEvents">) => {
     setCurrentView('calendar')
     setSelectedEventId(null)
     setSelectedDate(null)

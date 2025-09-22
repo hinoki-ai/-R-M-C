@@ -1,5 +1,7 @@
 
-# paymentAttempt.created
+# Clerk Webhook Events Catalog
+
+## paymentAttempt.created
 
 {
   "event_attributes": {
@@ -129,7 +131,7 @@
   }
 }
 
-# paymentAttempt.updated
+## paymentAttempt.updated
 
 {
   "event_attributes": {
@@ -259,7 +261,7 @@
   }
 }
 
-# subscription.active
+## subscription.active
 
 {
   "event_attributes": {
@@ -311,7 +313,7 @@
   }
 }
 
-# subscription.created
+## subscription.created
 
 {
   "event_attributes": {
@@ -363,7 +365,7 @@
   }
 }
 
-# subscription.past_due
+## subscription.past_due
 
 {
   "event_attributes": {
@@ -415,7 +417,7 @@
   }
 }
 
-# subscription.updated
+## subscription.updated
 
 {
   "event_attributes": {
@@ -467,7 +469,7 @@
   }
 }
 
-# subscriptionItem.abandoned
+## subscriptionItem.abandoned
 
 {
   "event_attributes": {
@@ -503,7 +505,7 @@
   }
 }
 
-# subscriptionItem.active
+## subscriptionItem.active
 
 {
   "event_attributes": {
@@ -539,7 +541,7 @@
   }
 }
 
-# subscriptionItem.canceled
+## subscriptionItem.canceled
 
 {
   "event_attributes": {
@@ -575,7 +577,7 @@
   }
 }
 
-# subscriptionItem.created
+## subscriptionItem.created
 
 {
   "event_attributes": {
@@ -611,7 +613,7 @@
   }
 }
 
-# subscriptionItem.ended
+## subscriptionItem.ended
 
 {
   "event_attributes": {
@@ -647,7 +649,7 @@
   }
 }
 
-# subscriptionItem.incomplete
+## subscriptionItem.incomplete
 
 {
   "event_attributes": {
@@ -683,7 +685,7 @@
   }
 }
 
-# subscriptionItem.past_due
+## subscriptionItem.past_due
 
 {
   "event_attributes": {
@@ -719,7 +721,7 @@
   }
 }
 
-# subscriptionItem.upcoming
+## subscriptionItem.upcoming
 
 {
   "event_attributes": {
@@ -755,7 +757,7 @@
   }
 }
 
-# subscriptionItem.updated
+## subscriptionItem.updated
 
 {
   "event_attributes": {
@@ -791,7 +793,7 @@
   }
 }
 
-# user.created
+## user.created
 
 {
   "data": {
@@ -814,7 +816,7 @@
     "first_name": "Example",
     "gender": "",
     "id": "user_29w83sxmDNGwOuEthce5gg56FcC",
-    "image_url": "https://img.clerk.com/xxxxxx",
+    "image_url": "<https://img.clerk.com/xxxxxx>",
     "last_name": "Example",
     "last_sign_in_at": 1654012591514,
     "object": "user",
@@ -824,7 +826,7 @@
     "primary_phone_number_id": null,
     "primary_web3_wallet_id": null,
     "private_metadata": {},
-    "profile_image_url": "https://www.gravatar.com/avatar?d=mp",
+    "profile_image_url": "<https://www.gravatar.com/avatar?d=mp>",
     "public_metadata": {},
     "two_factor_enabled": false,
     "unsafe_metadata": {},
@@ -843,7 +845,7 @@
   "type": "user.created"
 }
 
-# user.deleted
+## user.deleted
 
 {
   "data": {
@@ -862,7 +864,7 @@
   "type": "user.deleted"
 }
 
-# user.updated
+## user.updated
 
 {
   "data": {
@@ -888,7 +890,7 @@
     "first_name": "Example",
     "gender": "",
     "id": "user_29w83sxmDNGwOuEthce5gg56FcC",
-    "image_url": "https://img.clerk.com/xxxxxx",
+    "image_url": "<https://img.clerk.com/xxxxxx>",
     "last_name": null,
     "last_sign_in_at": null,
     "object": "user",
@@ -898,7 +900,7 @@
     "primary_phone_number_id": null,
     "primary_web3_wallet_id": null,
     "private_metadata": {},
-    "profile_image_url": "https://www.gravatar.com/avatar?d=mp",
+    "profile_image_url": "<https://www.gravatar.com/avatar?d=mp>",
     "public_metadata": {},
     "two_factor_enabled": false,
     "unsafe_metadata": {},
@@ -916,7 +918,3 @@
   "timestamp": 1654012824306,
   "type": "user.updated"
 }
-
-
-
-

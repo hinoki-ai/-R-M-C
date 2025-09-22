@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
 
   // Configure for Capacitor compatibility
   trailingSlash: true,
-  output: 'standalone',
+  output: process.env.MOBILE_BUILD === 'true' ? 'export' : 'standalone',
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
