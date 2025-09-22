@@ -296,24 +296,53 @@ export default function EmergenciasPage() {
             🛡️ Sistema de Seguridad Comunitaria
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-            <div className='text-center'>
-              <div className='text-4xl mb-4'>👥</div>
-              <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>Ronda Vecinal</h3>
-              <p className='text-gray-600 dark:text-gray-400 mb-4'>Patrullas nocturnas organizadas por la comunidad</p>
-              <Button variant='outline'>📍 Ver Mapa de Rondas</Button>
-            </div>
-            <div className='text-center'>
-              <div className='text-4xl mb-4'>🚨</div>
-              <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>Alerta Comunitaria</h3>
-              <p className='text-gray-600 dark:text-gray-400 mb-4'>Sistema de alertas rápidas vía WhatsApp</p>
-              <Button variant='outline'>📱 Unirse al Grupo</Button>
-            </div>
-            <div className='text-center'>
-              <div className='text-4xl mb-4'>🏥</div>
-              <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>Brigada de Salud</h3>
-              <p className='text-gray-600 dark:text-gray-400 mb-4'>Voluntarios capacitados en primeros auxilios</p>
-              <Button variant='outline'>👨‍⚕️ Ver Brigadistas</Button>
-            </div>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
+                <div className='text-4xl mb-4'>👥</div>
+                <CardTitle className='text-xl text-foreground mb-3'>Ronda Vecinal</CardTitle>
+                <Badge className='bg-blue-500/20 text-blue-300 border-blue-500/30'>Activo</Badge>
+              </CardHeader>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
+                  Patrullas nocturnas organizadas por la comunidad para mantener la seguridad del barrio.
+                </p>
+                <div className='text-center mt-auto'>
+                  <Button variant='outline' className='w-full'>📍 Ver Mapa de Rondas</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
+                <div className='text-4xl mb-4'>🚨</div>
+                <CardTitle className='text-xl text-foreground mb-3'>Alerta Comunitaria</CardTitle>
+                <Badge className='bg-green-500/20 text-green-300 border-green-500/30'>Disponible</Badge>
+              </CardHeader>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
+                  Sistema de alertas rápidas vía WhatsApp para emergencias y situaciones de riesgo.
+                </p>
+                <div className='text-center mt-auto'>
+                  <Button variant='outline' className='w-full'>📱 Unirse al Grupo</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
+                <div className='text-4xl mb-4'>🏥</div>
+                <CardTitle className='text-xl text-foreground mb-3'>Brigada de Salud</CardTitle>
+                <Badge className='bg-red-500/20 text-red-300 border-red-500/30'>Listo</Badge>
+              </CardHeader>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
+                  Voluntarios capacitados en primeros auxilios disponibles 24/7 para emergencias médicas.
+                </p>
+                <div className='text-center mt-auto'>
+                  <Button variant='outline' className='w-full'>👨‍⚕️ Ver Brigadistas</Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </motion.div>
 

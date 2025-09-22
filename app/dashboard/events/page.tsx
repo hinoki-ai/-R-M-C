@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useUser } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
 import { Suspense, useState } from 'react'
@@ -61,7 +62,19 @@ function EventsContent() {
       }}
       currentSection='events'
     >
-      <div className='space-y-6'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg6.jpg'
+          alt='Events Dashboard Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
+
+      <div className='space-y-6 relative z-10'>
         <EventHeader count={events.filter(e => new Date(e.date) >= new Date()).length} />
 
         {/* Event Filters */}

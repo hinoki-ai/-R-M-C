@@ -22,10 +22,10 @@ export interface ConvexFunctionError {
 }
 
 // Custom error class for Convex functions
-export class ConvexFunctionError extends Error {
+export class ConvexFunctionErrorClass extends Error {
   public readonly type: ConvexFunctionErrorType
   public readonly details?: any
-  public readonly retryable: boolean
+  public readonly retryable?: boolean
   public readonly code?: string
 
   constructor(
@@ -46,7 +46,7 @@ export class ConvexFunctionError extends Error {
 
 // Error factory functions
 export const createAuthError = (message = 'Authentication required', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.AUTHENTICATION,
     message,
     details,
@@ -55,7 +55,7 @@ export const createAuthError = (message = 'Authentication required', details?: a
   )
 
 export const createAuthzError = (message = 'Insufficient permissions', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.AUTHORIZATION,
     message,
     details,
@@ -64,7 +64,7 @@ export const createAuthzError = (message = 'Insufficient permissions', details?:
   )
 
 export const createValidationError = (message: string, details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.VALIDATION,
     message,
     details,
@@ -73,7 +73,7 @@ export const createValidationError = (message: string, details?: any) =>
   )
 
 export const createNotFoundError = (resource: string, details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.NOT_FOUND,
     `${resource} not found`,
     details,
@@ -82,7 +82,7 @@ export const createNotFoundError = (resource: string, details?: any) =>
   )
 
 export const createConflictError = (message: string, details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.CONFLICT,
     message,
     details,
@@ -91,7 +91,7 @@ export const createConflictError = (message: string, details?: any) =>
   )
 
 export const createRateLimitError = (message = 'Too many requests', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.RATE_LIMIT,
     message,
     details,
@@ -100,7 +100,7 @@ export const createRateLimitError = (message = 'Too many requests', details?: an
   )
 
 export const createServerError = (message = 'Internal server error', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.SERVER_ERROR,
     message,
     details,
@@ -109,7 +109,7 @@ export const createServerError = (message = 'Internal server error', details?: a
   )
 
 export const createDatabaseError = (message = 'Database operation failed', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.DATABASE_ERROR,
     message,
     details,
@@ -118,7 +118,7 @@ export const createDatabaseError = (message = 'Database operation failed', detai
   )
 
 export const createNetworkError = (message = 'Network operation failed', details?: any) =>
-  new ConvexFunctionError(
+  new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.NETWORK_ERROR,
     message,
     details,
@@ -231,7 +231,7 @@ export async function safeDbGet(ctx: any, id: any, tableName: string): Promise<a
     }
     return result
   } catch (error) {
-    if (error instanceof ConvexFunctionError) {
+    if (error instanceof ConvexFunctionErrorClass) {
       throw error
     }
     throw createDatabaseError(`Failed to retrieve ${tableName}`, { originalError: error })
@@ -272,7 +272,7 @@ export async function safeDbQuery(ctx: any, tableName: string): Promise<any[]> {
 }
 
 // Logging helper
-export function logConvexError(error: ConvexFunctionError, context?: any): void {
+export function logConvexError(error: ConvexFunctionErrorClass, context?: any): void {
   console.error('Convex Function Error:', {
     type: error.type,
     message: error.message,
@@ -293,7 +293,7 @@ export function withErrorHandling<TArgs, TResult>(
     try {
       return await handler(ctx, args)
     } catch (error) {
-      if (error instanceof ConvexFunctionError) {
+      if (error instanceof ConvexFunctionErrorClass) {
         logConvexError(error, { contextName, args })
         throw new ConvexError({
           type: error.type,
@@ -302,21 +302,35 @@ export function withErrorHandling<TArgs, TResult>(
           retryable: error.retryable,
           code: error.code
         })
+      } else if (error instanceof Error) {
+        // Handle standard Error objects
+        const unexpectedError = createServerError(
+          error.message || 'An unexpected error occurred',
+          { originalError: error }
+        )
+        logConvexError(unexpectedError, { contextName, args })
+        throw new ConvexError({
+          type: unexpectedError.type,
+          message: unexpectedError.message,
+          details: unexpectedError.details,
+          retryable: unexpectedError.retryable,
+          code: unexpectedError.code
+        })
+      } else {
+        // Handle unknown error types
+        const unexpectedError = createServerError(
+          'An unexpected error occurred',
+          { originalError: error }
+        )
+        logConvexError(unexpectedError, { contextName, args })
+        throw new ConvexError({
+          type: unexpectedError.type,
+          message: unexpectedError.message,
+          details: unexpectedError.details,
+          retryable: unexpectedError.retryable,
+          code: unexpectedError.code
+        })
       }
-
-      // Handle unexpected errors
-      const unexpectedError = createServerError(
-        'An unexpected error occurred',
-        { originalError: error }
-      )
-      logConvexError(unexpectedError, { contextName, args })
-      throw new ConvexError({
-        type: unexpectedError.type,
-        message: unexpectedError.message,
-        details: unexpectedError.details,
-        retryable: unexpectedError.retryable,
-        code: unexpectedError.code
-      })
     }
   }
 }

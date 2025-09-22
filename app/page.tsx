@@ -35,27 +35,21 @@ export default function Home() {
   return (
     <PublicLayout>
       <main className='min-h-screen relative overflow-hidden bg-background' >
-        {/* THEME-ADAPTIVE BACKGROUND */}
+        {/* CLEAN BACKGROUND - NO BLUR EFFECTS */}
         <div className='fixed inset-0 -z-10' >
           <Image
             src='/images/backgrounds/bg2.jpg'
             alt='Pinto Los Pellines Background'
             fill
-            className='object-cover object-center dark:opacity-30 opacity-100'
+            className='object-cover object-center opacity-100'
             priority
             quality={95}
           />
-          {/* Theme-adaptive overlay */}
-          <div className='absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/90 dark:from-black/60 dark:via-black/40 dark:to-black/80' />
-          <div className='absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-blue-900/20 dark:from-red-900/10 dark:via-transparent dark:to-blue-900/10' />
-          <div className='absolute inset-0 bg-gradient-to-r from-green-900/10 via-transparent to-yellow-900/10 dark:from-green-900/5 dark:via-transparent dark:to-yellow-900/5' />
-          {/* Light theme overlay for better contrast */}
-          <div className='absolute inset-0 bg-white/20 dark:bg-transparent' />
         </div>
 
       {/* SUPREME HERO SECTION */}
       <section className='relative min-h-screen flex items-center justify-center pt-20' >
-        <div className='container mx-auto px-4 py-16 relative z-10' >
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 relative z-10' >
           <div className='text-center space-y-12' >
 
             {/* Main Title with Supreme Text Effects */}
@@ -65,7 +59,7 @@ export default function Home() {
                 per='word'
                 speedSegment={0.3}
                 as='h1'
-                className='text-6xl md:text-8xl font-bold text-foreground drop-shadow-2xl'
+                className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground drop-shadow-2xl'
               >
                 🇨🇱 Junta de Vecinos
               </TextEffect>
@@ -76,7 +70,7 @@ export default function Home() {
                 speedSegment={0.3}
                 delay={0.5}
                 as='h2'
-                className='text-3xl md:text-5xl font-semibold bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent drop-shadow-xl'
+                className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent drop-shadow-xl'
               >
                 Pinto Los Pellines, Ñuble
               </TextEffect>
@@ -87,7 +81,7 @@ export default function Home() {
                 speedSegment={0.3}
                 delay={1}
                 as='p'
-                className='text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed drop-shadow-lg'
+                className='text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed drop-shadow-lg'
               >
                 La plataforma comunitaria más avanzada de Chile con tecnología de vanguardia, 
                 cámaras de seguridad inteligentes, pagos integrados y gestión completa de la comunidad.
@@ -97,27 +91,27 @@ export default function Home() {
             {/* Supreme Action Buttons */}
             <AnimatedGroup
               preset='scale'
-              className='flex flex-col sm:flex-row gap-6 justify-center mt-16'
+              className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-12 sm:mt-16'
             >
               <Button
                 size='lg'
                 variant='outline'
-                className='bg-card/10 border-border/30 text-foreground hover:bg-card/20 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-foreground/25 transition-all duration-300 hover:-translate-y-1'
+                className='bg-card/10 border-border/30 text-foreground hover:bg-card/20 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-2xl hover:shadow-foreground/25 transition-all duration-300 hover:-translate-y-1 text-base sm:text-lg'
               >
-                <Link href='/anuncios' className='flex items-center gap-3' >
-                  <Megaphone className='w-6 h-6' />
-                  <span className='text-lg' >Ver Anuncios</span>
-                  <Star className='w-5 h-5' />
+                <Link href='/anuncios' className='flex items-center gap-2 sm:gap-3' >
+                  <Megaphone className='w-5 h-5 sm:w-6 sm:h-6' />
+                  <span className='text-base sm:text-lg' >Ver Anuncios</span>
+                  <Star className='w-4 h-4 sm:w-5 sm:h-5' />
                 </Link>
               </Button>
             </AnimatedGroup>
 
             {/* Supreme Stats with Infinite Slider */}
-            <div className='mt-20' >
+            <div className='mt-12 sm:mt-16 md:mt-20' >
               <InfiniteSlider
                 speed={50}
                 speedOnHover={20}
-                className='py-4'
+                className='py-2 sm:py-4'
               >
                 {[
                   { icon: Users, value: '342', label: 'Familias Activas', color: 'text-blue-400' },
@@ -127,7 +121,7 @@ export default function Home() {
                   { icon: Zap, value: '24/7', label: 'Monitoreo Activo', color: 'text-purple-400' },
                   { icon: Activity, value: '99.9%', label: 'Uptime Garantizado', color: 'text-cyan-400' }
                 ].map((stat, index) => (
-                  <Card key={index} className='mx-4 bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105' >
+                  <Card key={index} className='mx-4 bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105' >
                     <CardContent className='p-6 text-center' >
                       <stat.icon className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
                       <div className='text-3xl font-bold text-foreground mb-2' >{stat.value}</div>
@@ -155,23 +149,138 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SUPREME QUICK ACTIONS */}
-      <section className='relative py-20' >
-        <div className='container mx-auto px-4' >
+      {/* CLIMA Y TIEMPO PINTO LOS PELLINES */}
+      <section className='relative py-8 sm:py-12 lg:py-16'>
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
+          <div className='max-w-6xl mx-auto'>
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-4xl md:text-5xl font-bold text-center mb-16 text-foreground drop-shadow-2xl'
+            className='text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-10 lg:mb-12 text-foreground drop-shadow-2xl'
+          >
+            🌤️ Clima en Pinto Los Pellines
+          </TextEffect>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8'>
+              {/* Current Weather */}
+              <Card className='bg-card border-border'>
+                <CardHeader className='text-center'>
+                  <div className='text-4xl sm:text-6xl mb-3 sm:mb-4'>☀️</div>
+                  <CardTitle className='text-xl sm:text-2xl text-foreground'>Clima Actual</CardTitle>
+                  <CardDescription className='text-muted-foreground'>Pinto Los Pellines, Ñuble</CardDescription>
+                </CardHeader>
+                <CardContent className='text-center'>
+                  <div className='text-3xl sm:text-4xl font-bold text-foreground mb-2'>22°C</div>
+                  <div className='text-muted-foreground mb-3 sm:mb-4'>Despejado</div>
+                  <div className='grid grid-cols-2 gap-4 text-sm text-muted-foreground'>
+                    <div>
+                      <div className='font-semibold'>Sensación</div>
+                      <div>24°C</div>
+                    </div>
+                    <div>
+                      <div className='font-semibold'>Humedad</div>
+                      <div>65%</div>
+                    </div>
+                    <div>
+                      <div className='font-semibold'>Viento</div>
+                      <div>12 km/h</div>
+                    </div>
+                    <div>
+                      <div className='font-semibold'>Presión</div>
+                      <div>1013 hPa</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 5-Day Forecast */}
+              <Card className='bg-card border-border'>
+                <CardHeader>
+                  <CardTitle className='text-xl text-foreground'>Pronóstico 5 Días</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className='space-y-4'>
+                    {[
+                      { day: 'Hoy', icon: '☀️', temp: '22°', desc: 'Despejado' },
+                      { day: 'Mañana', icon: '⛅', temp: '19°', desc: 'Parcialmente nublado' },
+                      { day: 'Miércoles', icon: '🌧️', temp: '16°', desc: 'Lluvia ligera' },
+                      { day: 'Jueves', icon: '☀️', temp: '21°', desc: 'Soleado' },
+                      { day: 'Viernes', icon: '⛅', temp: '18°', desc: 'Nubes dispersas' }
+                    ].map((forecast, index) => (
+                      <div key={index} className='flex items-center justify-between'>
+                        <div className='flex items-center gap-3'>
+                          <span className='text-2xl'>{forecast.icon}</span>
+                          <div>
+                            <div className='text-foreground font-medium'>{forecast.day}</div>
+                            <div className='text-muted-foreground text-sm'>{forecast.desc}</div>
+                          </div>
+                        </div>
+                        <div className='text-foreground font-bold'>{forecast.temp}</div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Agricultural & Community Info */}
+              <Card className='bg-card border-border'>
+                <CardHeader>
+                  <CardTitle className='text-xl text-foreground'>Información Agrícola</CardTitle>
+                  <CardDescription className='text-muted-foreground'>Relevante para la zona rural</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-muted-foreground'>Índice UV</span>
+                      <Badge className='bg-yellow-500/20 text-yellow-300'>Alto (7)</Badge>
+                    </div>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-muted-foreground'>Riego recomendado</span>
+                      <Badge className='bg-blue-500/20 text-blue-300'>Moderado</Badge>
+                    </div>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-muted-foreground'>Calidad del aire</span>
+                      <Badge className='bg-green-500/20 text-green-300'>Buena</Badge>
+                    </div>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-muted-foreground'>Época de cosecha</span>
+                      <Badge className='bg-orange-500/20 text-orange-300'>Invierno</Badge>
+                    </div>
+
+                    <div className='mt-6 p-3 bg-card rounded-lg'>
+                      <h4 className='text-foreground font-medium mb-2'>💡 Recomendaciones</h4>
+                      <ul className='text-muted-foreground text-sm space-y-1'>
+                        <li>• Riego temprano mañana</li>
+                        <li>• Protección solar alta</li>
+                        <li>• Monitoreo de heladas</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SUPREME QUICK ACTIONS */}
+      <section className='relative py-12 sm:py-16 lg:py-20' >
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8' >
+          <TextEffect
+            preset='fade-in-blur'
+            per='word'
+            as='h2'
+            className='text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 text-foreground drop-shadow-2xl'
           >
             Acciones Rápidas
           </TextEffect>
-          
+
           <AnimatedGroup
             preset='scale'
-            className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'
           >
-            <Link href='/dashboard/emergencies' >
+            <Link href='/emergencias' >
               <Card className='group relative overflow-hidden bg-gradient-to-br from-red-900/20 to-red-800/10 border-red-500/30 hover:border-red-400/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25 dark:from-red-900/30 dark:to-red-800/20' >
                 <div className='absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
                 <CardHeader className='pb-3 relative z-10' >
@@ -197,7 +306,7 @@ export default function Home() {
               </Card>
             </Link>
 
-            <Link href='/dashboard/events' >
+            <Link href='/eventos' >
               <Card className='group relative overflow-hidden bg-gradient-to-br from-green-900/20 to-green-800/10 border-green-500/30 hover:border-green-400/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/25 dark:from-green-900/30 dark:to-green-800/20' >
                 <div className='absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
                 <CardHeader className='pb-3 relative z-10' >
@@ -242,7 +351,7 @@ export default function Home() {
             preset='scale'
             className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto'
           >
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105 group'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 group'>
               <CardHeader>
                 <div className='flex items-center justify-between mb-4'>
                   <Badge className='bg-green-500/20 text-green-300'>🏪 Supermercado</Badge>
@@ -264,14 +373,14 @@ export default function Home() {
                 </p>
                 <div className='flex justify-between items-center'>
                   <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
-                  <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+                  <Button size='sm' variant='outline' className='bg-card border-border text-foreground hover:bg-card/80'>
                     Ver Más
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105 group'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 group'>
               <CardHeader>
                 <div className='flex items-center justify-between mb-4'>
                   <Badge className='bg-blue-500/20 text-blue-300'>🍞 Panadería</Badge>
@@ -293,14 +402,14 @@ export default function Home() {
                 </p>
                 <div className='flex justify-between items-center'>
                   <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
-                  <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+                  <Button size='sm' variant='outline' className='bg-card border-border text-foreground hover:bg-card/80'>
                     Ver Más
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105 group'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 group'>
               <CardHeader>
                 <div className='flex items-center justify-between mb-4'>
                   <Badge className='bg-red-500/20 text-red-300'>🍽️ Restaurante</Badge>
@@ -322,7 +431,7 @@ export default function Home() {
                 </p>
                 <div className='flex justify-between items-center'>
                   <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
-                  <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+                  <Button size='sm' variant='outline' className='bg-card border-border text-foreground hover:bg-card/80'>
                     Ver Más
                   </Button>
                 </div>
@@ -331,28 +440,30 @@ export default function Home() {
           </AnimatedGroup>
 
           <div className='text-center mt-8'>
-            <Button variant='gradientWarm'>
-              Ver Todos los Comercios →
+            <Button variant='gradientWarm' asChild>
+              <Link href='/comercios'>
+                Ver Todos los Comercios →
+              </Link>
             </Button>
           </div>
         </div>
       </section>
 
       {/* SUPREME COMMUNITY STATS */}
-      <section className='relative py-20' >
-        <div className='container mx-auto px-4 relative z-10' >
+      <section className='relative py-12 sm:py-16 lg:py-20' >
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10' >
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-4xl md:text-5xl font-bold text-center mb-16 text-foreground drop-shadow-2xl'
+            className='text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 text-foreground drop-shadow-2xl'
           >
             Estadísticas de la Comunidad
           </TextEffect>
-          
+
           <AnimatedGroup
             preset='scale'
-            className='grid grid-cols-2 md:grid-cols-4 gap-8'
+            className='grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'
           >
             {[
               { icon: Users, value: '342', label: 'Vecinos Registrados', color: 'from-blue-500 to-cyan-500' },
@@ -376,136 +487,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CLIMA Y TIEMPO PINTO LOS PELLINES */}
-      <section className='relative py-16'>
-        <div className='container mx-auto px-4 relative z-10'>
-          <div className='max-w-6xl mx-auto'>
-          <TextEffect
-            preset='fade-in-blur'
-            per='word'
-            as='h2'
-            className='text-3xl md:text-4xl font-bold text-center mb-12 text-foreground drop-shadow-2xl'
-          >
-            🌤️ Clima en Pinto Los Pellines
-          </TextEffect>
-
-            <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-              {/* Current Weather */}
-              <Card className='bg-card/10 border-border/20'>
-                <CardHeader className='text-center'>
-                  <div className='text-6xl mb-4'>☀️</div>
-                  <CardTitle className='text-2xl text-foreground'>Clima Actual</CardTitle>
-                  <CardDescription className='text-muted-foreground'>Pinto Los Pellines, Ñuble</CardDescription>
-                </CardHeader>
-                <CardContent className='text-center'>
-                  <div className='text-4xl font-bold text-foreground mb-2'>22°C</div>
-                  <div className='text-muted-foreground mb-4'>Despejado</div>
-                  <div className='grid grid-cols-2 gap-4 text-sm text-muted-foreground'>
-                    <div>
-                      <div className='font-semibold'>Sensación</div>
-                      <div>24°C</div>
-                    </div>
-                    <div>
-                      <div className='font-semibold'>Humedad</div>
-                      <div>65%</div>
-                    </div>
-                    <div>
-                      <div className='font-semibold'>Viento</div>
-                      <div>12 km/h</div>
-                    </div>
-                    <div>
-                      <div className='font-semibold'>Presión</div>
-                      <div>1013 hPa</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 5-Day Forecast */}
-              <Card className='bg-card/10 border-border/20'>
-                <CardHeader>
-                  <CardTitle className='text-xl text-foreground'>Pronóstico 5 Días</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='space-y-4'>
-                    {[
-                      { day: 'Hoy', icon: '☀️', temp: '22°', desc: 'Despejado' },
-                      { day: 'Mañana', icon: '⛅', temp: '19°', desc: 'Parcialmente nublado' },
-                      { day: 'Miércoles', icon: '🌧️', temp: '16°', desc: 'Lluvia ligera' },
-                      { day: 'Jueves', icon: '☀️', temp: '21°', desc: 'Soleado' },
-                      { day: 'Viernes', icon: '⛅', temp: '18°', desc: 'Nubes dispersas' }
-                    ].map((forecast, index) => (
-                      <div key={index} className='flex items-center justify-between'>
-                        <div className='flex items-center gap-3'>
-                          <span className='text-2xl'>{forecast.icon}</span>
-                          <div>
-                            <div className='text-foreground font-medium'>{forecast.day}</div>
-                            <div className='text-muted-foreground text-sm'>{forecast.desc}</div>
-                          </div>
-                        </div>
-                        <div className='text-foreground font-bold'>{forecast.temp}</div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Agricultural & Community Info */}
-              <Card className='bg-card/10 border-border/20'>
-                <CardHeader>
-                  <CardTitle className='text-xl text-foreground'>Información Agrícola</CardTitle>
-                  <CardDescription className='text-muted-foreground'>Relevante para la zona rural</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className='space-y-4'>
-                    <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Índice UV</span>
-                      <Badge className='bg-yellow-500/20 text-yellow-300'>Alto (7)</Badge>
-                    </div>
-                    <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Riego recomendado</span>
-                      <Badge className='bg-blue-500/20 text-blue-300'>Moderado</Badge>
-                    </div>
-                    <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Calidad del aire</span>
-                      <Badge className='bg-green-500/20 text-green-300'>Buena</Badge>
-                    </div>
-                    <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Época de cosecha</span>
-                      <Badge className='bg-orange-500/20 text-orange-300'>Invierno</Badge>
-                    </div>
-
-                    <div className='mt-6 p-3 bg-card/10 rounded-lg'>
-                      <h4 className='text-foreground font-medium mb-2'>💡 Recomendaciones</h4>
-                      <ul className='text-muted-foreground text-sm space-y-1'>
-                        <li>• Riego temprano mañana</li>
-                        <li>• Protección solar alta</li>
-                        <li>• Monitoreo de heladas</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* SUPREME RECENT ACTIVITY */}
-      <section className='relative py-20' >
-        <div className='container mx-auto px-4' >
+      <section className='relative py-12 sm:py-16 lg:py-20' >
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8' >
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-4xl md:text-5xl font-bold text-center mb-16 text-foreground drop-shadow-2xl'
+            className='text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 text-foreground drop-shadow-2xl'
           >
             Actividad Reciente
           </TextEffect>
-          
+
           <AnimatedGroup
             preset='slide'
-            className='max-w-5xl mx-auto space-y-6'
+            className='max-w-5xl mx-auto space-y-4 sm:space-y-6'
           >
             {[
               {
@@ -560,96 +557,96 @@ export default function Home() {
       </section>
 
       {/* LOGROS Y PROYECTOS COMUNITARIOS */}
-      <section className='relative py-16'>
-        <div className='container mx-auto px-4 relative z-10'>
+      <section className='relative py-8 sm:py-12 lg:py-16'>
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-3xl md:text-4xl font-bold text-center mb-12 text-foreground drop-shadow-2xl'
+            className='text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-10 lg:mb-12 text-foreground drop-shadow-2xl'
           >
             🏆 Logros y Proyectos Comunitarios
           </TextEffect>
 
           <AnimatedGroup
             preset='scale'
-            className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto'
+            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto'
           >
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
-              <CardHeader className='text-center'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
                 <div className='text-4xl mb-4'>🚰</div>
-                <CardTitle className='text-xl text-foreground'>Sistema de Agua Potable</CardTitle>
-                <Badge className='bg-green-500/20 text-green-300 mt-2'>Completado 2023</Badge>
+                <CardTitle className='text-xl text-foreground mb-3'>Sistema de Agua Potable</CardTitle>
+                <Badge className='bg-green-500/20 text-green-300 border-green-500/30'>Completado 2023</Badge>
               </CardHeader>
-              <CardContent>
-                <p className='text-muted-foreground text-sm text-center mb-4'>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
                   Proyecto de $45M para agua potable en 150 hogares.
                   Financiado por fondos regionales y aportes comunitarios.
                 </p>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-green-300'>150</div>
-                  <div className='text-muted-foreground/60 text-xs'>Hogares beneficiados</div>
+                <div className='text-center mt-auto'>
+                  <div className='text-2xl font-bold text-green-300 mb-1'>150</div>
+                  <div className='text-muted-foreground/60 text-xs font-medium'>Hogares beneficiados</div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
-              <CardHeader className='text-center'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
                 <div className='text-4xl mb-4'>🌳</div>
-                <CardTitle className='text-xl text-foreground'>Parque Comunitario</CardTitle>
-                <Badge className='bg-blue-500/20 text-blue-300 mt-2'>En Desarrollo</Badge>
+                <CardTitle className='text-xl text-foreground mb-3'>Parque Comunitario</CardTitle>
+                <Badge className='bg-blue-500/20 text-blue-300 border-blue-500/30'>En Desarrollo</Badge>
               </CardHeader>
-              <CardContent>
-                <p className='text-muted-foreground text-sm text-center mb-4'>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
                   Espacio recreativo de 2 hectáreas con áreas verdes,
                   juegos infantiles y zona deportiva.
                 </p>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-blue-300'>75%</div>
-                  <div className='text-muted-foreground/60 text-xs'>Completado</div>
+                <div className='text-center mt-auto'>
+                  <div className='text-2xl font-bold text-blue-300 mb-1'>75%</div>
+                  <div className='text-muted-foreground/60 text-xs font-medium'>Completado</div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
-              <CardHeader className='text-center'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
                 <div className='text-4xl mb-4'>📹</div>
-                <CardTitle className='text-xl text-foreground'>Sistema de Seguridad</CardTitle>
-                <Badge className='bg-yellow-500/20 text-yellow-300 mt-2'>Completado 2024</Badge>
+                <CardTitle className='text-xl text-foreground mb-3'>Sistema de Seguridad</CardTitle>
+                <Badge className='bg-yellow-500/20 text-yellow-300 border-yellow-500/30'>Completado 2024</Badge>
               </CardHeader>
-              <CardContent>
-                <p className='text-muted-foreground text-sm text-center mb-4'>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
                   25 cámaras de seguridad y monitoreo 24/7.
                   Reducción del 60% en incidentes reportados.
                 </p>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-yellow-300'>25</div>
-                  <div className='text-muted-foreground/60 text-xs'>Cámaras instaladas</div>
+                <div className='text-center mt-auto'>
+                  <div className='text-2xl font-bold text-yellow-300 mb-1'>25</div>
+                  <div className='text-muted-foreground/60 text-xs font-medium'>Cámaras instaladas</div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
-              <CardHeader className='text-center'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105 h-full'>
+              <CardHeader className='text-center pb-4'>
                 <div className='text-4xl mb-4'>🎓</div>
-                <CardTitle className='text-xl text-foreground'>Programa Educativo</CardTitle>
-                <Badge className='bg-purple-500/20 text-purple-300 mt-2'>Activo</Badge>
+                <CardTitle className='text-xl text-foreground mb-3'>Programa Educativo</CardTitle>
+                <Badge className='bg-purple-500/20 text-purple-300 border-purple-500/30'>Activo</Badge>
               </CardHeader>
-              <CardContent>
-                <p className='text-muted-foreground text-sm text-center mb-4'>
+              <CardContent className='pt-0'>
+                <p className='text-muted-foreground text-sm text-center mb-6 leading-relaxed'>
                   Talleres gratuitos para jóvenes: computación,
                   idiomas y emprendimiento local.
                 </p>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-purple-300'>85</div>
-                  <div className='text-muted-foreground/60 text-xs'>Participantes activos</div>
+                <div className='text-center mt-auto'>
+                  <div className='text-2xl font-bold text-purple-300 mb-1'>85</div>
+                  <div className='text-muted-foreground/60 text-xs font-medium'>Participantes activos</div>
                 </div>
               </CardContent>
             </Card>
           </AnimatedGroup>
 
           <div className='text-center mt-8'>
-            <Button variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+            <Button variant='outline' className='bg-card border-border text-foreground hover:bg-card/80'>
               Ver Todos los Proyectos →
             </Button>
           </div>
@@ -657,13 +654,13 @@ export default function Home() {
       </section>
 
       {/* APOYO Y COLABORACIÓN COMUNITARIA */}
-      <section className='relative py-20'>
-        <div className='container mx-auto px-4 relative z-10'>
+      <section className='relative py-12 sm:py-16 lg:py-20'>
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-4xl md:text-5xl font-bold text-center mb-4 text-foreground drop-shadow-2xl'
+            className='text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 text-foreground drop-shadow-2xl'
           >
             Apoyo y Colaboración Comunitaria
           </TextEffect>
@@ -672,7 +669,7 @@ export default function Home() {
             per='line'
             delay={0.5}
             as='p'
-            className='text-xl mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed drop-shadow-lg text-center'
+            className='text-lg sm:text-xl mb-8 sm:mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed drop-shadow-lg text-center'
           >
             Tu contribución hace posible el desarrollo de Pinto Los Pellines.
             Conoce las formas en que puedes apoyar y participar en el crecimiento de nuestra comunidad.
@@ -680,9 +677,9 @@ export default function Home() {
 
           <AnimatedGroup
             preset='scale'
-            className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto'
+            className='grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto'
           >
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105'>
               <CardHeader className='text-center'>
                 <CardTitle className='text-2xl text-foreground mb-2'>Donación Básica</CardTitle>
                 <div className='text-4xl font-bold text-emerald-300 mb-2'>$5.000</div>
@@ -701,7 +698,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-              <Card className='bg-gradient-to-br from-emerald-600/20 to-green-600/20 border-emerald-400/30 hover:scale-105 transition-all duration-300 relative dark:from-emerald-600/30 dark:to-green-600/30'>
+              <Card className='bg-gradient-to-br from-emerald-600 to-green-600 border-emerald-400 hover:scale-105 transition-all duration-300 relative'>
               <div className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-foreground px-4 py-1 rounded-full text-sm font-semibold'>
                 Más Popular
               </div>
@@ -724,7 +721,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className='bg-card/10 border-border/20 hover:bg-card/20 transition-all duration-300 hover:scale-105'>
+            <Card className='bg-card border-border hover:bg-card/80 transition-all duration-300 hover:scale-105'>
               <CardHeader className='text-center'>
                 <CardTitle className='text-2xl text-foreground mb-2'>Patrocinador Mayor</CardTitle>
                 <div className='text-4xl font-bold text-emerald-300 mb-2'>$50.000</div>
@@ -749,7 +746,7 @@ export default function Home() {
             <p className='text-muted-foreground mb-4'>
               ¿Prefieres contribuir de otra forma? Contáctanos para opciones personalizadas.
             </p>
-            <Button variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+            <Button variant='outline' className='bg-card border-border text-foreground hover:bg-card/80'>
               Otras Formas de Contribuir
             </Button>
           </div>
@@ -757,13 +754,13 @@ export default function Home() {
       </section>
 
       {/* SUPREME EMERGENCY SECTION */}
-      <section className='relative py-20' >
-        <div className='container mx-auto px-4 text-center relative z-10' >
+      <section className='relative py-12 sm:py-16 lg:py-20' >
+        <div className='container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10' >
           <TextEffect
             preset='fade-in-blur'
             per='word'
             as='h2'
-            className='text-4xl md:text-6xl font-bold mb-8 text-foreground drop-shadow-2xl'
+            className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 text-foreground drop-shadow-2xl'
           >
             ¿Necesitas Ayuda de Emergencia?
           </TextEffect>
@@ -772,22 +769,22 @@ export default function Home() {
             per='line'
             delay={0.5}
             as='p'
-            className='text-2xl mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed drop-shadow-lg'
+            className='text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed drop-shadow-lg'
           >
-            En situaciones de riesgo, estamos aquí para ayudarte las 24 horas del día, 
+            En situaciones de riesgo, estamos aquí para ayudarte las 24 horas del día,
             los 7 días de la semana con nuestro sistema de emergencias inteligente.
           </TextEffect>
-          
+
           <AnimatedGroup preset='bounce' className='flex justify-center' >
             <PulsatingButton
               pulseColor='#ef4444'
               duration='1.5s'
-              className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-foreground font-bold px-12 py-6 rounded-3xl shadow-2xl hover:shadow-red-500/50 transition-all duration-300 hover:-translate-y-2 text-2xl'
+              className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-foreground font-bold px-8 sm:px-12 py-4 sm:py-6 rounded-3xl shadow-2xl hover:shadow-red-500/50 transition-all duration-300 hover:-translate-y-2 text-lg sm:text-xl md:text-2xl'
             >
-              <Link href='/dashboard/emergencies' className='flex items-center gap-4' >
-                <AlertTriangle className='w-8 h-8' />
+              <Link href='/emergencias' className='flex items-center gap-2 sm:gap-4' >
+                <AlertTriangle className='w-6 h-6 sm:w-8 sm:h-8' />
                 <span>Botón de Emergencia</span>
-                <Zap className='w-6 h-6' />
+                <Zap className='w-5 h-5 sm:w-6 sm:h-6' />
               </Link>
             </PulsatingButton>
           </AnimatedGroup>

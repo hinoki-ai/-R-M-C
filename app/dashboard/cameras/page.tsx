@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic'
 
@@ -122,7 +124,7 @@ function CamerasPageContent() {
     {
       maxRetries: 3,
       retryDelay: 1000,
-      onError: (error) => {
+      onError: (error: any) => {
         console.error('Cameras page error:', error)
       }
     }
@@ -200,7 +202,18 @@ function CamerasPageContent() {
   }
 
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <div className='container mx-auto px-4 py-8 relative'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg5.jpg'
+          alt='Cameras Dashboard Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
       <div className='flex items-center justify-between mb-8'>
         <div>
           <h1 className='text-3xl font-bold flex items-center gap-3'>

@@ -21,7 +21,14 @@ export function MobileFeaturesDemo() {
   const { fadeIn, scale, isReducedMotion, metrics, useIntersectionAnimation } = usePerformanceAnimations();
   const { isOnline, isSlowConnection, wasOffline, queueForSync, offlineFetch } = useOfflineFirst();
 
-  const { ref: demoRef, isVisible } = useIntersectionAnimation(0.5) as { ref: React.RefObject<HTMLDivElement>, isVisible: boolean };
+  const { ref: setDemoRef, isVisible } = useIntersectionAnimation(0.5);
+  const demoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (demoRef.current) {
+      setDemoRef(demoRef.current);
+    }
+  }, [setDemoRef]);
 
   // Animate counter on mount
   useEffect(() => {

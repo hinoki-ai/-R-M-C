@@ -90,16 +90,19 @@ export interface WeatherData {
   temperature: number
   humidity: number
   pressure: number
+  surfacePressure?: number
   windSpeed: number
   windDirection: number
+  windGusts?: number
   precipitation: number
-  uvIndex: number
+  uvIndex?: number
   visibility: number
   description: string
   icon: string
-  feelsLike: number
-  dewPoint: number
-  cloudCover: number
+  feelsLike?: number
+  dewPoint?: number
+  cloudCover?: number
+  weatherCode?: number
   location: string
   source: 'api' | 'manual' | 'sensor'
   isHistorical?: boolean
@@ -132,12 +135,13 @@ export interface WeatherForecast {
   windDirection: number
   description: string
   icon: string
-  uvIndex: number
+  uvIndex?: number
   sunrise: string
   sunset: string
   location: string
   source: 'api' | 'manual'
   updatedAt: string
+  evapotranspiration?: number
 }
 
 export interface SystemStats {

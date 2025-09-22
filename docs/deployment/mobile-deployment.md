@@ -1,38 +1,40 @@
 # JuntaDeVecinos Mobile Deployment
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
-[![PWA](https://img.shields.io/badge/PWA-supported-green.svg)](#progressive-web-app-pwa)
-[![Android](https://img.shields.io/badge/Android-supported-green.svg)](#android-deployment)
-[![iOS](https://img.shields.io/badge/iOS-supported-green.svg)](#ios-deployment)
-[![Capacitor](https://img.shields.io/badge/Capacitor-7.0-blue.svg)](#capacitor-integration)
+[![PWA](https://img.shields.io/badge/PWA-supported-green.svg)](#-progressive-web-app-pwa)
+[![Android](https://img.shields.io/badge/Android-supported-green.svg)](#-android-deployment)
+[![iOS](https://img.shields.io/badge/iOS-supported-green.svg)](#-ios-deployment)
+[![Capacitor](https://img.shields.io/badge/Capacitor-7.0-blue.svg)](#-capacitor-integration)
 
 > Complete mobile deployment guide for JuntaDeVecinos - PWA, Android, and iOS deployment
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Progressive Web App (PWA)](#progressive-web-app-pwa)
-4. [Capacitor Integration](#capacitor-integration)
-5. [Android Deployment](#android-deployment)
-6. [iOS Deployment](#ios-deployment)
-7. [Configuration](#configuration)
-8. [Testing Strategy](#testing-strategy)
-9. [Performance Optimization](#performance-optimization)
-10. [Troubleshooting](#troubleshooting)
-11. [App Store Guidelines](#app-store-guidelines)
-12. [Monitoring & Analytics](#monitoring--analytics)
+1. [Overview](#-overview)
+2. [Prerequisites](#-prerequisites)
+3. [Progressive Web App (PWA)](#-progressive-web-app-pwa)
+4. [Capacitor Integration](#-capacitor-integration)
+5. [Android Deployment](#-android-deployment)
+6. [iOS Deployment](#-ios-deployment)
+7. [Configuration](#️-configuration)
+8. [Testing Strategy](#-testing-strategy)
+9. [Performance Optimization](#-performance-optimization)
+10. [Troubleshooting](#-troubleshooting)
+11. [App Store Guidelines](#-app-store-guidelines)
+12. [Monitoring & Analytics](#-monitoring--analytics)
 
 ## 📋 Overview
 
 JuntaDeVecinos supports multiple mobile deployment strategies to ensure your application reaches users on all platforms with optimal performance and user experience.
 
 ### Deployment Options
+
 - **Progressive Web App (PWA)**: Instant installation from any modern browser
 - **Android Native App**: Full Android app with Google Play Store distribution
 - **iOS Native App**: Full iOS app with App Store distribution
 
 ### Key Features
+
 - ✅ **Cross-Platform Consistency**: Identical functionality across all platforms
 - ✅ **Offline Capability**: Full offline functionality with service workers
 - ✅ **Native Performance**: Optimized performance for each platform
@@ -42,22 +44,26 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 ## 📋 Prerequisites
 
 ### Development Environment
+
 - **Node.js**: Version 18+ installed
 - **npm/yarn**: Package manager
 - **Git**: Version control system
 
 ### Android Development
+
 - **Android Studio**: Latest stable version (recommended: Arctic Fox or later)
 - **Java JDK**: Version 11 or 17
 - **Android SDK**: API level 21+ (Android 5.0+)
 
 ### iOS Development
+
 - **macOS**: Required for iOS development
 - **Xcode**: Version 14+ (includes iOS Simulator)
 - **iOS Simulator**: For testing without physical devices
 - **Apple Developer Account**: For App Store deployment
 
 ### System Requirements
+
 - **RAM**: Minimum 8GB (16GB recommended)
 - **Storage**: 20GB+ free space for SDKs and emulators
 - **Internet**: Stable connection for downloads and updates
@@ -82,6 +88,7 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 6. **Launch**: Find JuntaDeVecinos icon on home screen
 
 ### PWA Features Included
+
 - ✅ **Web App Manifest**: Defines app metadata and icons (`public/manifest.json`)
 - ✅ **Service Worker**: Enables offline functionality (`public/sw.js`)
 - ✅ **Mobile Optimization**: Responsive design and touch interactions
@@ -90,6 +97,7 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 - ✅ **Push Notifications**: Web push notification support
 
 ### PWA Benefits
+
 - **Zero App Store Approval**: Instant deployment and updates
 - **Cross-Platform**: Works on any device with a modern browser
 - **Automatic Updates**: No user intervention required for updates
@@ -102,6 +110,7 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 Capacitor is an open-source native runtime that allows you to build native mobile applications using web technologies. It provides a bridge between your web app and native mobile features.
 
 ### Capacitor Features
+
 - ✅ **Native Plugins**: Access to device hardware and native APIs
 - ✅ **App Store Deployment**: Submit to App Store and Google Play
 - ✅ **Native Performance**: Optimized performance for each platform
@@ -129,6 +138,7 @@ npm run cap:open:android
 ```
 
 #### Android Studio Configuration
+
 1. **Wait for Gradle Sync**: Allow Android Studio to download dependencies
 2. **Configure SDK**: Ensure Android SDK API 21+ is installed
 3. **Set Build Variant**: Debug for development, Release for production
@@ -159,6 +169,7 @@ npm run cap:open:android
 ```
 
 #### Build Configuration
+
 - **Target SDK**: API 34 (Android 14)
 - **Minimum SDK**: API 21 (Android 5.0)
 - **Build Tools**: Latest stable version
@@ -167,12 +178,14 @@ npm run cap:open:android
 ### Google Play Store Deployment
 
 #### Prepare for Upload
+
 1. **Optimize APK/AAB**: Use Android App Bundle for smaller downloads
 2. **Test on Devices**: Test on various Android devices and OS versions
 3. **Screenshot Preparation**: Capture screenshots for different device sizes
 4. **Privacy Policy**: Ensure privacy policy is accessible in-app
 
 #### Play Console Submission
+
 1. **Create App**: Set up new app in Google Play Console
 2. **Upload Bundle**: Upload your AAB file
 3. **Store Listing**: Add title, description, screenshots, and icons
@@ -182,7 +195,7 @@ npm run cap:open:android
 
 ## 🍎 iOS Deployment
 
-### Development Setup
+### iOS Development Setup
 
 #### Initial iOS Project Setup
 ```bash
@@ -201,13 +214,14 @@ npm run cap:open:ios
 ```
 
 #### Xcode Configuration
+
 1. **Select Team**: Choose your Apple Developer team
 2. **Bundle Identifier**: Ensure unique app identifier
 3. **Deployment Target**: Set minimum iOS version (recommended: iOS 12.0+)
 4. **Device Orientation**: Configure supported orientations
 5. **Capabilities**: Enable required app capabilities
 
-### Development Workflow
+### iOS Development Workflow
 ```bash
 # Quick development cycle
 npm run build:mobile
@@ -220,7 +234,7 @@ npm run cap:open:ios
 # 3. Test your app
 ```
 
-### Production Build Process
+### iOS Production Build Process
 
 #### Create Archive
 ```bash
@@ -232,7 +246,8 @@ npm run cap:open:ios
 # Follow upload wizard
 ```
 
-#### Build Configuration
+#### iOS Build Configuration
+
 - **Deployment Target**: iOS 12.0+
 - **Device Family**: iPhone and iPad
 - **Build Settings**: Optimized for App Store distribution
@@ -241,6 +256,7 @@ npm run cap:open:ios
 ### App Store Connect Deployment
 
 #### Prepare for Submission
+
 1. **App Icons**: Generate and add all required icon sizes
 2. **Screenshots**: Capture screenshots for different device sizes
 3. **App Description**: Write compelling app description and keywords
@@ -248,6 +264,7 @@ npm run cap:open:ios
 5. **Support URL**: Provide support website/contact information
 
 #### App Store Submission
+
 1. **Create App**: Set up new app in App Store Connect
 2. **Upload Build**: Upload your archived build
 3. **App Information**: Fill in app metadata and descriptions
@@ -325,12 +342,14 @@ export default config
 ## 🧪 Testing Strategy
 
 ### PWA Testing
+
 - **Installation**: Test add-to-home-screen functionality on various browsers
 - **Offline Mode**: Verify service worker caching and offline functionality
 - **Updates**: Test automatic updates and cache invalidation
 - **Performance**: Monitor Core Web Vitals and Lighthouse scores
 
 ### Native App Testing
+
 - **Device Testing**: Test on physical devices across different screen sizes
 - **Emulator Testing**: Use Android Studio and Xcode simulators
 - **Platform APIs**: Verify native plugin functionality
@@ -352,6 +371,7 @@ npm run quality-check
 ```
 
 ### Test Coverage Areas
+
 - ✅ **User Interface**: Responsive design and touch interactions
 - ✅ **Authentication**: Login/logout flows across platforms
 - ✅ **Data Synchronization**: Offline/online data handling
@@ -361,18 +381,21 @@ npm run quality-check
 ## ⚡ Performance Optimization
 
 ### Bundle Size Optimization
+
 - **Code Splitting**: Automatic route-based code splitting
 - **Tree Shaking**: Remove unused code from bundles
 - **Compression**: GZIP compression for network transfer
 - **Caching**: Intelligent caching strategies
 
 ### Mobile-Specific Optimizations
+
 - **Image Optimization**: WebP/AVIF formats with responsive images
 - **Font Loading**: Optimized web font loading strategies
 - **Critical CSS**: Inline critical styles for faster rendering
 - **Lazy Loading**: Defer non-critical resource loading
 
 ### Performance Benchmarks
+
 - **PWA**: < 3 second first load time
 - **Native Android**: < 2 second cold start time
 - **Native iOS**: < 1.5 second cold start time
@@ -442,13 +465,13 @@ cd android
 
 ### Google Play Store Requirements
 
-#### Technical Requirements
+#### Android Technical Requirements
 - **Target API Level**: API 34 (Android 14) or higher
 - **Minimum API Level**: API 21 (Android 5.0) or higher
 - **App Size**: Keep under 150MB for optimal download
 - **64-bit Support**: Required for all new apps
 
-#### Content Guidelines
+#### Android Content Guidelines
 - **Privacy Policy**: Required for apps with user data
 - **Content Rating**: Complete rating questionnaire
 - **Target Audience**: Clearly define appropriate age groups
@@ -456,13 +479,13 @@ cd android
 
 ### Apple App Store Requirements
 
-#### Technical Requirements
+#### iOS Technical Requirements
 - **iOS Version**: Support iOS 12.0 or later
 - **Device Family**: iPhone and iPad support
 - **App Size**: Optimize for cellular downloads
 - **Performance**: Meet Apple's performance guidelines
 
-#### Content Guidelines
+#### iOS Content Guidelines
 - **App Review Guidelines**: Comply with all 31 guidelines
 - **Privacy Labels**: Detailed privacy information required
 - **Kids Category**: Special requirements for children's apps
@@ -490,7 +513,7 @@ cd android
 
 ---
 
-## ✅ Deployment Complete!
+## ✅ Deployment Complete
 
 **🎉 Your JuntaDeVecinos mobile deployment is ready!**
 
@@ -518,3 +541,4 @@ cd android
 ---
 
 **Built with ❤️ using Capacitor 7 for perfect cross-platform mobile experiences.**
+

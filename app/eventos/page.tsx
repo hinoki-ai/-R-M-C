@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Calendar as CalendarIcon, Clock, MapPin, Plus, Star, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -62,8 +63,19 @@ export default function EventsPage() {
     : events.filter(event => event.category === selectedCategory);
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'>
-      <header className='bg-white/80 backdrop-blur-md border-b border-gray-200'>
+    <main className='min-h-screen relative'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg8.jpg'
+          alt='Events Page Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
+      <header className='bg-card border-b border-gray-200 relative z-10'>
         <div className='container mx-auto px-4 py-6'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-4'>
@@ -77,7 +89,7 @@ export default function EventsPage() {
         </div>
       </header>
 
-      <div className='container mx-auto px-4 py-8'>
+      <div className='container mx-auto px-4 py-8 relative z-10'>
         <AnimatedGroup preset='scale' className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {filteredEvents.map((event) => (
             <Card key={event.id} className='hover:shadow-lg transition-shadow'>

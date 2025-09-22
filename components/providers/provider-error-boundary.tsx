@@ -3,7 +3,7 @@
 import { AlertTriangle, RefreshCw, Settings } from 'lucide-react'
 import * as React from 'react'
 
-import { ComponentErrorBoundary } from '@/components/shared/component-error-boundary'
+import { ComponentErrorBoundary, useComponentErrorBoundary } from '@/components/shared/component-error-boundary'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 

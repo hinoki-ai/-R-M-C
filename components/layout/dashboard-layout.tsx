@@ -8,6 +8,7 @@
  * Public community showcase content is available on the homepage (/) for everyone to see.
  */
 
+import Image from 'next/image'
 import { AppSidebar } from '@/app/dashboard/app-sidebar'
 import { LoadingBar } from '@/app/dashboard/loading-bar'
 import { SiteHeader } from '@/app/dashboard/site-header'
@@ -29,8 +30,20 @@ export default function DashboardLayout({
           '--header-height': 'calc(var(--spacing) * 12)',
         } as React.CSSProperties
       }
-      className='group/layout'
+      className='group/layout relative'
     >
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg3.jpg'
+          alt='Dashboard Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
+
       <AppSidebar />
       <SidebarInset>
         <LoadingBar />

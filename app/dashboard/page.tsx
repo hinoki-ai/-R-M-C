@@ -55,7 +55,7 @@ function CommunityEvents() {
       <CardContent>
         <div className='space-y-3'>
           {events.map((event) => (
-            <div key={event.id} className='flex items-center justify-between p-3 bg-muted rounded'>
+            <div key={event.id} className='flex items-center justify-between p-3 bg-muted/80 rounded'>
               <div>
                 <p className='font-medium text-sm'>{event.title}</p>
                 <p className='text-xs text-muted-foreground'>{event.location}</p>
@@ -165,7 +165,7 @@ function NeighborhoodDirectory() {
       <CardContent>
         <div className='space-y-3'>
           {services.map((service, index) => (
-            <div key={index} className='flex items-center justify-between p-3 bg-muted rounded'>
+            <div key={index} className='flex items-center justify-between p-3 bg-muted/80 rounded'>
               <div>
                 <p className='font-medium text-sm'>{service.name}</p>
                 <p className='text-xs text-muted-foreground'>{service.contact}</p>
@@ -398,7 +398,7 @@ function DashboardContent() {
         <BentoGridItem colSpan={4} className='p-6'>
           <DashboardSection isLoading={isInitialLoading} type='metrics'>
             <div className='grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
-            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted/30'>
+            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>Alertas Activas</CardTitle>
                 <IconAlertTriangle className='h-4 w-4 text-red-600' />
@@ -408,7 +408,7 @@ function DashboardContent() {
                 <p className='text-xs text-muted-foreground'>Requieren atención inmediata</p>
               </CardContent>
             </Card>
-            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted/30'>
+            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>Solicitudes Pendientes</CardTitle>
                 <IconAlertCircle className='h-4 w-4 text-orange-600' />
@@ -418,7 +418,7 @@ function DashboardContent() {
                 <p className='text-xs text-muted-foreground'>Mantenimiento y reparaciones</p>
               </CardContent>
             </Card>
-            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted/30'>
+            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>Eventos Próximos</CardTitle>
                 <IconCalendar className='h-4 w-4 text-blue-600' />
@@ -428,7 +428,7 @@ function DashboardContent() {
                 <p className='text-xs text-muted-foreground'>Esta semana</p>
               </CardContent>
             </Card>
-            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted/30'>
+            <Card className='hover:shadow-md transition-shadow duration-200 border-0 bg-muted'>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>Participación</CardTitle>
                 <IconUsers className='h-4 w-4 text-green-600' />

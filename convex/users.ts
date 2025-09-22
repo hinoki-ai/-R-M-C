@@ -6,11 +6,13 @@ import {
   requireUser,
   validateRequired,
   validateStringLength,
+  validateEnum,
   safeDbQuery,
   withErrorHandling,
   createValidationError,
-  createNotFoundError
-} from './utils/error-handler';
+  createNotFoundError,
+  createConflictError
+} from './utils/error_handler';
 
 // Get all users (for admin purposes)
 export const listUsers = query({
@@ -36,7 +38,7 @@ export const getUserByExternalId = query({
   args: {
     externalId: v.string(),
   },
-  handler: withErrorHandling(async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args: { externalId: string }) => {
     validateRequired(args.externalId, 'externalId');
     validateStringLength(args.externalId, 'externalId', 1, 100);
 
@@ -78,6 +80,15 @@ export const getCurrentUser = async (ctx: any) => {
   return user;
 };
 
+// Get current user or throw error if not found
+export const getCurrentUserOrThrow = async (ctx: any) => {
+  const user = await getCurrentUser(ctx);
+  if (!user) {
+    throw createNotFoundError('User not found');
+  }
+  return user;
+};
+
 // Alias for listUsers to match calendar component expectations
 export const list = listUsers;
 
@@ -87,7 +98,7 @@ export const upsertFromClerk = internalMutation({
     data: v.any(),
   },
   returns: v.null(),
-  handler: withErrorHandling(async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args: { data: any }) => {
     validateRequired(args.data, 'data');
 
     const clerkUser = args.data;
@@ -135,7 +146,7 @@ export const deleteFromClerk = internalMutation({
     clerkUserId: v.string(),
   },
   returns: v.null(),
-  handler: withErrorHandling(async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args: { clerkUserId: string }) => {
     validateRequired(args.clerkUserId, 'clerkUserId');
     validateStringLength(args.clerkUserId, 'clerkUserId', 1, 100);
 
@@ -167,7 +178,7 @@ export const updateUserExternalId = mutation({
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   }),
-  handler: withErrorHandling(async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args: { currentExternalId: string; newExternalId: string; newName?: string }) => {
     validateRequired(args.currentExternalId, 'currentExternalId');
     validateRequired(args.newExternalId, 'newExternalId');
     validateStringLength(args.currentExternalId, 'currentExternalId', 1, 100);
@@ -227,7 +238,7 @@ export const createAdminUser = mutation({
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   }),
-  handler: withErrorHandling(async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args: { name: string; externalId: string; role?: 'user' | 'admin' }) => {
     validateRequired(args.name, 'name');
     validateRequired(args.externalId, 'externalId');
     validateStringLength(args.name, 'name', 1, 200);

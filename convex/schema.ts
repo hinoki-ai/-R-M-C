@@ -93,16 +93,19 @@ export default defineSchema({
       temperature: v.number(),
       humidity: v.number(),
       pressure: v.number(),
+      surfacePressure: v.optional(v.number()), // Ground level pressure
       windSpeed: v.number(),
       windDirection: v.number(),
+      windGusts: v.optional(v.number()), // Wind gust speed
       precipitation: v.number(),
-      uvIndex: v.number(),
+      uvIndex: v.optional(v.number()), // Now optional since it's available
       visibility: v.number(),
       description: v.string(),
       icon: v.string(),
-      feelsLike: v.number(),
-      dewPoint: v.number(),
-      cloudCover: v.number(),
+      feelsLike: v.optional(v.number()), // Real feels-like temperature
+      dewPoint: v.optional(v.number()), // Calculated dew point
+      cloudCover: v.optional(v.number()), // Now optional since it's available
+      weatherCode: v.optional(v.number()), // WMO weather code
       location: v.string(),
       source: v.union(v.literal('api'), v.literal('manual'), v.literal('sensor')),
       isHistorical: v.optional(v.boolean()),

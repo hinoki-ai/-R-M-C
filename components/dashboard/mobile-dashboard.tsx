@@ -1,31 +1,82 @@
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export const MobileDashboard: React.FC = () => {
+interface MobileDashboardProps {
+  children?: React.ReactNode;
+  onRefresh?: () => Promise<void>;
+}
+
+export const MobileDashboard: React.FC<MobileDashboardProps> = ({ children, onRefresh }) => {
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  const handleRefresh = async () => {
+    if (!onRefresh) return;
+    setIsRefreshing(true);
+    try {
+      await onRefresh();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   return (
-    <div className="bg-red-500 p-5 m-2.5">
-      <h1>Mobile Dashboard</h1>
-      <div className="border border-black w-full h-50">
-        Content here
+    <div className="min-h-screen bg-background">
+      {/* Mobile Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border px-4 py-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="h-8 w-8 p-0"
+          >
+            <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
+          </Button>
+        </div>
       </div>
-      <button className="text-blue-500 text-base">
-        Click me
-      </button>
+
+      {/* Mobile Content */}
+      <div className="px-4 py-4 space-y-4">
+        {children}
+      </div>
     </div>
   );
 };
 
-export const MobileCard: React.FC = () => {
+interface MobileCardProps {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export const MobileCard: React.FC<MobileCardProps> = ({ children, className }) => {
   return (
-    <div className="bg-yellow-400 rounded-lg p-4">
-      Mobile Card
-    </div>
+    <Card className={cn("w-full", className)}>
+      <CardContent className="p-4">
+        {children}
+      </CardContent>
+    </Card>
   );
 };
 
-export const TouchButton: React.FC = () => {
+export const TouchButton: React.FC<{ children: React.ReactNode; onClick?: () => void; className?: string }> = ({
+  children,
+  onClick,
+  className
+}) => {
   return (
-    <button className="bg-green-500 border-none py-2.5 px-5">
-      Touch Button
-    </button>
+    <Button
+      onClick={onClick}
+      className={cn(
+        "w-full h-12 text-base font-medium touch-manipulation active:scale-95 transition-transform",
+        className
+      )}
+    >
+      {children}
+    </Button>
   );
 };

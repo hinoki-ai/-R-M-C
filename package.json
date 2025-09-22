@@ -1,6 +1,6 @@
 {
   "name": "PintoPellines",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -35,7 +35,14 @@
     "prebuild": "echo 'Skipping prebuild checks for deployment'",
     "postinstall": "npm run validate-structure",
     "prepare": "husky install || true",
-    "quality": "npm run type-check && npm run lint && npm run format:check && npm run security:audit"
+    "quality": "npm run type-check && npm run lint && npm run format:check && npm run security:audit",
+    "version:patch": "npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
+    "version:minor": "npm version minor --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
+    "version:major": "npm version major --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
+    "release:patch": "npm run version:patch && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
+    "release:minor": "npm run version:minor && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
+    "release:major": "npm run version:major && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
+    "changelog": "node scripts/generate-changelog.js"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",

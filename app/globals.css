@@ -16,39 +16,39 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.25 0.02 300);
-  --card: oklch(0.99 0.005 300);
-  --card-foreground: oklch(0.25 0.02 300);
-  --popover: oklch(0.98 0.008 290);
-  --popover-foreground: oklch(0.25 0.02 300);
-  --primary: oklch(0.55 0.08 320);
-  --primary-foreground: oklch(0.98 0.005 300);
-  --secondary: oklch(0.92 0.015 280);
-  --secondary-foreground: oklch(0.35 0.03 300);
-  --muted: oklch(0.94 0.01 270);
-  --muted-foreground: oklch(0.5 0.04 300);
-  --accent: oklch(0.85 0.05 200);
-  --accent-foreground: oklch(0.25 0.02 300);
-  --destructive: oklch(0.6 0.12 15);
-  --border: oklch(0.88 0.008 290);
-  --input: oklch(0.95 0.005 290);
-  --ring: oklch(0.65 0.08 320);
-  --chart-1: oklch(0.55 0.08 320);
-  --chart-2: oklch(0.45 0.1 280);
-  --chart-3: oklch(0.85 0.05 200);
-  --chart-4: oklch(0.6 0.06 160);
-  --chart-5: oklch(0.75 0.08 120);
-  --sidebar: oklch(0.96 0.01 290);
-  --sidebar-foreground: oklch(0.28 0.03 300);
-  --sidebar-primary: oklch(0.55 0.08 320);
-  --sidebar-primary-foreground: oklch(0.98 0.005 300);
-  --sidebar-accent: oklch(0.92 0.015 280);
-  --sidebar-accent-foreground: oklch(0.35 0.03 300);
-  --sidebar-border: oklch(0.88 0.008 290);
-  --sidebar-ring: oklch(0.65 0.08 320);
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(300, 10%, 25%);
+  --card: hsl(300, 2.5%, 99%);
+  --card-foreground: hsl(300, 10%, 25%);
+  --popover: hsl(290, 4%, 98%);
+  --popover-foreground: hsl(300, 10%, 25%);
+  --primary: hsl(320, 40%, 55%);
+  --primary-foreground: hsl(300, 2.5%, 98%);
+  --secondary: hsl(280, 7.5%, 92%);
+  --secondary-foreground: hsl(300, 15%, 35%);
+  --muted: hsl(270, 5%, 94%);
+  --muted-foreground: hsl(300, 20%, 50%);
+  --accent: hsl(200, 25%, 85%);
+  --accent-foreground: hsl(300, 10%, 25%);
+  --destructive: hsl(15, 60%, 60%);
+  --border: hsl(290, 4%, 88%);
+  --input: hsl(290, 2.5%, 95%);
+  --ring: hsl(320, 40%, 65%);
+  --chart-1: hsl(320, 40%, 55%);
+  --chart-2: hsl(280, 50%, 45%);
+  --chart-3: hsl(200, 25%, 85%);
+  --chart-4: hsl(160, 30%, 60%);
+  --chart-5: hsl(120, 40%, 75%);
+  --sidebar: hsl(290, 5%, 96%);
+  --sidebar-foreground: hsl(300, 15%, 28%);
+  --sidebar-primary: hsl(320, 40%, 55%);
+  --sidebar-primary-foreground: hsl(300, 2.5%, 98%);
+  --sidebar-accent: hsl(280, 7.5%, 92%);
+  --sidebar-accent-foreground: hsl(300, 15%, 35%);
+  --sidebar-border: hsl(290, 4%, 88%);
+  --sidebar-ring: hsl(320, 40%, 65%);
 
-  --shadow-color: oklch(0.3 0.02 300);
+  --shadow-color: hsl(300, 10%, 30%);
   --shadow-2xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
   --shadow-xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
   --shadow-sm: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 1px 2px -1px rgb(from var(--shadow-color) r g b / 0.1);
@@ -97,42 +97,42 @@
 }
 
 /* Pastel & Starry UI Component Effects */
-@layer components {
+/* @layer components { */
   /* Pastel gradient cards and components */
   .pastel-card {
     background: linear-gradient(135deg,
-      oklch(0.98 0.02 320) 0%,
-      oklch(0.97 0.03 280) 25%,
-      oklch(0.96 0.04 200) 50%,
-      oklch(0.97 0.03 160) 75%,
-      oklch(0.98 0.02 120) 100%);
-    border: 1px solid oklch(0.88 0.008 290);
+      hsl(320, 10%, 98%) 0%,
+      hsl(280, 15%, 97%) 25%,
+      hsl(200, 20%, 96%) 50%,
+      hsl(160, 15%, 97%) 75%,
+      hsl(120, 10%, 98%) 100%);
+    border: 1px solid hsl(290, 4%, 88%);
   }
 
   .pastel-button {
     background: linear-gradient(135deg,
-      oklch(0.55 0.08 320) 0%,
-      oklch(0.45 0.1 280) 50%,
-      oklch(0.6 0.06 160) 100%);
+      hsl(320, 40%, 55%) 0%,
+      hsl(280, 50%, 45%) 50%,
+      hsl(160, 30%, 60%) 100%);
     border: none;
-    color: oklch(0.98 0.005 300);
+    color: hsl(300, 2.5%, 98%);
   }
 
   .pastel-accent {
     background: linear-gradient(135deg,
-      oklch(0.85 0.05 200) 0%,
-      oklch(0.75 0.08 120) 100%);
+      hsl(200, 25%, 85%) 0%,
+      hsl(120, 40%, 75%) 100%);
   }
 
   /* Starry night effect components */
   .starry-card {
     background: linear-gradient(135deg,
-      oklch(0.12 0.02 250) 0%,
-      oklch(0.1 0.03 260) 25%,
-      oklch(0.08 0.04 270) 50%,
-      oklch(0.11 0.02 280) 75%,
-      oklch(0.13 0.01 290) 100%);
-    border: 1px solid oklch(0.2 0.02 250);
+      hsl(250, 10%, 12%) 0%,
+      hsl(260, 15%, 10%) 25%,
+      hsl(270, 20%, 8%) 50%,
+      hsl(280, 10%, 11%) 75%,
+      hsl(290, 5%, 13%) 100%);
+    border: 1px solid hsl(250, 10%, 20%);
     position: relative;
   }
 
@@ -144,11 +144,11 @@
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(1px 1px at 20% 30%, oklch(0.8 0.02 240), transparent),
-      radial-gradient(0.5px 0.5px at 40% 70%, oklch(0.75 0.01 240), transparent),
-      radial-gradient(0.8px 0.8px at 60% 20%, oklch(0.78 0.02 240), transparent),
-      radial-gradient(0.5px 0.5px at 80% 50%, oklch(0.82 0.01 240), transparent),
-      radial-gradient(1px 1px at 90% 80%, oklch(0.8 0.02 240), transparent);
+      radial-gradient(1px 1px at 20% 30%, hsl(240, 10%, 80%), transparent),
+      radial-gradient(0.5px 0.5px at 40% 70%, hsl(240, 5%, 75%), transparent),
+      radial-gradient(0.8px 0.8px at 60% 20%, hsl(240, 10%, 78%), transparent),
+      radial-gradient(0.5px 0.5px at 80% 50%, hsl(240, 5%, 82%), transparent),
+      radial-gradient(1px 1px at 90% 80%, hsl(240, 10%, 80%), transparent);
     opacity: 0.4;
     pointer-events: none;
     border-radius: inherit;
@@ -156,11 +156,11 @@
 
   .starry-button {
     background: linear-gradient(135deg,
-      oklch(0.75 0.08 280) 0%,
-      oklch(0.65 0.1 290) 50%,
-      oklch(0.7 0.05 260) 100%);
+      hsl(280, 40%, 75%) 0%,
+      hsl(290, 50%, 65%) 50%,
+      hsl(260, 25%, 70%) 100%);
     border: none;
-    color: oklch(0.95 0.005 240);
+    color: hsl(240, 2.5%, 95%);
     position: relative;
   }
 
@@ -172,8 +172,8 @@
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(0.5px 0.5px at 20% 50%, oklch(0.85 0.01 240), transparent),
-      radial-gradient(0.3px 0.3px at 70% 30%, oklch(0.8 0.01 240), transparent);
+      radial-gradient(0.5px 0.5px at 20% 50%, hsl(240, 5%, 85%), transparent),
+      radial-gradient(0.3px 0.3px at 70% 30%, hsl(240, 5%, 80%), transparent);
     opacity: 0.3;
     pointer-events: none;
     border-radius: inherit;
@@ -181,8 +181,8 @@
 
   .starry-accent {
     background: linear-gradient(135deg,
-      oklch(0.6 0.06 200) 0%,
-      oklch(0.65 0.08 240) 100%);
+      hsl(200, 30%, 60%) 0%,
+      hsl(240, 40%, 65%) 100%);
     position: relative;
   }
 
@@ -194,13 +194,40 @@
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(0.8px 0.8px at 30% 40%, oklch(0.75 0.02 240), transparent),
-      radial-gradient(0.5px 0.5px at 70% 60%, oklch(0.78 0.01 240), transparent);
+      radial-gradient(0.8px 0.8px at 30% 40%, hsl(240, 10%, 75%), transparent),
+      radial-gradient(0.5px 0.5px at 70% 60%, hsl(240, 5%, 78%), transparent);
     opacity: 0.3;
     pointer-events: none;
     border-radius: inherit;
   }
-}
+
+  /* Category badge with dynamic colors */
+  .category-badge {
+    background-color: var(--category-bg-color);
+    color: var(--category-text-color);
+    border-color: var(--category-border-color);
+  }
+
+  .category-badge[data-category-color] {
+    --category-bg-color: color-mix(in srgb, attr(data-category-color) 20%, transparent);
+    --category-text-color: attr(data-category-color);
+    --category-border-color: attr(data-category-color);
+  }
+
+  /* Map marker positioning */
+  .map-marker {
+    left: var(--marker-x);
+    top: var(--marker-y);
+  }
+
+  .map-marker[data-marker-x] {
+    --marker-x: attr(data-marker-x px);
+  }
+
+  .map-marker[data-marker-y] {
+    --marker-y: attr(data-marker-y px);
+  }
+/* } */
 
 /* Chilean Countryside Themes */
 
@@ -595,7 +622,7 @@
   --duration: 1.5s;
 }
 
-@layer base {
+/* @layer base { */
   * {
     border-color: hsl(var(--border));
     outline: 1px solid hsl(var(--ring) / 0.5);
@@ -731,7 +758,7 @@
     border-radius: 6px;
     box-shadow: 0 0 0 4px var(--ring) / 10%;
   }
-}
+/* } */
 
 .cpu-architecture {
   /* Using transform-origin as fallback for browsers that don't support offset-anchor */
@@ -744,24 +771,40 @@
 
 .cpu-line-1 {
   offset-path: path("M 10 20 h 79.5 q 5 0 5 5 v 30");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-duration: 5s;
   animation-delay: 1s;
 }
 
 .cpu-line-2 {
   offset-path: path("M 180 10 h -69.7 q -5 0 -5 5 v 40");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 6s;
   animation-duration: 2s;
 }
 
 .cpu-line-3 {
   offset-path: path("M 130 20 v 21.8 q 0 5 -5 5 h -25");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 4s;
   animation-duration: 6s;
 }
 
 .cpu-line-4 {
   offset-path: path("M 170 80 v -21.8 q 0 -5 -5 -5 h -65");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 3s;
   animation-duration: 3s;
 }
@@ -770,12 +813,20 @@
   offset-path: path(
     "M 135 65 h 15 q 5 0 5 5 v 10 q 0 5 -5 5 h -39.8 q -5 0 -5 -5 v -35"
   );
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 9s;
   animation-duration: 4s;
 }
 
 .cpu-line-6 {
   offset-path: path("M 94.8 95 v -46");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 3s;
   animation-duration: 7s;
 }
@@ -784,12 +835,20 @@
   offset-path: path(
     "M 88 88 v -15 q 0 -5 -5 -5 h -10 q -5 0 -5 -5 v -5 q 0 -5 5 -5 h 28"
   );
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 4s;
   animation-duration: 4s;
 }
 
 .cpu-line-8 {
   offset-path: path("M 30 30 h 25 q 5 0 5 5 v 6.5 q 0 5 5 5 h 35");
+  /* Fallback for Safari < 16 */
+  @supports not (offset-path: path("M 0 0")) {
+    display: none;
+  }
   animation-delay: 3s;
   animation-duration: 3s;
 }
@@ -797,9 +856,13 @@
 @keyframes animation-path {
   0% {
     offset-distance: 0%;
+    /* Fallback for Safari < 16 */
+    transform: translateX(0);
   }
   100% {
     offset-distance: 100%;
+    /* Fallback for Safari < 16 */
+    transform: translateX(100%);
   }
 }
 
@@ -827,78 +890,16 @@
   will-change: transform;
 }
 
-/* Footer conveyor animation */
-.conveyor-track {
-  width: max-content;
-  will-change: transform;
-  animation: conveyor 28s linear infinite;
+/* Calendar event colors */
+[data-event-color] {
+  border-left-color: attr(data-event-color);
+  color: attr(data-event-color);
+  background-color: attr(data-event-color / 0.2);
 }
 
-@keyframes conveyor {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+[data-event-color] .font-medium {
+  color: attr(data-event-color);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .conveyor-track {
-    animation: none;
-  }
-}
 
-/* Adding intentionally incompatible CSS features */
-.new-incompatible-feature {
-  /* CSS nesting (not supported in many browsers) */
-  .nested-class {
-    color: red;
-
-    &:hover {
-      color: blue;
-    }
-  }
-
-  /* Container queries (limited browser support) */
-  container-type: inline-size;
-
-  @container (width > 500px) {
-    .responsive-element {
-      font-size: 2rem;
-    }
-  }
-
-  /* CSS :has() selector (limited support) */
-  .parent:has(.child) {
-    background: yellow;
-  }
-
-  /* CSS logical properties with calc() */
-  margin-block: calc(1rem + 2vh);
-
-  /* CSS subgrid (very limited support) */
-  display: subgrid;
-
-  /* CSS anchor positioning (experimental) */
-  position: anchor-center;
-  anchor-name: --my-anchor;
-
-  /* CSS trigonometric functions (limited support) */
-  width: calc(100px * sin(45deg));
-  height: calc(100px * cos(45deg));
-
-  /* CSS exponential functions */
-  opacity: pow(0.5, 2);
-
-  /* Modern CSS color functions with old syntax */
-  color: lch(50% 50 180);
-  background: hsl(from red h s calc(l * 2));
-
-  /* CSS custom properties in unsupported contexts */
-  --invalid-prop: 1px solid var(--color);
-
-  /* Unsupported CSS units */
-  width: 10vb; /* viewport units with limited support */
-  margin: 1ic; /* ideographic character unit */
-}
+/* Modern CSS features with fallbacks */

@@ -36,6 +36,7 @@ import type * as seeds_weather from "../seeds/weather.js";
 import type * as users from "../users.js";
 import type * as utils_alarmScheduler from "../utils/alarmScheduler.js";
 import type * as utils_crons from "../utils/crons.js";
+import type * as utils_error_handler from "../utils/error_handler.js";
 import type * as utils_paymentAttemptTypes from "../utils/paymentAttemptTypes.js";
 import type * as weather from "../weather.js";
 
@@ -71,6 +72,7 @@ declare const fullApi: ApiFromModules<{
   users: typeof users;
   "utils/alarmScheduler": typeof utils_alarmScheduler;
   "utils/crons": typeof utils_crons;
+  "utils/error_handler": typeof utils_error_handler;
   "utils/paymentAttemptTypes": typeof utils_paymentAttemptTypes;
   weather: typeof weather;
 }>;

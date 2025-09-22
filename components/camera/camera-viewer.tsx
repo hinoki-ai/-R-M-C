@@ -74,9 +74,24 @@ export function CameraViewer({
         // Handle camera streaming
         const setupStream = async () => {
           try {
-            // Use API endpoint for camera streaming
-            const streamUrl = `/api/camera/stream/${camera._id}`
-            video.src = streamUrl
+            // First try to get stream info from API
+            const response = await fetch(`/api/camera/stream/${camera._id}`)
+            const streamData = await response.json()
+
+            let videoSrc: string
+
+            if (streamData.type === 'hls' && streamData.provider === 'o-kamm') {
+              // O-Kamm HLS streams work directly in HTML5 video
+              videoSrc = streamData.streamUrl
+              console.log('Using O-Kamm HLS stream:', videoSrc)
+            } else {
+              // For any other stream type, show an error
+              setError('Solo se soporta streaming vía O-Kamm HLS para esta cámara.')
+              setIsLoading(false)
+              return
+            }
+
+            video.src = videoSrc
 
             // Set up event listeners
             const handleLoadStart = () => {

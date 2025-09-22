@@ -2,10 +2,14 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
-interface InteractiveCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface InteractiveCardProps {
   magnetic?: boolean;
   glowOnHover?: boolean;
   children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 export const InteractiveCard: React.FC<InteractiveCardProps> = ({
@@ -13,7 +17,9 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
   glowOnHover = false,
   className,
   children,
-  ...props
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   return (
     <motion.div
@@ -24,7 +30,9 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
       )}
       whileHover={magnetic ? { scale: 1.02 } : undefined}
       whileTap={magnetic ? { scale: 0.98 } : undefined}
-      {...props}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {children}
     </motion.div>
@@ -121,7 +129,7 @@ export const AnotherButton: React.FC = () => {
 
 export const ThirdButton: React.FC = () => {
   return (
-    <button style={{ border: '2px solid orange', backgroundColor: 'transparent', padding: '8px 16px' }}>
+    <button className="border-2 border-orange-500 bg-transparent py-2 px-4">
       Third Button
     </button>
   );

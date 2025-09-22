@@ -111,16 +111,10 @@ export class ComponentErrorBoundary extends React.Component<
     const { errorId } = this.state
 
     // Log the error
-    logReactError({
-      type: 'client',
-      message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      additionalData: {
-        componentName,
-        errorId,
-        retryCount: this.state.retryCount
-      }
+    logReactError(error, errorInfo, {
+      componentName,
+      errorId,
+      retryCount: this.state.retryCount
     })
 
     // Call custom error handler if provided
@@ -182,15 +176,10 @@ export function useComponentErrorBoundary(componentName?: string) {
     setError(error)
     setErrorId(id)
 
-    logReactError({
-      type: 'client',
-      message: error.message,
-      stack: error.stack,
-      additionalData: {
-        componentName: componentName || 'unknown',
-        errorId: id,
-        hook: 'useComponentErrorBoundary'
-      }
+    logReactError(error, { componentStack: '' }, {
+      componentName: componentName || 'unknown',
+      errorId: id,
+      hook: 'useComponentErrorBoundary'
     })
   }, [componentName])
 

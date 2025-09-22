@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { IconAlertCircle, IconRefresh, IconTrendingUp, IconTrophy, IconUsers, IconWifi, IconWifiOff } from '@tabler/icons-react'
 import { memo, useMemo } from 'react'
 import * as React from 'react'
@@ -173,7 +175,7 @@ const RankingPageContent = memo(function RankingPageContent() {
 
   // Memoized calculations
   const stats = useMemo(() => {
-    if (!typedRankingsQuery) return null
+    if (!typedRankingsQuery || !Array.isArray(typedRankingsQuery)) return null
 
     const rankCounts = typedRankingsQuery.reduce((acc, member) => {
       acc[member.rank] = (acc[member.rank] || 0) + 1
@@ -288,7 +290,7 @@ const RankingPageContent = memo(function RankingPageContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {typedRankingsQuery?.map((member, index) => (
+                {Array.isArray(typedRankingsQuery) && typedRankingsQuery.map((member, index) => (
                   <TableRow key={member.userId}>
                     <TableCell className='font-medium'>#{index + 1}</TableCell>
                     <TableCell className='font-medium'>{member.userName}</TableCell>
@@ -312,6 +314,13 @@ const RankingPageContent = memo(function RankingPageContent() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {!Array.isArray(typedRankingsQuery) && (
+                  <TableRow>
+                    <TableCell colSpan={5} className='text-center py-8 text-muted-foreground'>
+                      Cargando datos de ranking...
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
@@ -386,3 +395,4 @@ const RankingPage = memo(function RankingPage() {
 RankingPage.displayName = 'RankingPage'
 
 export default RankingPage
+

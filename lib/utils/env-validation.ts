@@ -27,6 +27,7 @@ const REQUIRED_ENV_VARS = [
 const RECOMMENDED_ENV_VARS = [
   'NEXT_PUBLIC_OPENWEATHER_API_KEY',
   'CONVEX_ADMIN_KEY',
+  'LSVISION_UID',
 ] as const;
 
 /**
@@ -218,6 +219,9 @@ CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 # Optional but Recommended Variables
 NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
 CONVEX_ADMIN_KEY=your_convex_admin_key_here
+
+# LS Vision Camera Configuration (O-Kamm only - view access)
+LSVISION_UID=VE4386930MLXU
 
 # Development Variables
 NODE_ENV=development

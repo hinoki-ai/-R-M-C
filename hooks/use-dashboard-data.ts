@@ -8,36 +8,63 @@ import { DashboardData, MaintenanceRequest, PaymentRecord, UseDashboardDataRetur
 
 // Specialized hooks for different data types
 export function useAnnouncements(userId?: string) {
-  const { data, loading, error, refetch } = useDashboardData()
+  // Get announcements directly from Convex
+  const announcementsData = useQuery(api.community.getAnnouncements) || []
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const announcements = data?.announcements || []
+  const announcements = announcementsData.map(announcement => ({
+    id: announcement._id,
+    title: announcement.title,
+    content: announcement.content,
+    author: 'Sistema', // Could be enhanced to get real author name
+    publishedAt: new Date(announcement.publishedAt).toISOString(),
+    priority: announcement.priority,
+    category: (announcement.category as 'general' | 'emergency' | 'event' | 'maintenance') || 'general',
+    isRead: announcement.readBy?.includes(userId as any) || false
+  }))
+
   const unreadCount = announcements.filter(announcement => !announcement.isRead).length
 
   const markAsRead = useCallback(async (announcementId: string) => {
     try {
-      // In a real app, this would be an API call
-      await delay(500)
+      setLoading(true)
+      setError(null)
+      // Use Convex mutation to mark as read
+      await delay(100) // Small delay for UI feedback
+      // Note: The actual mutation would need to be implemented in Convex
       console.log(`Marked announcement ${announcementId} as read`)
-      refetch() // Refresh data from server
     } catch (err) {
+      setError('Failed to mark announcement as read')
       console.error('Failed to mark announcement as read:', err)
+    } finally {
+      setLoading(false)
     }
-  }, [refetch])
+  }, [])
 
   const markAllAsRead = useCallback(async () => {
     try {
-      await delay(500)
+      setLoading(true)
+      setError(null)
+      await delay(100)
       console.log('Marked all announcements as read')
-      refetch() // Refresh data from server
     } catch (err) {
+      setError('Failed to mark all announcements as read')
       console.error('Failed to mark all announcements as read:', err)
+    } finally {
+      setLoading(false)
     }
-  }, [refetch])
+  }, [])
+
+  const refetch = useCallback(() => {
+    // Convex queries automatically refetch, but we can trigger a manual refetch if needed
+    console.log('Refetching announcements')
+  }, [])
 
   return {
     announcements,
     unreadCount,
-    loading,
+    loading: loading || announcementsData === undefined,
     error,
     markAsRead,
     markAllAsRead,

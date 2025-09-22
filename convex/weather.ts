@@ -13,7 +13,7 @@ import {
   safeDbGet,
   withErrorHandling,
   createValidationError
-} from './utils/error-handler'
+} from './utils/error_handler'
 
 // Weather Data Management
 export const getWeatherData = query({
@@ -23,7 +23,39 @@ export const getWeatherData = query({
     startDate: v.optional(v.number()),
     endDate: v.optional(v.number()),
   },
-  handler: withErrorHandling(async (ctx, args) => {
+  returns: v.array(v.object({
+    _id: v.id('weatherData'),
+    _creationTime: v.number(),
+    timestamp: v.number(),
+    temperature: v.number(),
+    humidity: v.number(),
+    pressure: v.number(),
+    surfacePressure: v.optional(v.number()),
+    windSpeed: v.number(),
+    windDirection: v.number(),
+    windGusts: v.optional(v.number()),
+    precipitation: v.number(),
+    uvIndex: v.optional(v.number()),
+    visibility: v.number(),
+    description: v.string(),
+    icon: v.string(),
+    feelsLike: v.optional(v.number()),
+    dewPoint: v.optional(v.number()),
+    cloudCover: v.optional(v.number()),
+    weatherCode: v.optional(v.number()),
+    location: v.string(),
+    source: v.union(v.literal('api'), v.literal('manual'), v.literal('sensor')),
+    isHistorical: v.optional(v.boolean()),
+    createdBy: v.optional(v.id('users')),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })),
+  handler: withErrorHandling(async (ctx, args: {
+    location?: string;
+    limit?: number;
+    startDate?: number;
+    endDate?: number;
+  }) => {
     const { location, limit = 100, startDate, endDate } = args
 
     // Validate inputs
@@ -50,11 +82,11 @@ export const getWeatherData = query({
     let query = ctx.db.query('weatherData')
 
     if (location) {
-      query = query.filter((q) => q.eq(q.field('location'), location))
+      query = query.filter((q: any) => q.eq(q.field('location'), location))
     }
 
     if (startDate || endDate) {
-      query = query.filter((q) => {
+      query = query.filter((q: any) => {
         if (startDate && q.lt(q.field('timestamp'), startDate)) return false
         if (endDate && q.gt(q.field('timestamp'), endDate)) return false
         return true
@@ -76,18 +108,37 @@ export const addWeatherData = mutation({
     windSpeed: v.number(),
     windDirection: v.number(),
     precipitation: v.number(),
-    uvIndex: v.number(),
+    uvIndex: v.optional(v.number()),
     visibility: v.number(),
     description: v.string(),
     icon: v.string(),
-    feelsLike: v.number(),
-    dewPoint: v.number(),
-    cloudCover: v.number(),
+    feelsLike: v.optional(v.number()),
+    dewPoint: v.optional(v.number()),
+    cloudCover: v.optional(v.number()),
     location: v.string(),
     source: v.union(v.literal('api'), v.literal('manual'), v.literal('sensor')),
     isHistorical: v.optional(v.boolean()),
   },
-  handler: withErrorHandling(async (ctx, args) => {
+  returns: v.id('weatherData'),
+  handler: withErrorHandling(async (ctx, args: {
+    timestamp: number;
+    temperature: number;
+    humidity: number;
+    pressure: number;
+    windSpeed: number;
+    windDirection: number;
+    precipitation: number;
+    uvIndex?: number;
+    visibility: number;
+    description: string;
+    icon: string;
+    feelsLike?: number;
+    dewPoint?: number;
+    cloudCover?: number;
+    location: string;
+    source: 'api' | 'manual' | 'sensor';
+    isHistorical?: boolean;
+  }) => {
     const userDoc = await requireUser(ctx)
 
     // Validate required fields
@@ -98,13 +149,9 @@ export const addWeatherData = mutation({
     validateRequired(args.windSpeed, 'windSpeed')
     validateRequired(args.windDirection, 'windDirection')
     validateRequired(args.precipitation, 'precipitation')
-    validateRequired(args.uvIndex, 'uvIndex')
     validateRequired(args.visibility, 'visibility')
     validateRequired(args.description, 'description')
     validateRequired(args.icon, 'icon')
-    validateRequired(args.feelsLike, 'feelsLike')
-    validateRequired(args.dewPoint, 'dewPoint')
-    validateRequired(args.cloudCover, 'cloudCover')
     validateRequired(args.location, 'location')
     validateRequired(args.source, 'source')
 
@@ -116,11 +163,19 @@ export const addWeatherData = mutation({
     validateNumberRange(args.windSpeed, 'windSpeed', 0, 200)
     validateNumberRange(args.windDirection, 'windDirection', 0, 360)
     validateNumberRange(args.precipitation, 'precipitation', 0, 500)
-    validateNumberRange(args.uvIndex, 'uvIndex', 0, 20)
+    if (args.uvIndex !== undefined) {
+      validateNumberRange(args.uvIndex, 'uvIndex', 0, 20)
+    }
     validateNumberRange(args.visibility, 'visibility', 0, 100)
-    validateNumberRange(args.feelsLike, 'feelsLike', -100, 100)
-    validateNumberRange(args.dewPoint, 'dewPoint', -100, 100)
-    validateNumberRange(args.cloudCover, 'cloudCover', 0, 100)
+    if (args.feelsLike !== undefined) {
+      validateNumberRange(args.feelsLike, 'feelsLike', -100, 100)
+    }
+    if (args.dewPoint !== undefined) {
+      validateNumberRange(args.dewPoint, 'dewPoint', -100, 100)
+    }
+    if (args.cloudCover !== undefined) {
+      validateNumberRange(args.cloudCover, 'cloudCover', 0, 100)
+    }
 
     // Validate string lengths
     validateStringLength(args.description, 'description', 1, 500)
@@ -163,6 +218,7 @@ export const updateWeatherData = mutation({
       isHistorical: v.optional(v.boolean()),
     }),
   },
+  returns: v.id('weatherData'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -181,6 +237,7 @@ export const updateWeatherData = mutation({
 
 export const deleteWeatherData = mutation({
   args: { id: v.id('weatherData') },
+  returns: v.id('weatherData'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -200,6 +257,22 @@ export const getWeatherAlerts = query({
     severity: v.optional(v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('extreme'))),
     limit: v.optional(v.number()),
   },
+  returns: v.array(v.object({
+    _id: v.id('weatherAlerts'),
+    _creationTime: v.number(),
+    title: v.string(),
+    description: v.string(),
+    severity: v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('extreme')),
+    type: v.union(v.literal('storm'), v.literal('heat'), v.literal('cold'), v.literal('flood'), v.literal('wind'), v.literal('other')),
+    startTime: v.number(),
+    endTime: v.number(),
+    areas: v.array(v.string()),
+    instructions: v.string(),
+    isActive: v.boolean(),
+    createdBy: v.id('users'),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })),
   handler: async (ctx, args) => {
     const { activeOnly = false, severity, limit = 50 } = args
 
@@ -230,6 +303,7 @@ export const createWeatherAlert = mutation({
     areas: v.array(v.string()),
     instructions: v.string(),
   },
+  returns: v.id('weatherAlerts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -268,6 +342,7 @@ export const updateWeatherAlert = mutation({
       isActive: v.optional(v.boolean()),
     }),
   },
+  returns: v.id('weatherAlerts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -286,6 +361,7 @@ export const updateWeatherAlert = mutation({
 
 export const deleteWeatherAlert = mutation({
   args: { id: v.id('weatherAlerts') },
+  returns: v.id('weatherAlerts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -305,6 +381,28 @@ export const getWeatherForecasts = query({
     days: v.optional(v.number()),
     startDate: v.optional(v.string()),
   },
+  returns: v.array(v.object({
+    _id: v.id('weatherForecasts'),
+    _creationTime: v.number(),
+    date: v.string(),
+    tempMin: v.number(),
+    tempMax: v.number(),
+    humidity: v.number(),
+    precipitation: v.number(),
+    precipitationProbability: v.number(),
+    windSpeed: v.number(),
+    windDirection: v.number(),
+    description: v.string(),
+    icon: v.string(),
+    uvIndex: v.number(),
+    sunrise: v.string(),
+    sunset: v.string(),
+    location: v.string(),
+    source: v.union(v.literal('api'), v.literal('manual')),
+    updatedAt: v.number(),
+    createdBy: v.optional(v.id('users')),
+    createdAt: v.number(),
+  })),
   handler: async (ctx, args) => {
     const { location, days = 7, startDate } = args
 
@@ -344,6 +442,7 @@ export const addWeatherForecast = mutation({
     location: v.string(),
     source: v.union(v.literal('api'), v.literal('manual')),
   },
+  returns: v.id('weatherForecasts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -404,6 +503,7 @@ export const updateWeatherForecast = mutation({
       source: v.optional(v.union(v.literal('api'), v.literal('manual'))),
     }),
   },
+  returns: v.id('weatherForecasts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -422,6 +522,7 @@ export const updateWeatherForecast = mutation({
 
 export const deleteWeatherForecast = mutation({
   args: { id: v.id('weatherForecasts') },
+  returns: v.id('weatherForecasts'),
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity()
     if (!user) throw new Error('Unauthorized')
@@ -440,6 +541,15 @@ export const getWeatherStats = query({
     location: v.string(),
     days: v.optional(v.number()),
   },
+  returns: v.object({
+    averageTemp: v.number(),
+    minTemp: v.number(),
+    maxTemp: v.number(),
+    totalPrecipitation: v.number(),
+    averageHumidity: v.number(),
+    averageWindSpeed: v.number(),
+    dataPoints: v.number(),
+  }),
   handler: async (ctx, args) => {
     const { location, days = 30 } = args
     const startDate = Date.now() - (days * 24 * 60 * 60 * 1000)
@@ -481,6 +591,33 @@ export const getWeatherStats = query({
 
 export const getCurrentWeather = query({
   args: { location: v.string() },
+  returns: v.object({
+    _id: v.id('weatherData'),
+    _creationTime: v.number(),
+    timestamp: v.number(),
+    temperature: v.number(),
+    humidity: v.number(),
+    pressure: v.number(),
+    surfacePressure: v.optional(v.number()),
+    windSpeed: v.number(),
+    windDirection: v.number(),
+    windGusts: v.optional(v.number()),
+    precipitation: v.number(),
+    uvIndex: v.optional(v.number()),
+    visibility: v.number(),
+    description: v.string(),
+    icon: v.string(),
+    feelsLike: v.optional(v.number()),
+    dewPoint: v.optional(v.number()),
+    cloudCover: v.optional(v.number()),
+    weatherCode: v.optional(v.number()),
+    location: v.string(),
+    source: v.union(v.literal('api'), v.literal('manual'), v.literal('sensor')),
+    isHistorical: v.optional(v.boolean()),
+    createdBy: v.optional(v.id('users')),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }),
   handler: async (ctx, args) => {
     const { location } = args
 
@@ -490,6 +627,10 @@ export const getCurrentWeather = query({
       .withIndex('byLocation', (q) => q.eq('location', location))
       .order('desc')
       .first()
+
+    if (!currentData) {
+      throw new Error('No weather data found for this location')
+    }
 
     return currentData
   },

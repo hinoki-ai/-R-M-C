@@ -13,19 +13,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { useConvexErrorHandler } from '@/hooks/use-convex-error-handler'
 import { useToast } from '@/hooks/use-toast'
 
 export default function AddCameraPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  // Use comprehensive error handling for Convex mutations
-  const addCameraMutation = useConvexErrorHandler(api.cameras.addCamera, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to add camera:', error)
-  })
+  const addCameraMutation = useMutation(api.cameras.addCamera)
 
   // Use form error handler for validation and error management
   const { handleFormError, handleValidationError, resetError } = useFormErrorHandler('camera')
@@ -126,7 +122,7 @@ export default function AddCameraPage() {
         hasAudio: false,
       }
 
-      const cameraId = await addCameraMutation.mutateAsync(cameraData)
+      const cameraId = await addCameraMutation(cameraData)
 
       toast({
         title: 'Cámara Agregada Exitosamente',
@@ -135,7 +131,8 @@ export default function AddCameraPage() {
 
       router.push(`/dashboard/cameras/${cameraId}`)
     } catch (error) {
-      handleFormError(error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      handleFormError(errorMessage)
       toast({
         title: 'Error al Agregar Cámara',
         description: 'No se pudo agregar la cámara. Por favor verifica tu conexión e inténtalo nuevamente.',
@@ -283,8 +280,8 @@ export default function AddCameraPage() {
               </div>
 
               <div className='flex gap-4 pt-6'>
-                <Button type='submit' disabled={loading || addCameraMutation.isLoading} className='flex-1'>
-                  {loading || addCameraMutation.isLoading ? 'Agregando Cámara...' : 'Agregar Cámara'}
+                <Button type='submit' disabled={loading} className='flex-1'>
+                  {loading ? 'Agregando Cámara...' : 'Agregar Cámara'}
                 </Button>
                 <Button type='button' variant='outline' asChild>
                   <Link href='/dashboard/cameras'>Cancelar</Link>

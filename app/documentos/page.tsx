@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Calendar, Download, Eye, File, FileText, User } from 'lucide-react'
 
@@ -146,9 +147,20 @@ const getCategoryIcon = (category: string) => {
 
 export default function DocumentosPage() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950'>
+    <div className='min-h-screen relative'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg1.jpg'
+          alt='Documents Page Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
 
-      <div className='relative container mx-auto px-6 py-12'>
+      <div className='relative container mx-auto px-6 py-12 z-10'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -171,7 +183,7 @@ export default function DocumentosPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-6 mb-8'
+          className='bg-card rounded-lg p-6 mb-8'
         >
           <div className='flex flex-col md:flex-row gap-4 items-center justify-between'>
             <div className='text-sm text-gray-600 dark:text-gray-400'>
@@ -264,7 +276,7 @@ export default function DocumentosPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-8 mb-8'
+          className='bg-card rounded-lg p-8 mb-8'
         >
           <h2 className='text-2xl font-bold text-center text-gray-900 dark:text-white mb-8'>
             📂 Categorías de Documentos
@@ -298,7 +310,7 @@ export default function DocumentosPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0, duration: 0.6 }}
-          className='text-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-8'
+          className='text-center bg-card rounded-lg p-8'
         >
           <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
             ¿Necesitas subir un documento?

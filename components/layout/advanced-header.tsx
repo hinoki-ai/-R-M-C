@@ -16,6 +16,8 @@ import {
   Megaphone,
   Menu,
   Phone,
+  Radio,
+  ShoppingCart,
   Sparkles,
   Users,
   X
@@ -54,6 +56,7 @@ const navigationItems = [
     icon: MapPin,
     subpages: [
       { name: 'Mapa', href: '/mapa', icon: MapPin },
+      { name: 'Comercios', href: '/comercios', icon: ShoppingCart },
       { name: 'Emergencias', href: '/emergencias', icon: AlertTriangle },
     ]
   },
@@ -64,6 +67,7 @@ const navigationItems = [
     subpages: [
       { name: 'Documentos', href: '/documentos', icon: FileText },
       { name: 'Fotos', href: '/fotos', icon: Image },
+      { name: 'Radio', href: '/radio', icon: Radio },
       { name: 'Clima', href: '/weather', icon: Cloud },
     ]
   },
@@ -117,7 +121,7 @@ export const AdvancedHeader = () => {
         Saltar al contenido principal
       </a>
 
-      <div className='container mx-auto px-4 py-3'>
+      <div className='container mx-auto px-3 sm:px-4 py-2 sm:py-3'>
         <div className='flex items-center justify-between'>
           {/* Logo and Branding */}
           <div className='flex items-center gap-4'>
@@ -160,7 +164,7 @@ export const AdvancedHeader = () => {
                       align='start'
                       side='bottom'
                       sideOffset={8}
-                      className='w-48 z-[60]'
+                      className='w-48 z-[60] bg-popover text-popover-foreground border shadow-md'
                       avoidCollisions={true}
                       aria-label={`${item.name} submenu`}
                     >

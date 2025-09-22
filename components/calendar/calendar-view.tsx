@@ -160,17 +160,13 @@ export function CalendarView({ onEventClick, onCreateEvent, selectedDate, onDate
                   <div
                     key={event._id}
                     className='text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity border-l-4'
-                    style={{
-                      backgroundColor: event.category.color + '20',
-                      borderLeftColor: event.category.color,
-                      color: event.category.color
-                    }}
+                    data-event-color={event.category.color}
                     onClick={(e) => {
                       e.stopPropagation()
                       onEventClick?.(event)
                     }}
                   >
-                    <div className='font-medium' style={{ color: event.category.color }}>
+                    <div className='font-medium'>
                       {event.title}
                     </div>
                     {event.startTime && !event.isAllDay && (
@@ -321,12 +317,8 @@ export function CalendarView({ onEventClick, onCreateEvent, selectedDate, onDate
                   <div className='flex-1' >
                     <div className='flex items-center gap-2 mb-2' >
               <Badge
-                className='border'
-                style={{
-                  backgroundColor: event.category.color + '20',
-                  color: event.category.color,
-                  borderColor: event.category.color
-                }}
+                className='border category-badge'
+                data-category-color={event.category.color}
                 variant='outline'
               >
                         <span className='mr-1' >{event.category.icon}</span>

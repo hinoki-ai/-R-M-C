@@ -267,7 +267,6 @@ export function MobileAppDownload() {
             preset='fade-in-blur'
             per='word'
             as='h2'
-            id='download-heading'
             className='text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent'
           >
             📱 Descarga Nuestra App

@@ -97,6 +97,41 @@ export const getCameraFeeds = query({
   },
 });
 
+export const getCamerasWithFeeds = query({
+  args: { cameraIds: v.array(v.id('cameras')) },
+  handler: async (ctx, { cameraIds }) => {
+    const user = await getCurrentUserOrThrow(ctx);
+
+    const result: Record<string, any[]> = {};
+
+    for (const cameraId of cameraIds) {
+      // Verify camera access
+      const camera = await ctx.db.get(cameraId);
+      if (!camera) continue;
+
+      const hasAccess = camera.createdBy === user._id ||
+        await ctx.db
+          .query('cameraPermissions')
+          .withIndex('byUser', (q) => q.eq('userId', user._id))
+          .filter((q) => q.eq(q.field('cameraId'), cameraId))
+          .filter((q) => q.eq(q.field('isActive'), true))
+          .first();
+
+      if (hasAccess) {
+        const feeds = await ctx.db
+          .query('cameraFeeds')
+          .withIndex('byCamera', (q) => q.eq('cameraId', cameraId))
+          .collect();
+        result[cameraId] = feeds;
+      } else {
+        result[cameraId] = [];
+      }
+    }
+
+    return result;
+  },
+});
+
 export const getCameraEvents = query({
   args: {
     cameraId: v.optional(v.id('cameras')),

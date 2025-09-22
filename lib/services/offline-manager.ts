@@ -283,7 +283,7 @@ export async function offlineAwareFetch<T>(
       throw new ConvexError({
         type: 'network',
         message: 'Connection lost. Your request has been queued and will be retried automatically.',
-        details: { queued: true, originalError: error },
+        details: { queued: true, originalError: error instanceof Error ? error.message : String(error) },
         retryable: true
       })
     }

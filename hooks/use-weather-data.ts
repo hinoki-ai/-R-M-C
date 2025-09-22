@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/convex/_generated/api'
 import { WeatherService } from '@/lib/services/weather-service'
 import { WeatherAlert, WeatherData, WeatherForecast } from '@/types/dashboard'
-import { useConvexErrorHandler } from './use-convex-error-handler'
+import { useConvexQueryWithError } from '@/hooks/use-convex-error-handler'
 
 interface WeatherStats {
   total: number
@@ -87,26 +87,33 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   const [isLoadingRealData, setIsLoadingRealData] = useState(false)
 
   // Use comprehensive error handling for all Convex operations
-  const weatherDataQuery = useConvexErrorHandler(api.weather.getCurrentWeather, {
-    args: { location },
+  const weatherDataQuery = useConvexQueryWithError(api.weather.getCurrentWeather, {
+    location
+  }, {
     maxRetries: 3,
     retryDelay: 1000
   })
 
-  const forecastQuery = useConvexErrorHandler(api.weather.getWeatherForecasts, {
-    args: { location, days: 7 },
+  const forecastQuery = useConvexQueryWithError(api.weather.getWeatherForecasts, {
+    location,
+    days: 7
+  }, {
     maxRetries: 3,
     retryDelay: 1000
   })
 
-  const alertsQuery = useConvexErrorHandler(api.weather.getWeatherAlerts, {
-    args: { activeOnly: true, limit: 10 },
+  const alertsQuery = useConvexQueryWithError(api.weather.getWeatherAlerts, {
+    activeOnly: true,
+    limit: 10
+  }, {
     maxRetries: 3,
     retryDelay: 1000
   })
 
-  const statsQuery = useConvexErrorHandler(api.weather.getWeatherStats, {
-    args: { location, days: 30 },
+  const statsQuery = useConvexQueryWithError(api.weather.getWeatherStats, {
+    location,
+    days: 30
+  }, {
     maxRetries: 3,
     retryDelay: 1000
   })
@@ -123,51 +130,16 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   const queryError = weatherDataQuery.error || forecastQuery.error ||
                     alertsQuery.error || statsQuery.error
 
-  // Mutations with error handling
-  const addWeatherDataMutation = useConvexErrorHandler(api.weather.addWeatherData, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to add weather data:', error)
-  })
-
-  const updateWeatherDataMutation = useConvexErrorHandler(api.weather.updateWeatherData, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to update weather data:', error)
-  })
-
-  const deleteWeatherDataMutation = useConvexErrorHandler(api.weather.deleteWeatherData, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to delete weather data:', error)
-  })
-
-  const createAlertMutation = useConvexErrorHandler(api.weather.createWeatherAlert, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to create weather alert:', error)
-  })
-
-  const updateAlertMutation = useConvexErrorHandler(api.weather.updateWeatherAlert, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to update weather alert:', error)
-  })
-
-  const deleteAlertMutation = useConvexErrorHandler(api.weather.deleteWeatherAlert, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to delete weather alert:', error)
-  })
-
-  const addForecastMutation = useConvexErrorHandler(api.weather.addWeatherForecast, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to add forecast:', error)
-  })
-
-  const updateForecastMutation = useConvexErrorHandler(api.weather.updateWeatherForecast, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to update forecast:', error)
-  })
-
-  const deleteForecastMutation = useConvexErrorHandler(api.weather.deleteWeatherForecast, {
-    maxRetries: 2,
-    onError: (error) => console.error('Failed to delete forecast:', error)
-  })
+  // Mutations
+  const addWeatherDataMutation = useMutation(api.weather.addWeatherData)
+  const updateWeatherDataMutation = useMutation(api.weather.updateWeatherData)
+  const deleteWeatherDataMutation = useMutation(api.weather.deleteWeatherData)
+  const createAlertMutation = useMutation(api.weather.createWeatherAlert)
+  const updateAlertMutation = useMutation(api.weather.updateWeatherAlert)
+  const deleteAlertMutation = useMutation(api.weather.deleteWeatherAlert)
+  const addForecastMutation = useMutation(api.weather.addWeatherForecast)
+  const updateForecastMutation = useMutation(api.weather.updateWeatherForecast)
+  const deleteForecastMutation = useMutation(api.weather.deleteWeatherForecast)
 
   // Use real data if available, otherwise fallback to stored data
   const weatherData = realWeatherData || storedWeatherData
@@ -176,10 +148,10 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   // Calculate stats from current data
   const calculatedStats: WeatherStats | null = weatherData && forecast && alerts ? {
     total: 1,
-    averageTemperature: weatherData.temperature,
-    averageHumidity: weatherData.humidity,
-    totalAlerts: alerts.length,
-    activeAlerts: alerts.filter(alert => alert.isActive).length,
+    averageTemperature: (weatherData as any).temperature,
+    averageHumidity: (weatherData as any).humidity,
+    totalAlerts: Array.isArray(alerts) ? alerts.length : 0,
+    activeAlerts: Array.isArray(alerts) ? alerts.filter((alert: WeatherAlert) => alert.isActive).length : 0,
   } : null
 
   // Fetch real weather data on mount
@@ -217,24 +189,28 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
           })
 
           // Store in database for caching
-          await addWeatherDataMutation({
-            timestamp: Date.now(),
-            temperature: currentWeather.temperature,
-            humidity: currentWeather.humidity ?? 0,
-            pressure: currentWeather.pressure ?? 1013,
-            windSpeed: currentWeather.windSpeed ?? 0,
-            windDirection: currentWeather.windDirection ?? 0,
-            precipitation: currentWeather.precipitation,
-            uvIndex: currentWeather.uvIndex ?? 0,
-            visibility: currentWeather.visibility ?? 10000,
-            description: currentWeather.description ?? '',
-            icon: currentWeather.icon ?? '',
-            feelsLike: currentWeather.feelsLike ?? currentWeather.temperature,
-            dewPoint: currentWeather.dewPoint ?? currentWeather.temperature,
-            cloudCover: currentWeather.cloudCover ?? 0,
-            location: currentWeather.location,
-            source: 'api'
-          })
+          try {
+            await addWeatherDataMutation({
+              timestamp: Date.now(),
+              temperature: currentWeather.temperature,
+              humidity: currentWeather.humidity ?? 0,
+              pressure: currentWeather.pressure ?? 1013,
+              windSpeed: currentWeather.windSpeed ?? 0,
+              windDirection: currentWeather.windDirection ?? 0,
+              precipitation: currentWeather.precipitation,
+              uvIndex: currentWeather.uvIndex ?? 0,
+              visibility: currentWeather.visibility ?? 10000,
+              description: currentWeather.description ?? '',
+              icon: currentWeather.icon ?? '',
+              feelsLike: currentWeather.feelsLike ?? currentWeather.temperature,
+              dewPoint: currentWeather.dewPoint ?? currentWeather.temperature,
+              cloudCover: currentWeather.cloudCover ?? 0,
+              location: currentWeather.location,
+              source: 'api'
+            })
+          } catch (error) {
+            console.error('Failed to store weather data:', error)
+          }
         }
 
         if (forecastData && forecastData.length > 0) {
@@ -262,23 +238,27 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
 
           // Store forecast data in database
           for (const forecast of forecastData) {
-            await addForecastMutation({
-              date: forecast.date,
-              tempMin: forecast.tempMin ?? 0,
-              tempMax: forecast.tempMax ?? 0,
-              humidity: forecast.humidity ?? 0,
-              precipitation: forecast.precipitation,
-              precipitationProbability: forecast.precipitationProbability,
-              windSpeed: forecast.windSpeed ?? 0,
-              windDirection: forecast.windDirection ?? 0,
-              description: forecast.description ?? '',
-              icon: forecast.icon ?? '',
-              uvIndex: forecast.uvIndex ?? 0,
-              sunrise: forecast.sunrise,
-              sunset: forecast.sunset,
-              location: location,
-              source: 'api'
-            })
+            try {
+              await addForecastMutation({
+                date: forecast.date,
+                tempMin: forecast.tempMin ?? 0,
+                tempMax: forecast.tempMax ?? 0,
+                humidity: forecast.humidity ?? 0,
+                precipitation: forecast.precipitation,
+                precipitationProbability: forecast.precipitationProbability,
+                windSpeed: forecast.windSpeed ?? 0,
+                windDirection: forecast.windDirection ?? 0,
+                description: forecast.description ?? '',
+                icon: forecast.icon ?? '',
+                uvIndex: forecast.uvIndex ?? 0,
+                sunrise: forecast.sunrise,
+                sunset: forecast.sunset,
+                location: location,
+                source: 'api'
+              })
+            } catch (error) {
+              console.error('Failed to store forecast data:', error)
+            }
           }
         }
       } catch (error) {
@@ -292,8 +272,8 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
 
     fetchRealWeatherData()
 
-    // Refresh data every 30 minutes
-    const interval = setInterval(fetchRealWeatherData, 30 * 60 * 1000)
+    // Refresh data every 60 minutes (reduced frequency due to caching)
+    const interval = setInterval(fetchRealWeatherData, 60 * 60 * 1000)
     return () => clearInterval(interval)
   }, [location])
 
@@ -311,73 +291,88 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   // Combine all errors
   const error = hasQueryErrors ? queryError?.message || 'Error loading weather data' : null
 
+  // Helper function to safely create date strings
+  const safeDateString = (dateValue: any): string => {
+    try {
+      if (typeof dateValue === 'string' || typeof dateValue === 'number') {
+        return new Date(dateValue).toISOString()
+      }
+      if (dateValue && typeof dateValue === 'object' && dateValue.toISOString) {
+        return dateValue.toISOString()
+      }
+      return new Date().toISOString()
+    } catch {
+      return new Date().toISOString()
+    }
+  }
+
   return { // Type assertions to handle Convex query result types
-    weatherData: weatherData ? { ...weatherData, id: (weatherData as any)._id?.toString(), timestamp: new Date((weatherData as any).timestamp || (weatherData as any).createdAt).toISOString() } : null,
-    forecast: forecast ? forecast.map(f => ({ ...f, id: (f as any)._id, updatedAt: new Date((f as any).updatedAt || (f as any).createdAt).toISOString() })) : null,
-    alerts: alerts ? alerts.map(a => ({ ...a, id: (a as any)._id, startTime: new Date((a as any).startTime || (a as any).createdAt).toISOString(), endTime: new Date((a as any).endTime || (a as any).createdAt).toISOString(), createdAt: new Date((a as any).createdAt).toISOString() })) : null,
+    weatherData: weatherData ? { ...(weatherData as any), id: 'real-time', timestamp: safeDateString((weatherData as any).timestamp || (weatherData as any).createdAt) } as WeatherData : null,
+    forecast: Array.isArray(forecast) ? forecast.map((f: any, index: number) => ({ ...f, id: f.id || `forecast-${index}`, updatedAt: safeDateString(f.updatedAt || f.createdAt) })) : [],
+    alerts: Array.isArray(alerts) ? alerts.map((a: any, index: number) => ({ ...a, id: a.id || `alert-${index}`, startTime: safeDateString(a.startTime || a.createdAt), endTime: safeDateString(a.endTime || a.createdAt), createdAt: safeDateString(a.createdAt) })) : [],
     loading,
     error,
     stats: calculatedStats,
-    // Mutations with proper error handling
+    // Mutations
     addWeatherData: async (data: WeatherMutationData) => {
       try {
-        return await addWeatherDataMutation.mutateAsync(data)
+        return await addWeatherDataMutation(data)
       } catch (error) {
         throw new Error(`Failed to add weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     updateWeatherData: async (id: string, updates: Partial<WeatherMutationData>) => {
       try {
-        await updateWeatherDataMutation.mutateAsync({ id: id as any, updates })
+        await updateWeatherDataMutation({ id: id as any, updates })
       } catch (error) {
         throw new Error(`Failed to update weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     deleteWeatherData: async (id: string) => {
       try {
-        await deleteWeatherDataMutation.mutateAsync({ id: id as any })
+        await deleteWeatherDataMutation({ id: id as any })
       } catch (error) {
         throw new Error(`Failed to delete weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     createAlert: async (alert: WeatherAlertData) => {
       try {
-        return await createAlertMutation.mutateAsync(alert)
+        return await createAlertMutation(alert)
       } catch (error) {
         throw new Error(`Failed to create alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     updateAlert: async (id: string, updates: Partial<WeatherAlertData>) => {
       try {
-        await updateAlertMutation.mutateAsync({ id: id as any, updates })
+        await updateAlertMutation({ id: id as any, updates })
       } catch (error) {
         throw new Error(`Failed to update alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     deleteAlert: async (id: string) => {
       try {
-        await deleteAlertMutation.mutateAsync({ id: id as any })
+        await deleteAlertMutation({ id: id as any })
       } catch (error) {
         throw new Error(`Failed to delete alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     addForecast: async (forecast: WeatherForecastData) => {
       try {
-        return await addForecastMutation.mutateAsync(forecast)
+        return await addForecastMutation(forecast)
       } catch (error) {
         throw new Error(`Failed to add forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     updateForecast: async (id: string, updates: Partial<WeatherForecastData>) => {
       try {
-        await updateForecastMutation.mutateAsync({ id: id as any, updates })
+        await updateForecastMutation({ id: id as any, updates })
       } catch (error) {
         throw new Error(`Failed to update forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     },
     deleteForecast: async (id: string) => {
       try {
-        await deleteForecastMutation.mutateAsync({ id: id as any })
+        await deleteForecastMutation({ id: id as any })
       } catch (error) {
         throw new Error(`Failed to delete forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }

@@ -8,7 +8,7 @@
 
 import { ConvexError } from 'convex/values'
 import { api } from '@/convex/_generated/api'
-import { useConvexErrorHandler } from '@/hooks/use-convex-error-handler'
+import { ConvexErrorType, useConvexErrorHandler } from '@/hooks/use-convex-error-handler'
 import { errorLogger } from '@/lib/error-logger'
 import { getOfflineManager } from '@/lib/services/offline-manager'
 
@@ -137,7 +137,7 @@ export class ErrorTester {
           // For now, just test that auth errors are categorized correctly
           const error = simulatedErrors.auth.expired
           errorLogger.logError({
-            type: 'auth',
+            type: ConvexErrorType.AUTHENTICATION,
             message: error.message,
             additionalData: { test: true }
           })
@@ -165,7 +165,7 @@ export class ErrorTester {
           // Simulate form validation error
           const error = simulatedErrors.validation.required
           errorLogger.logError({
-            type: 'validation',
+            type: ConvexErrorType.DATA,
             message: error.message,
             additionalData: { field: 'testField', test: true }
           })
@@ -177,7 +177,7 @@ export class ErrorTester {
         test: async () => {
           const error = simulatedErrors.validation.invalid
           errorLogger.logError({
-            type: 'validation',
+            type: ConvexErrorType.DATA,
             message: error.message,
             additionalData: { field: 'email', value: 'invalid', test: true }
           })

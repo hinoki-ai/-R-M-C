@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { WeatherService } from '@/lib/weather-service'
+import { WeatherService } from '@/lib/services/weather-service'
 
 export async function GET(request: NextRequest) {
   try {

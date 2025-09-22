@@ -19,8 +19,8 @@ function SidebarContent({ children }: { children: React.ReactNode }) {
         <SiteHeader />
         <div className='flex flex-1 flex-col'>
           <div className='@container/main flex flex-1 flex-col gap-2'>
-            <div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6 lg:gap-8 lg:py-8'>
-              <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
+            <div className='flex flex-col gap-2 py-2 sm:gap-4 sm:py-4 md:gap-6 md:py-6 lg:gap-8 lg:py-8'>
+              <div className='mx-auto w-full max-w-7xl px-2 sm:px-4 md:px-6 lg:px-8'>
                 {children}
               </div>
             </div>

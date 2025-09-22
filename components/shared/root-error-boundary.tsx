@@ -343,7 +343,11 @@ export class RootErrorBoundary extends React.Component<
       }
     }
 
-    logReactError(errorInfoObj)
+    logReactError(error, errorInfo, {
+      errorBoundary: 'root',
+      retryCount: this.state.retryCount,
+      lastErrorTime: this.state.lastErrorTime
+    })
 
     this.setState({
       errorInfo
@@ -460,13 +464,8 @@ export function useErrorBoundary() {
 
   const captureError = React.useCallback((error: Error) => {
     setError(error)
-    logReactError({
-      type: 'client',
-      message: error.message,
-      stack: error.stack,
-      additionalData: {
-        hook: 'useErrorBoundary'
-      }
+    logReactError(error, { componentStack: '' }, {
+      hook: 'useErrorBoundary'
     })
   }, [])
 

@@ -5,7 +5,6 @@ const config: CapacitorConfig = {
   appId: 'com.juntadevecinos.app',
   appName: 'Pinto Los Pellines',
   webDir: '.next',
-  bundledWebRuntime: false,
   plugins: {
     // Splash Screen
     SplashScreen: {

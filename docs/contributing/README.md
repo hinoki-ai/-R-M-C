@@ -125,6 +125,78 @@ Any additional context or considerations
 - **Mobile**: Follow [Mobile Deployment Guide](docs/deployment/mobile-deployment.md)
 - **Testing**: Always test in staging environment first
 
+## 📦 Version Management
+
+We follow [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH) and use conventional commits for automated changelog generation.
+
+### Version Types
+
+- **MAJOR** (`1.0.0` → `2.0.0`): Breaking changes
+- **MINOR** (`1.0.0` → `1.1.0`): New features (backward compatible)
+- **PATCH** (`1.0.0` → `1.0.1`): Bug fixes and small improvements
+
+### Release Process
+
+For maintainers only - creating a new release:
+
+```bash
+# For bug fixes and small changes
+npm run release:patch
+
+# For new features (backward compatible)
+npm run release:minor
+
+# For breaking changes
+npm run release:major
+```
+
+This will:
+
+1. Update `package.json` version
+2. Generate changelog from conventional commits
+3. Create git commit and tag
+4. Push to repository
+5. Trigger automated GitHub release
+
+### Commit Conventions
+
+Use conventional commit format for proper changelog generation:
+
+```bash
+# Features
+git commit -m "feat: add new weather widget"
+
+# Bug fixes
+git commit -m "fix: resolve mobile camera issue"
+
+# Documentation
+git commit -m "docs: update API documentation"
+
+# Code style
+git commit -m "style: format component files"
+
+# Refactoring
+git commit -m "refactor: simplify auth logic"
+
+# Performance
+git commit -m "perf: optimize image loading"
+
+# Tests
+git commit -m "test: add unit tests for utils"
+
+# CI/CD
+git commit -m "ci: update GitHub workflows"
+
+# Chores
+git commit -m "chore: update dependencies"
+```
+
+**Scope is optional but encouraged:**
+
+```bash
+git commit -m "feat(auth): add password reset functionality"
+```
+
 ## 🏗️ Project Structure
 
 ```bash

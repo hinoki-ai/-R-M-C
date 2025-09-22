@@ -3,6 +3,7 @@
 import {
   IconActivity,
   IconAlertTriangle,
+  IconBuilding,
   IconCalendar,
   IconCalendarEvent,
   IconCamera,
@@ -17,7 +18,9 @@ import {
   IconHelp,
   IconHome,
   IconMail,
+  IconMap,
   IconMessageCircle,
+  IconPhone,
   IconRadio,
   IconReceipt,
   IconSearch,
@@ -194,9 +197,34 @@ export function AppSidebar() {
             icon: IconCloud,
           },
           {
+            title: 'Emergency Info',
+            url: '/dashboard/emergency-info',
+            icon: IconAlertTriangle,
+          },
+          {
             title: 'Documents',
             url: '/dashboard/documents',
             icon: IconFileTypography,
+          },
+          {
+            title: 'Photo Gallery',
+            url: '/dashboard/photos',
+            icon: IconCamera,
+          },
+          {
+            title: 'Business Directory',
+            url: '/dashboard/businesses',
+            icon: IconBuilding,
+          },
+          {
+            title: 'Contacts',
+            url: '/dashboard/contacts',
+            icon: IconPhone,
+          },
+          {
+            title: 'Maps',
+            url: '/dashboard/maps',
+            icon: IconMap,
           },
           {
             title: 'Search',

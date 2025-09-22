@@ -1,6 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import { useUser } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
@@ -11,6 +13,7 @@ import {
   Eye,
   Gauge,
   MapPin,
+  Sprout,
   Sun,
   Sunrise,
   Sunset,
@@ -19,7 +22,7 @@ import {
   Wind,
   Zap
 } from 'lucide-react'
-import { Suspense, useState } from 'react'
+import { Suspense } from 'react'
 
 import { DocumentDashboardLayout } from '@/components/dashboard/layout/dashboard-layout'
 import { CardSkeleton, DataState, ErrorState, LoadingState } from '@/components/shared/loading-error-states'
@@ -28,17 +31,36 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWeatherData } from '@/hooks/use-weather-data'
 
+// Force dynamic rendering to avoid SSR issues with Convex queries
+export const dynamic = 'force-dynamic'
+
 // No mock data - using real weather data only
 
 function WeatherContent() {
   const { user } = useUser()
   const [activeTab, setActiveTab] = useState('overview')
+  const [isClient, setIsClient] = useState(false)
   const { weatherData, alerts, forecast, loading, error } = useWeatherData()
+
+  // Prevent SSR issues by only rendering on client
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return (
+      <DocumentDashboardLayout user={{ id: '', name: 'Usuario', email: '', role: 'user', isAdmin: false }} currentSection='weather'>
+        <div className='text-center py-12'>
+          <p className='text-gray-600 dark:text-gray-400'>Cargando información del clima...</p>
+        </div>
+      </DocumentDashboardLayout>
+    )
+  }
 
   // Use real data only - no mock data fallbacks
   const currentWeather = weatherData || null
-  const weeklyForecast = forecast || []
-  const activeAlerts = alerts || []
+  const weeklyForecast = Array.isArray(forecast) ? forecast : []
+  const activeAlerts = Array.isArray(alerts) ? alerts : []
 
   if (!user) {
     return (
@@ -92,7 +114,19 @@ function WeatherContent() {
       }}
       currentSection='weather'
     >
-      <div className='space-y-6'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg4.jpg'
+          alt='Weather Dashboard Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
+
+      <div className='space-y-6 relative z-10'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -101,7 +135,7 @@ function WeatherContent() {
         >
           <div>
             <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
-              🌤️ Clima Comunidad Pinto Los Pellines
+              Clima Comunidad Pinto Los Pellines
             </h1>
             <p className='text-gray-600 dark:text-gray-400 mt-2'>
               Información meteorológica y pronósticos para la Junta de Vecinos
@@ -119,14 +153,14 @@ function WeatherContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className='bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-blue-200 dark:border-blue-800'>
+          <Card className='bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 border-blue-200 dark:border-blue-800'>
             <CardHeader>
               <CardTitle className='flex items-center space-x-2'>
                 <Thermometer className='w-5 h-5 text-blue-600' />
                 <span>Condiciones Actuales</span>
                 {currentWeather && currentWeather.lastUpdated && (
                   <Badge variant='secondary' className='text-xs'>
-                    Última actualización: {new Date(currentWeather.lastUpdated).toLocaleTimeString('es-CL')}
+                    Última actualización: {isClient ? new Date(currentWeather.lastUpdated as any).toLocaleTimeString('es-CL') : 'Cargando...'}
                   </Badge>
                 )}
               </CardTitle>
@@ -146,79 +180,154 @@ function WeatherContent() {
                       {currentWeather.description}
                     </p>
                     <p className='text-xs sm:text-sm text-gray-500 mt-1'>
-                      Sensación térmica: {currentWeather.feelsLike.toFixed(1)}°C
+                      Sensación térmica: {currentWeather.feelsLike?.toFixed(1) ?? 'N/A'}°C
                     </p>
                   </div>
                 ) : (
                   <div className='text-center lg:col-span-1'>
-                    <div className='text-4xl sm:text-6xl mb-2 text-gray-400'>
-                      🌤️
-                    </div>
+                    <Cloud className='w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 text-gray-400' />
                     <div className='text-xl text-gray-500 mb-1'>
                       Datos no disponibles
                     </div>
                     <p className='text-gray-600 dark:text-gray-400 text-sm sm:text-base'>
-                      Información meteorológica próximamente
+                      Informacion meteorologica proximamente
                     </p>
                   </div>
                 )}
 
                 {/* Weather Details */}
                 {currentWeather ? (
-                  <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 lg:col-span-1'>
-                    <div className='text-center p-2 sm:p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                      <Droplets className='w-4 h-4 sm:w-5 sm:h-5 text-blue-500 mx-auto mb-1' />
-                      <div className='text-sm sm:text-lg font-semibold'>{currentWeather.humidity}%</div>
-                      <div className='text-xs text-gray-600 dark:text-gray-400'>Humedad</div>
+                  <div className='grid grid-cols-2 gap-3 lg:col-span-1'>
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'>
+                      <div className='text-center'>
+                        <div className='p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg w-fit mx-auto mb-3'>
+                          <Droplets className='w-5 h-5 text-blue-600 dark:text-blue-400' />
+                        </div>
+                        <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.humidity}%</div>
+                        <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Humedad</div>
+                      </div>
                     </div>
-                    <div className='text-center p-2 sm:p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                      <Wind className='w-4 h-4 sm:w-5 sm:h-5 text-green-500 mx-auto mb-1' />
-                      <div className='text-sm sm:text-lg font-semibold'>{currentWeather.windSpeed.toFixed(1)}</div>
-                      <div className='text-xs text-gray-600 dark:text-gray-400'>km/h</div>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'>
+                      <div className='text-center'>
+                        <div className='p-2 bg-slate-100 dark:bg-slate-900/30 rounded-lg w-fit mx-auto mb-3'>
+                          <Wind className='w-5 h-5 text-slate-600 dark:text-slate-400' />
+                        </div>
+                        <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.windSpeed.toFixed(1)}</div>
+                        <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>km/h</div>
+                        {currentWeather.windGusts && currentWeather.windGusts > currentWeather.windSpeed && (
+                          <div className='text-xs text-orange-600 dark:text-orange-400 mt-2'>Raf: {currentWeather.windGusts.toFixed(1)}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className='text-center p-2 sm:p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                      <Gauge className='w-4 h-4 sm:w-5 sm:h-5 text-purple-500 mx-auto mb-1' />
-                      <div className='text-sm sm:text-lg font-semibold'>{currentWeather.pressure.toFixed(1)}</div>
-                      <div className='text-xs text-gray-600 dark:text-gray-400'>hPa</div>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'>
+                      <div className='text-center'>
+                        <div className='p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg w-fit mx-auto mb-3'>
+                          <Gauge className='w-5 h-5 text-emerald-600 dark:text-emerald-400' />
+                        </div>
+                        <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.pressure.toFixed(1)}</div>
+                        <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>hPa</div>
+                      </div>
                     </div>
-                    <div className='text-center p-2 sm:p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                      <Eye className='w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 mx-auto mb-1' />
-                      <div className='text-sm sm:text-lg font-semibold'>{currentWeather.visibility}</div>
-                      <div className='text-xs text-gray-600 dark:text-gray-400'>km</div>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'>
+                      <div className='text-center'>
+                        <div className='p-2 bg-violet-100 dark:bg-violet-900/30 rounded-lg w-fit mx-auto mb-3'>
+                          <Eye className='w-5 h-5 text-violet-600 dark:text-violet-400' />
+                        </div>
+                        <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.visibility}</div>
+                        <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>km</div>
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  <div className='text-center lg:col-span-1 text-gray-500'>
-                    <p>Detalles del clima no disponibles</p>
+                  <div className='text-center lg:col-span-1'>
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8'>
+                      <Cloud className='w-16 h-16 mx-auto mb-4 text-gray-400' />
+                      <div className='text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+                        Datos no disponibles
+                      </div>
+                      <p className='text-gray-600 dark:text-gray-400 text-sm'>
+                        Informacion meteorologica proximamente
+                      </p>
+                    </div>
                   </div>
                 )}
 
                 {/* Additional Info */}
                 {currentWeather ? (
-                  <div className='space-y-2 sm:space-y-3 lg:col-span-1'>
-                    <div className='flex justify-between items-center'>
-                      <span className='text-xs sm:text-sm text-gray-600 dark:text-gray-400'>Índice UV</span>
-                      <div className='flex items-center space-x-1'>
-                        <Zap className='w-3 h-3 sm:w-4 sm:h-4 text-orange-500' />
-                        <span className='font-medium text-sm sm:text-base'>{currentWeather.uvIndex}</span>
+                  <div className='grid grid-cols-1 gap-3 lg:col-span-1'>
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-3'>
+                          <div className='p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg'>
+                            <Zap className='w-4 h-4 text-amber-600 dark:text-amber-400' />
+                          </div>
+                          <div>
+                            <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Indice UV</div>
+                            <div className={`text-lg font-semibold ${
+                              (currentWeather.uvIndex || 0) >= 8 ? 'text-red-600 dark:text-red-400' :
+                              (currentWeather.uvIndex || 0) >= 6 ? 'text-orange-600 dark:text-orange-400' :
+                              (currentWeather.uvIndex || 0) >= 3 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400'
+                            }`}>
+                              {currentWeather.uvIndex}
+                              {(currentWeather.uvIndex || 0) >= 6 && (
+                                <AlertTriangle className='w-4 h-4 inline ml-2' />
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className='flex justify-between items-center'>
-                      <span className='text-xs sm:text-sm text-gray-600 dark:text-gray-400'>Nubosidad</span>
-                      <span className='font-medium text-sm sm:text-base'>{currentWeather.cloudCover}%</span>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-3'>
+                          <div className='p-2 bg-gray-100 dark:bg-gray-900/30 rounded-lg'>
+                            <Cloud className='w-4 h-4 text-gray-600 dark:text-gray-400' />
+                          </div>
+                          <div>
+                            <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Nubosidad</div>
+                            <div className='text-lg font-semibold text-gray-900 dark:text-white'>{currentWeather.cloudCover}%</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className='flex justify-between items-center'>
-                      <span className='text-xs sm:text-sm text-gray-600 dark:text-gray-400'>Punto de rocío</span>
-                      <span className='font-medium text-sm sm:text-base'>{currentWeather.dewPoint.toFixed(1)}°C</span>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-3'>
+                          <div className='p-2 bg-sky-100 dark:bg-sky-900/30 rounded-lg'>
+                            <Gauge className='w-4 h-4 text-sky-600 dark:text-sky-400' />
+                          </div>
+                          <div>
+                            <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Punto de rocio</div>
+                            <div className='text-lg font-semibold text-gray-900 dark:text-white'>{currentWeather.dewPoint?.toFixed(1) ?? 'N/A'}°C</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className='flex justify-between items-center'>
-                      <span className='text-xs sm:text-sm text-gray-600 dark:text-gray-400'>Precipitación</span>
-                      <span className='font-medium text-sm sm:text-base'>{currentWeather.precipitation.toFixed(1)} mm</span>
+
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-3'>
+                          <div className='p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg'>
+                            <Thermometer className='w-4 h-4 text-rose-600 dark:text-rose-400' />
+                          </div>
+                          <div>
+                            <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Sensacion termica</div>
+                            <div className='text-lg font-semibold text-gray-900 dark:text-white'>{currentWeather.feelsLike?.toFixed(1) ?? 'N/A'}°C</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  <div className='text-center lg:col-span-1 text-gray-500'>
-                    <p>Información adicional no disponible</p>
+                  <div className='text-center lg:col-span-1'>
+                    <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8'>
+                      <p className='text-gray-600 dark:text-gray-400'>Informacion adicional no disponible</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -233,7 +342,7 @@ function WeatherContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className='border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20'>
+            <Card className='border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950'>
               <CardHeader>
                 <CardTitle className='flex items-center space-x-2 text-red-800 dark:text-red-200'>
                   <AlertTriangle className='w-5 h-5' />
@@ -335,7 +444,10 @@ function WeatherContent() {
               {/* Community Impact */}
               <Card>
                 <CardHeader>
-                  <CardTitle>🌱 Impacto en la Comunidad</CardTitle>
+                  <CardTitle className='flex items-center space-x-2'>
+                    <Sprout className='w-5 h-5 text-green-600' />
+                    <span>Impacto en la Comunidad</span>
+                  </CardTitle>
                   <CardDescription>
                     Cómo afecta el clima actual a las actividades comunitarias
                   </CardDescription>
@@ -478,7 +590,7 @@ function WeatherContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className='h-64 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-lg flex items-center justify-center'>
+                    <div className='h-64 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 rounded-lg flex items-center justify-center'>
                       <div className='text-center'>
                         <TrendingUp className='w-12 h-12 text-blue-500 mx-auto mb-2' />
                         <p className='text-gray-600 dark:text-gray-400'>
@@ -501,7 +613,7 @@ function WeatherContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className='h-64 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg flex items-center justify-center'>
+                    <div className='h-64 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-lg flex items-center justify-center'>
                       <div className='text-center'>
                         <CloudRain className='w-12 h-12 text-blue-500 mx-auto mb-2' />
                         <p className='text-gray-600 dark:text-gray-400'>
@@ -526,19 +638,19 @@ function WeatherContent() {
                 </CardHeader>
                 <CardContent>
                   <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6'>
-                    <div className='text-center p-4 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 rounded-lg'>
+                    <div className='text-center p-4 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 rounded-lg'>
                       <div className='text-2xl font-bold text-red-600'>--°C</div>
                       <div className='text-sm text-gray-600 dark:text-gray-400'>Temperatura Promedio</div>
                     </div>
-                    <div className='text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-lg'>
+                    <div className='text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 rounded-lg'>
                       <div className='text-2xl font-bold text-blue-600'>-- mm</div>
                       <div className='text-sm text-gray-600 dark:text-gray-400'>Precipitación Total</div>
                     </div>
-                    <div className='text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg'>
+                    <div className='text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 rounded-lg'>
                       <div className='text-2xl font-bold text-green-600'>-- km/h</div>
                       <div className='text-sm text-gray-600 dark:text-gray-400'>Velocidad del Viento</div>
                     </div>
-                    <div className='text-center p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 rounded-lg'>
+                    <div className='text-center p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 rounded-lg'>
                       <div className='text-2xl font-bold text-purple-600'>--%</div>
                       <div className='text-sm text-gray-600 dark:text-gray-400'>Humedad Promedio</div>
                     </div>

@@ -8,6 +8,7 @@ import {
   Eye,
   Gauge,
   MapPin,
+  Sprout,
   Sun,
   Thermometer,
   Wind
@@ -20,12 +21,63 @@ interface WeatherWidgetProps {
   compact?: boolean
   showDetails?: boolean
   weatherData?: WeatherData | null
+  forecastData?: any[] | null
+  showAgricultural?: boolean
 }
 
-export function WeatherWidget({ compact = false, showDetails = true, weatherData }: WeatherWidgetProps) {
+export function WeatherWidget({ compact = false, showDetails = true, weatherData, forecastData, showAgricultural = false }: WeatherWidgetProps) {
   // Weather data will be fetched from real sources
   // For now, showing empty state until real weather data is available
   const currentWeather = weatherData
+  const forecast = forecastData
+
+  // Agricultural insights for farming community
+  const getAgriculturalInsights = () => {
+    if (!currentWeather || !forecast || !showAgricultural) return null
+
+    const insights = []
+    const today = forecast.find(f => f.date === new Date().toISOString().split('T')[0])
+
+    if (today?.evapotranspiration) {
+      insights.push({
+        type: 'evapotranspiration',
+        value: today.evapotranspiration,
+        message: `Evapotranspiracion: ${today.evapotranspiration} mm`,
+        color: 'text-green-600'
+      })
+    }
+
+    if ((currentWeather.uvIndex || 0) >= 8) {
+      insights.push({
+        type: 'uv_warning',
+        value: currentWeather.uvIndex,
+        message: 'Indice UV alto - proteger cultivos',
+        color: 'text-orange-600'
+      })
+    }
+
+    if (currentWeather.dewPoint && currentWeather.dewPoint > 10) {
+      insights.push({
+        type: 'humidity_risk',
+        value: currentWeather.dewPoint,
+        message: 'Riesgo enfermedades fungicas',
+        color: 'text-blue-600'
+      })
+    }
+
+    if (currentWeather.windGusts && currentWeather.windGusts > 20) {
+      insights.push({
+        type: 'wind_risk',
+        value: currentWeather.windGusts,
+        message: 'Viento fuerte - riesgo cosecha',
+        color: 'text-red-600'
+      })
+    }
+
+    return insights.slice(0, 3) // Max 3 insights
+  }
+
+  const agriculturalInsights = getAgriculturalInsights()
 
   const getWeatherIcon = (icon: string, size = 24) => {
     const iconClass = `w-${size} h-${size}`
@@ -56,14 +108,20 @@ export function WeatherWidget({ compact = false, showDetails = true, weatherData
                   <div className='text-xs text-gray-600'>{currentWeather.description}</div>
                 </div>
               </div>
-              <div className='text-right text-xs text-gray-500'>
-                <div>💨 {currentWeather.windSpeed.toFixed(1)} km/h</div>
-                <div>💧 {currentWeather.humidity}%</div>
+              <div className='text-right text-xs text-gray-500 space-y-1'>
+                <div className='flex items-center justify-end space-x-1'>
+                  <Wind className='w-3 h-3' />
+                  <span>{currentWeather.windSpeed.toFixed(1)} km/h</span>
+                </div>
+                <div className='flex items-center justify-end space-x-1'>
+                  <Droplets className='w-3 h-3' />
+                  <span>{currentWeather.humidity}%</span>
+                </div>
               </div>
             </div>
           ) : (
             <div className='text-center py-4'>
-              <div className='text-2xl mb-2'>🌤️</div>
+              <Cloud className='w-8 h-8 mx-auto mb-2 text-gray-400' />
               <div className='text-sm text-gray-600'>Clima no disponible</div>
             </div>
           )}
@@ -113,35 +171,73 @@ export function WeatherWidget({ compact = false, showDetails = true, weatherData
               {/* Weather Details */}
               {showDetails && (
                 <div className='grid grid-cols-2 gap-3 md:col-span-2'>
-                  <div className='text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                    <Droplets className='w-5 h-5 text-blue-500 mx-auto mb-1' />
-                    <div className='text-lg font-semibold'>{currentWeather.humidity}%</div>
-                    <div className='text-xs text-gray-600 dark:text-gray-400'>Humedad</div>
+                  <div className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-colors'>
+                    <div className='text-center'>
+                      <div className='p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg w-fit mx-auto mb-3'>
+                        <Droplets className='w-4 h-4 text-blue-600 dark:text-blue-400' />
+                      </div>
+                      <div className='text-xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.humidity}%</div>
+                      <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>Humedad</div>
+                    </div>
                   </div>
-                  <div className='text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                    <Wind className='w-5 h-5 text-green-500 mx-auto mb-1' />
-                    <div className='text-lg font-semibold'>{currentWeather.windSpeed.toFixed(1)}</div>
-                    <div className='text-xs text-gray-600 dark:text-gray-400'>km/h</div>
+
+                  <div className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-colors'>
+                    <div className='text-center'>
+                      <div className='p-2 bg-slate-100 dark:bg-slate-900/30 rounded-lg w-fit mx-auto mb-3'>
+                        <Wind className='w-4 h-4 text-slate-600 dark:text-slate-400' />
+                      </div>
+                      <div className='text-xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.windSpeed.toFixed(1)}</div>
+                      <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>km/h</div>
+                    </div>
                   </div>
-                  <div className='text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                    <Gauge className='w-5 h-5 text-purple-500 mx-auto mb-1' />
-                    <div className='text-lg font-semibold'>{currentWeather.pressure.toFixed(1)}</div>
-                    <div className='text-xs text-gray-600 dark:text-gray-400'>hPa</div>
+
+                  <div className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-colors'>
+                    <div className='text-center'>
+                      <div className='p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg w-fit mx-auto mb-3'>
+                        <Gauge className='w-4 h-4 text-emerald-600 dark:text-emerald-400' />
+                      </div>
+                      <div className='text-xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.pressure.toFixed(1)}</div>
+                      <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>hPa</div>
+                    </div>
                   </div>
-                  <div className='text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg'>
-                    <Eye className='w-5 h-5 text-indigo-500 mx-auto mb-1' />
-                    <div className='text-lg font-semibold'>{currentWeather.visibility}</div>
-                    <div className='text-xs text-gray-600 dark:text-gray-400'>km</div>
+
+                  <div className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-colors'>
+                    <div className='text-center'>
+                      <div className='p-2 bg-violet-100 dark:bg-violet-900/30 rounded-lg w-fit mx-auto mb-3'>
+                        <Eye className='w-4 h-4 text-violet-600 dark:text-violet-400' />
+                      </div>
+                      <div className='text-xl font-bold text-gray-900 dark:text-white mb-1'>{currentWeather.visibility}</div>
+                      <div className='text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide'>km</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Agricultural Insights */}
+              {agriculturalInsights && agriculturalInsights.length > 0 && (
+                <div className='md:col-span-3 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700'>
+                  <div className='flex items-center space-x-3 mb-4'>
+                    <div className='p-2 bg-green-100 dark:bg-green-900/30 rounded-lg'>
+                      <Sprout className='w-4 h-4 text-green-600 dark:text-green-400' />
+                    </div>
+                    <span className='text-sm font-medium text-green-700 dark:text-green-300'>Informacion Agricola</span>
+                  </div>
+                  <div className='grid grid-cols-1 gap-3'>
+                    {agriculturalInsights.map((insight, index) => (
+                      <div key={index} className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-colors'>
+                        <div className={`text-sm font-medium ${insight.color}`}>{insight.message}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
             </div>
           ) : (
             <div className='text-center py-8'>
-              <div className='text-4xl mb-4'>🌤️</div>
-              <h3 className='text-lg font-semibold mb-2 text-gray-700'>Datos meteorológicos no disponibles</h3>
+              <Cloud className='w-16 h-16 mx-auto mb-4 text-gray-400' />
+              <h3 className='text-lg font-semibold mb-2 text-gray-700'>Datos meteorologicos no disponibles</h3>
               <p className='text-gray-600 text-sm'>
-                La información del clima se cargará desde fuentes oficiales próximamente.
+                La informacion del clima se cargara desde fuentes oficiales proximamente.
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
@@ -24,7 +25,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ForecastAPIResponse, WeatherAPIResponse } from '@/lib/weather-service'
+import { ForecastAPIResponse, WeatherAPIResponse } from '@/lib/services/weather-service'
 import { WeatherAlert } from '@/types/dashboard'
 
 interface WeatherState {
@@ -121,18 +122,29 @@ export default function WeatherPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900'>
-      <div className='container mx-auto px-4 py-8'>
+    <div className='min-h-screen relative'>
+      {/* Background Image */}
+      <div className='fixed inset-0 -z-10'>
+        <Image
+          src='/images/backgrounds/bg7.jpg'
+          alt='Weather Page Background'
+          fill
+          className='object-cover object-center'
+          priority
+          quality={90}
+        />
+      </div>
+      <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 relative z-10'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className='text-center mb-8'
+          className='text-center mb-6 sm:mb-8 lg:mb-12'
         >
-          <h1 className='text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4'>
             🌤️ Clima Comunidad Pinto Los Pellines
           </h1>
-          <p className='text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto'>
+          <p className='text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto'>
             Información meteorológica actualizada para la Junta de Vecinos
           </p>
           <div className='flex items-center justify-center gap-4 mt-4'>
@@ -165,7 +177,7 @@ export default function WeatherPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className='bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-blue-200 dark:border-blue-800'>
+            <Card className='bg-card border-blue-200 dark:border-blue-800'>
               <CardHeader>
                 <CardTitle className='flex items-center space-x-2'>
                   <Thermometer className='w-5 h-5 text-blue-600' />
@@ -184,7 +196,7 @@ export default function WeatherPage() {
                     <p className='text-gray-600'>Cargando datos meteorológicos...</p>
                   </div>
                 ) : currentWeather ? (
-                  <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8'>
                     {/* Main Weather */}
                     <div className='text-center lg:col-span-1'>
                       <div className='text-4xl sm:text-6xl mb-2'>
