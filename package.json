@@ -36,12 +36,12 @@
     "postinstall": "npm run validate-structure",
     "prepare": "husky install || true",
     "quality": "npm run type-check && npm run lint && npm run format:check && npm run security:audit",
-    "version:patch": "npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
-    "version:minor": "npm version minor --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
-    "version:major": "npm version major --no-git-tag-version && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\"",
-    "release:patch": "npm run version:patch && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
-    "release:minor": "npm run version:minor && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
-    "release:major": "npm run version:major && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version') && git push && git push --tags",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
+    "release:patch": "git diff --quiet && git diff --staged --quiet || (echo 'Working directory not clean. Commit or stash changes first.' && exit 1) && npm run version:patch && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\" && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version')",
+    "release:minor": "git diff --quiet && git diff --staged --quiet || (echo 'Working directory not clean. Commit or stash changes first.' && exit 1) && npm run version:minor && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\" && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version')",
+    "release:major": "git diff --quiet && git diff --staged --quiet || (echo 'Working directory not clean. Commit or stash changes first.' && exit 1) && npm run version:major && git add package.json package-lock.json && git commit -m \"chore: bump version to $(node -p 'require(\"./package.json\").version')\" && npm run changelog && git add CHANGELOG.md && git commit --amend --no-edit && git tag v$(node -p 'require(\"./package.json\").version')",
     "changelog": "node scripts/generate-changelog.js"
   },
   "dependencies": {
