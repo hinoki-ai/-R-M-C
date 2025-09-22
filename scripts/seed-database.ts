@@ -14,6 +14,7 @@
  */
 
 import { ConvexHttpClient } from 'convex/browser';
+
 import { api } from '../convex/_generated/api';
 
 // Initialize Convex client
@@ -51,7 +52,7 @@ async function seedAll() {
   }
 
   try {
-    const result = await client.mutation((api as any)["seeds/index"].seedAll, {
+    const result = await client.mutation((api as any)['seeds/index'].seedAll, {
       cameras: true,
       weather: true,
       payments: true,
@@ -85,7 +86,7 @@ async function seedAll() {
 async function seedCameras() {
   console.log('📹 Seeding camera data...');
   try {
-    const result = await client.mutation((api as any)["seeds/cameras"].seedCameras, {});
+    const result = await client.mutation((api as any)['seeds/cameras'].seedCameras, {});
     console.log('✅ Camera seeding completed:', result);
   } catch (error) {
     console.error('❌ Camera seeding failed:', error);
@@ -96,7 +97,7 @@ async function seedCameras() {
 async function seedWeather() {
   console.log('🌤️ Seeding weather data...');
   try {
-    const result = await client.mutation((api as any)["seeds/weather"].seedWeather, {});
+    const result = await client.mutation((api as any)['seeds/weather'].seedWeather, {});
     console.log('✅ Weather seeding completed:', result);
   } catch (error) {
     console.error('❌ Weather seeding failed:', error);
@@ -107,7 +108,7 @@ async function seedWeather() {
 async function seedPayments() {
   console.log('💰 Seeding payment data...');
   try {
-    const result = await client.mutation((api as any)["seeds/payments"].seedPayments, {});
+    const result = await client.mutation((api as any)['seeds/payments'].seedPayments, {});
     console.log('✅ Payment seeding completed:', result);
   } catch (error) {
     console.error('❌ Payment seeding failed:', error);
@@ -118,7 +119,7 @@ async function seedPayments() {
 async function seedRadio() {
   console.log('📻 Seeding radio station data...');
   try {
-    const result = await client.mutation((api as any)["seeds/radio"].seedRadioStations, {});
+    const result = await client.mutation((api as any)['seeds/radio'].seedRadioStations, {});
     console.log('✅ Radio seeding completed:', result);
   } catch (error) {
     console.error('❌ Radio seeding failed:', error);
@@ -129,7 +130,7 @@ async function seedRadio() {
 async function seedRss() {
   console.log('📰 Seeding RSS feeds data...');
   try {
-    const result = await client.mutation((api as any)["seeds/rss"].seedRssFeeds, {});
+    const result = await client.mutation((api as any)['seeds/rss'].seedRssFeeds, {});
     console.log('✅ RSS seeding completed:', result);
   } catch (error) {
     console.error('❌ RSS seeding failed:', error);
@@ -140,7 +141,7 @@ async function seedRss() {
 async function seedEmergencyProtocols() {
   console.log('📋 Seeding emergency protocols data...');
   try {
-    const result = await client.mutation((api as any)["seeds/emergency_protocols"].seedEmergencyProtocols, {});
+    const result = await client.mutation((api as any)['seeds/emergency_protocols'].seedEmergencyProtocols, {});
     console.log('✅ Emergency protocols seeding completed:', result);
   } catch (error) {
     console.error('❌ Emergency protocols seeding failed:', error);

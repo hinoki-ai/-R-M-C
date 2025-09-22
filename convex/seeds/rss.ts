@@ -1,5 +1,6 @@
-import { mutation } from '../_generated/server';
 import { v } from 'convex/values';
+
+import { mutation } from '../_generated/server';
 
 // Chilean RSS feeds relevant for Ñuble region and Pinto Los Pellines community
 const CHILEAN_RSS_FEEDS = [
@@ -147,7 +148,7 @@ export const seedRssFeeds = mutation({
       }
     }
 
-    console.log(`📰 RSS seeding completed!`);
+    console.log('📰 RSS seeding completed!');
     console.log(`   Created: ${feedsCreated} feeds`);
     console.log(`   Skipped: ${skipped} existing feeds`);
 
@@ -155,7 +156,7 @@ export const seedRssFeeds = mutation({
       seeded: feedsCreated,
       skipped,
       total: feedsCreated + skipped,
-      message: `RSS feeds seeding completed successfully`
+      message: 'RSS feeds seeding completed successfully'
     };
   },
 });

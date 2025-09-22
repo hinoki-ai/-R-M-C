@@ -2,29 +2,32 @@
 
 import { useAuth, UserButton } from '@clerk/nextjs'
 import {
-  ChevronDown,
-  Menu,
-  X,
-  Users,
-  Sparkles,
-  Home,
-  Megaphone,
   Calendar,
+  ChevronDown,
+  Cloud,
+  DollarSign,
   FileText,
+  Heart,
+  Home,
   MapPin,
+  Megaphone,
+  Menu,
   Phone,
-  Cloud
+  Sparkles,
+  Users,
+  X
 } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
+import { ModeToggle } from '@/components/layout/mode-toggle'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
-import { ModeToggle } from '@/components/layout/mode-toggle'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
@@ -60,6 +63,15 @@ const navigationItems = [
     name: 'Calendario',
     href: '/calendario',
     icon: Calendar,
+  },
+  {
+    name: 'Contribuciones',
+    href: '#',
+    icon: Heart,
+    subpages: [
+      { name: 'Formas de Contribuir', href: '/contribuciones', icon: Heart },
+      { name: 'Donar', href: '/donate', icon: DollarSign },
+    ]
   },
 ]
 
@@ -109,21 +121,30 @@ export const AdvancedHeader = () => {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant='ghost'
-                        className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
+                        className='flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 data-[state=open]:bg-accent/50 data-[state=open]:text-foreground'
                       >
                         <item.icon className='w-4 h-4' />
                         {item.name}
-                        <ChevronDown className='w-4 h-4' />
+                        <ChevronDown className='w-4 h-4 transition-transform duration-200 data-[state=open]:rotate-180' />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align='start' className='w-48'>
-                      {item.subpages.map((subpage) => (
-                        <DropdownMenuItem key={subpage.name} asChild>
-                          <Link href={subpage.href} className='flex items-center gap-2'>
-                            <subpage.icon className='w-4 h-4' />
-                            {subpage.name}
-                          </Link>
-                        </DropdownMenuItem>
+                    <DropdownMenuContent
+                      align='start'
+                      side='bottom'
+                      sideOffset={8}
+                      className='w-48 z-[60]'
+                      avoidCollisions={true}
+                    >
+                      {item.subpages.map((subpage, index) => (
+                        <React.Fragment key={subpage.name}>
+                          <DropdownMenuItem asChild>
+                            <Link href={subpage.href} className='flex items-center gap-2'>
+                              <subpage.icon className='w-4 h-4' />
+                              {subpage.name}
+                            </Link>
+                          </DropdownMenuItem>
+                          {index < item.subpages.length - 1 && <DropdownMenuSeparator />}
+                        </React.Fragment>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -145,43 +166,37 @@ export const AdvancedHeader = () => {
             <ModeToggle />
 
             {/* Auth Buttons */}
-            {isLoaded && (
-              <>
-                {isSignedIn ? (
-                  <div className='flex items-center gap-3'>
-                    <Button asChild size='sm' className='hidden sm:inline-flex'>
-                      <Link href='/dashboard' className='flex items-center gap-2'>
-                        <Users className='w-4 h-4' />
-                        Dashboard
-                        <Sparkles className='w-3 h-3' />
-                      </Link>
-                    </Button>
-                    <UserButton
-                      afterSignOutUrl='/'
-                      appearance={{
-                        elements: {
-                          avatarBox: 'w-8 h-8'
-                        }
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className='flex items-center gap-2'>
-                    <Button variant='ghost' size='sm' asChild>
-                      <Link href='/sign-in'>Iniciar Sesión</Link>
-                    </Button>
-                    <Button size='sm' asChild>
-                      <Link href='/sign-up'>Registrarse</Link>
-                    </Button>
-                    <Button size='sm' variant='outline' asChild>
-                      <Link href='/dashboard' className='flex items-center gap-2'>
-                        <Users className='w-4 h-4' />
-                        Dashboard
-                      </Link>
-                    </Button>
-                  </div>
-                )}
-              </>
+            {!isLoaded ? (
+              <div className='flex items-center justify-center'>
+                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+              </div>
+            ) : isSignedIn ? (
+              <div className='flex items-center gap-3'>
+                <Button asChild size='sm' className='hidden sm:inline-flex'>
+                  <Link href='/dashboard' className='flex items-center gap-2'>
+                    <Users className='w-4 h-4' />
+                    Dashboard
+                    <Sparkles className='w-3 h-3' />
+                  </Link>
+                </Button>
+                <UserButton
+                  afterSignOutUrl='/'
+                  appearance={{
+                    elements: {
+                      avatarBox: 'w-8 h-8'
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <div className='flex items-center gap-2'>
+                <Button variant='ghost' size='sm' asChild>
+                  <Link href='/sign-in'>Iniciar Sesión</Link>
+                </Button>
+                <Button size='sm' asChild>
+                  <Link href='/sign-up'>Registrarse</Link>
+                </Button>
+              </div>
             )}
 
             {/* Mobile Menu Button */}
@@ -245,19 +260,13 @@ export const AdvancedHeader = () => {
               ))}
 
               {/* Mobile Auth Buttons */}
-              {isLoaded && !isSignedIn && (
+              {!isLoaded ? null : !isSignedIn && (
                 <div className='flex flex-col gap-2 mt-4 pt-4 border-t border-border/50'>
                   <Button variant='outline' size='sm' asChild onClick={() => setMenuState(false)}>
                     <Link href='/sign-in'>Iniciar Sesión</Link>
                   </Button>
                   <Button size='sm' asChild onClick={() => setMenuState(false)}>
                     <Link href='/sign-up'>Registrarse</Link>
-                  </Button>
-                  <Button size='sm' variant='outline' asChild onClick={() => setMenuState(false)}>
-                    <Link href='/dashboard' className='flex items-center gap-2'>
-                      <Users className='w-4 h-4' />
-                      Dashboard
-                    </Link>
                   </Button>
                 </div>
               )}

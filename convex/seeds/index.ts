@@ -1,5 +1,6 @@
-import { mutation } from '../_generated/server';
 import { v } from 'convex/values';
+
+import { mutation } from '../_generated/server';
 
 // Import all seed functions
 const seedCameras = async (ctx: any) => {

@@ -1,12 +1,13 @@
-import { query, mutation, action } from "./_generated/server";
-import { v } from "convex/values";
-import { api } from "./_generated/api";
+import { v } from 'convex/values';
+
+import { api } from './_generated/api';
+import { action, mutation, query } from './_generated/server';
 
 // Get all active RSS feeds
 export const getRssFeeds = query({
   args: {},
   returns: v.array(v.object({
-    _id: v.id("rssFeeds"),
+    _id: v.id('rssFeeds'),
     name: v.string(),
     url: v.string(),
     description: v.optional(v.string()),
@@ -19,7 +20,7 @@ export const getRssFeeds = query({
     createdAt: v.number(),
   })),
   handler: async (ctx) => {
-    const feeds = await ctx.db.query("rssFeeds").filter(q => q.eq(q.field("isActive"), true)).collect();
+    const feeds = await ctx.db.query('rssFeeds').filter(q => q.eq(q.field('isActive'), true)).collect();
 
     return feeds.map(feed => ({
       _id: feed._id,
@@ -46,8 +47,8 @@ export const getRssArticles = query({
     includeArchived: v.optional(v.boolean()),
   },
   returns: v.array(v.object({
-    _id: v.id("rssArticles"),
-    feedId: v.id("rssFeeds"),
+    _id: v.id('rssArticles'),
+    feedId: v.id('rssFeeds'),
     title: v.string(),
     description: v.optional(v.string()),
     url: v.string(),
@@ -65,23 +66,23 @@ export const getRssArticles = query({
     const limit = args.limit || 20;
     const includeArchived = args.includeArchived || false;
 
-    let query = ctx.db.query("rssArticles");
+    let query = ctx.db.query('rssArticles');
 
     // Apply filters
     if (args.category) {
-      query = query.filter(q => q.eq(q.field("category"), args.category));
+      query = query.filter(q => q.eq(q.field('category'), args.category));
     }
 
     if (args.region) {
-      query = query.filter(q => q.eq(q.field("region"), args.region));
+      query = query.filter(q => q.eq(q.field('region'), args.region));
     }
 
     if (!includeArchived) {
-      query = query.filter(q => q.eq(q.field("isArchived"), false));
+      query = query.filter(q => q.eq(q.field('isArchived'), false));
     }
 
     const articles = await query
-      .order("desc")
+      .order('desc')
       .take(limit);
 
     // Get feed names for each article
@@ -101,7 +102,7 @@ export const getRssArticles = query({
           region: article.region,
           isRead: article.isRead,
           tags: article.tags,
-          feedName: feed?.name || "Unknown Feed",
+          feedName: feed?.name || 'Unknown Feed',
           createdAt: article.createdAt,
         };
       })
@@ -114,7 +115,7 @@ export const getRssArticles = query({
 // Mark article as read/unread
 export const markArticleAsRead = mutation({
   args: {
-    articleId: v.id("rssArticles"),
+    articleId: v.id('rssArticles'),
     isRead: v.boolean(),
   },
   returns: v.null(),
@@ -131,7 +132,7 @@ export const markArticleAsRead = mutation({
 // Archive/unarchive article
 export const archiveArticle = mutation({
   args: {
-    articleId: v.id("rssArticles"),
+    articleId: v.id('rssArticles'),
     isArchived: v.boolean(),
   },
   returns: v.null(),
@@ -155,11 +156,11 @@ export const createRssFeed = mutation({
     region: v.string(),
     fetchInterval: v.optional(v.number()),
     logoUrl: v.optional(v.string()),
-    createdBy: v.id("users"),
+    createdBy: v.id('users'),
   },
-  returns: v.id("rssFeeds"),
+  returns: v.id('rssFeeds'),
   handler: async (ctx, args) => {
-    const feedId = await ctx.db.insert("rssFeeds", {
+    const feedId = await ctx.db.insert('rssFeeds', {
       name: args.name,
       url: args.url,
       description: args.description,
@@ -180,7 +181,7 @@ export const createRssFeed = mutation({
 // Fetch RSS feed and parse articles (server-side action)
 export const fetchRssFeed: any = action({
   args: {
-    feedId: v.id("rssFeeds"),
+    feedId: v.id('rssFeeds'),
   },
   returns: v.object({
     success: v.boolean(),
@@ -196,7 +197,7 @@ export const fetchRssFeed: any = action({
         return {
           success: false,
           articlesFetched: 0,
-          error: "Feed not found or inactive",
+          error: 'Feed not found or inactive',
         };
       }
 
@@ -260,11 +261,11 @@ export const fetchRssFeed: any = action({
       };
 
     } catch (error) {
-      console.error("RSS fetch error:", error);
+      console.error('RSS fetch error:', error);
       return {
         success: false,
         articlesFetched: 0,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   },
@@ -272,11 +273,11 @@ export const fetchRssFeed: any = action({
 
 // Helper queries and mutations for the action
 export const getFeedById = query({
-  args: { feedId: v.id("rssFeeds") },
+  args: { feedId: v.id('rssFeeds') },
   returns: v.union(
     v.null(),
     v.object({
-      _id: v.id("rssFeeds"),
+      _id: v.id('rssFeeds'),
       name: v.string(),
       url: v.string(),
       category: v.string(),
@@ -303,17 +304,17 @@ export const getFeedById = query({
 
 export const checkArticleExists = query({
   args: {
-    feedId: v.id("rssFeeds"),
+    feedId: v.id('rssFeeds'),
     url: v.string(),
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const existing = await ctx.db
-      .query("rssArticles")
+      .query('rssArticles')
       .filter(q =>
         q.and(
-          q.eq(q.field("feedId"), args.feedId),
-          q.eq(q.field("url"), args.url)
+          q.eq(q.field('feedId'), args.feedId),
+          q.eq(q.field('url'), args.url)
         )
       )
       .first();
@@ -324,7 +325,7 @@ export const checkArticleExists = query({
 
 export const createRssArticle = mutation({
   args: {
-    feedId: v.id("rssFeeds"),
+    feedId: v.id('rssFeeds'),
     title: v.string(),
     description: v.optional(v.string()),
     content: v.optional(v.string()),
@@ -336,9 +337,9 @@ export const createRssArticle = mutation({
     region: v.string(),
     tags: v.array(v.string()),
   },
-  returns: v.id("rssArticles"),
+  returns: v.id('rssArticles'),
   handler: async (ctx, args) => {
-    const articleId = await ctx.db.insert("rssArticles", {
+    const articleId = await ctx.db.insert('rssArticles', {
       feedId: args.feedId,
       title: args.title,
       description: args.description,
@@ -362,7 +363,7 @@ export const createRssArticle = mutation({
 
 export const updateFeedLastFetched = mutation({
   args: {
-    feedId: v.id("rssFeeds"),
+    feedId: v.id('rssFeeds'),
     lastFetched: v.number(),
   },
   returns: v.null(),

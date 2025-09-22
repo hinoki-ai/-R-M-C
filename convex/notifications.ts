@@ -1,14 +1,15 @@
-"use node";
+'use node';
 
-import { action, internalAction } from "./_generated/server";
-import { api } from "./_generated/api";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+
+import { api } from './_generated/api';
+import { action, internalAction } from './_generated/server';
 
 // Internal action to send push notification for alarm trigger
 export const sendAlarmNotification = internalAction({
   args: {
-    triggerId: v.id("alarmTriggers"),
-    userId: v.id("users"),
+    triggerId: v.id('alarmTriggers'),
+    userId: v.id('users'),
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
@@ -58,7 +59,7 @@ export const sendAlarmNotification = internalAction({
 // Action to register device token for push notifications
 export const registerDeviceToken = action({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
     deviceToken: v.string(),
     platform: v.union(v.literal('ios'), v.literal('android')),
   },
@@ -79,7 +80,7 @@ export const registerDeviceToken = action({
 // Action to send test notification
 export const sendTestNotification = action({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
     title: v.string(),
     message: v.string(),
   },
@@ -100,8 +101,8 @@ export const sendTestNotification = action({
 export const broadcastEmergencyNotification = internalAction({
   args: {
     message: v.string(),
-    triggeredBy: v.id("users"),
-    excludeUserId: v.optional(v.id("users")),
+    triggeredBy: v.id('users'),
+    excludeUserId: v.optional(v.id('users')),
   },
   returns: v.number(), // Number of notifications sent
   handler: async (ctx, args) => {

@@ -1,6 +1,7 @@
-import { query, mutation, action } from './_generated/server';
 import { v } from 'convex/values';
+
 import { api } from './_generated/api';
+import { action, mutation, query } from './_generated/server';
 
 // Event Categories
 export const createEventCategory = mutation({
@@ -434,7 +435,7 @@ export const updateCalendarSettings = mutation({
     const user = await ctx.db.query('users').withIndex('byExternalId', q => q.eq('externalId', userId.subject)).first();
     if (!user) throw new Error('User not found');
 
-    let settings = await ctx.db.query('calendarSettings').withIndex('byUser', q => q.eq('userId', user._id)).first();
+    const settings = await ctx.db.query('calendarSettings').withIndex('byUser', q => q.eq('userId', user._id)).first();
 
     const updates: any = { updatedAt: Date.now() };
     if (args.defaultView !== undefined) updates.defaultView = args.defaultView;

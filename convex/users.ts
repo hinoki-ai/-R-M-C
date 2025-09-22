@@ -1,16 +1,17 @@
-import { query, mutation, internalMutation } from "./_generated/server";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+
+import { internalMutation, mutation, query } from './_generated/server';
 
 // Get all users (for admin purposes)
 export const listUsers = query({
   args: {},
   returns: v.array(v.object({
-    _id: v.id("users"),
+    _id: v.id('users'),
     name: v.string(),
     externalId: v.string(),
   })),
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db.query('users').collect();
 
     return users.map(user => ({
       _id: user._id,
@@ -27,8 +28,8 @@ export const getUserByExternalId = query({
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.externalId))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.externalId))
       .first();
 
     if (!user) return null;
@@ -49,8 +50,8 @@ export const current = query({
     if (!userId) return null;
 
     return await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", userId.subject))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', userId.subject))
       .first();
   },
 });
@@ -63,8 +64,8 @@ export const getCurrentUserOrThrow = async (ctx: any) => {
   }
 
   const user = await ctx.db
-    .query("users")
-    .withIndex("byExternalId", (q: any) => q.eq("externalId", userId.subject))
+    .query('users')
+    .withIndex('byExternalId', (q: any) => q.eq('externalId', userId.subject))
     .first();
 
   if (!user) {
@@ -92,8 +93,8 @@ export const upsertFromClerk = internalMutation({
 
     // Check if user already exists
     const existingUser = await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", externalId))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', externalId))
       .first();
 
     if (existingUser) {
@@ -104,7 +105,7 @@ export const upsertFromClerk = internalMutation({
       });
     } else {
       // Create new user
-      await ctx.db.insert("users", {
+      await ctx.db.insert('users', {
         name,
         externalId,
       });
@@ -122,8 +123,8 @@ export const deleteFromClerk = internalMutation({
   handler: async (ctx, args) => {
     // Find user by external ID
     const user = await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.clerkUserId))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.clerkUserId))
       .first();
 
     if (user) {
@@ -143,7 +144,7 @@ export const updateUserExternalId = mutation({
     newName: v.optional(v.string()),
   },
   returns: v.object({
-    _id: v.id("users"),
+    _id: v.id('users'),
     name: v.string(),
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
@@ -151,8 +152,8 @@ export const updateUserExternalId = mutation({
   handler: async (ctx, args) => {
     // Find user by current external ID
     const user = await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.currentExternalId))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.currentExternalId))
       .first();
 
     if (!user) {
@@ -182,7 +183,7 @@ export const createAdminUser = mutation({
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   },
   returns: v.object({
-    _id: v.id("users"),
+    _id: v.id('users'),
     name: v.string(),
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
@@ -190,8 +191,8 @@ export const createAdminUser = mutation({
   handler: async (ctx, args) => {
     // Check if user already exists
     const existingUser = await ctx.db
-      .query("users")
-      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.externalId))
+      .query('users')
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.externalId))
       .first();
 
     if (existingUser) {
@@ -209,7 +210,7 @@ export const createAdminUser = mutation({
       };
     } else {
       // Create new admin user
-      const userId = await ctx.db.insert("users", {
+      const userId = await ctx.db.insert('users', {
         name: args.name,
         externalId: args.externalId,
         role: args.role || 'admin',

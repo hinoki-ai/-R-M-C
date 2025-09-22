@@ -1,6 +1,7 @@
-import { action, internalAction, internalMutation } from "../_generated/server";
-import { api, internal } from "../_generated/api";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+
+import { api, internal } from '../_generated/api';
+import { action, internalAction, internalMutation } from '../_generated/server';
 
 // Import notification actions
 const { sendAlarmNotification, broadcastEmergencyNotification } = internal.notifications;
@@ -77,7 +78,7 @@ export const checkScheduledAlarms = internalAction({
           const triggerId = await ctx.runMutation(api.alarms.createAlarmTrigger, {
             alarmId: alarm._id,
             userId: alarm.userId,
-            triggerType: "scheduled",
+            triggerType: 'scheduled',
             message: `Scheduled alarm: ${alarm.title}`,
           });
 
@@ -107,7 +108,7 @@ export const checkScheduledAlarms = internalAction({
 export const triggerEmergencyAlarm = action({
   args: {
     message: v.string(),
-    triggeredBy: v.id("users"),
+    triggeredBy: v.id('users'),
   },
   returns: v.number(), // Returns number of users notified
   handler: async (ctx, args): Promise<number> => {
@@ -119,7 +120,7 @@ export const triggerEmergencyAlarm = action({
 // Internal action to trigger weather-based alarms
 export const triggerWeatherAlarm = internalAction({
   args: {
-    weatherAlertId: v.id("weatherAlerts"),
+    weatherAlertId: v.id('weatherAlerts'),
   },
   returns: v.number(),
   handler: async (ctx, args): Promise<number> => {
@@ -134,30 +135,30 @@ export const triggerWeatherAlarm = internalAction({
 export const triggerEmergencyAlarmMutation = internalMutation({
   args: {
     message: v.string(),
-    triggeredBy: v.id("users"),
+    triggeredBy: v.id('users'),
   },
   returns: v.number(),
   handler: async (ctx, args) => {
     // Get all users
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db.query('users').collect();
     let notifiedCount = 0;
 
     for (const user of users) {
       // Get user's emergency alarm
       const emergencyAlarm = await ctx.db
-        .query("alarms")
-        .withIndex("byUser", (q: any) => q.eq("userId", user._id))
+        .query('alarms')
+        .withIndex('byUser', (q: any) => q.eq('userId', user._id))
         .filter((q: any) =>
-          q.eq(q.field("type"), "emergency") &&
-          q.eq(q.field("isActive"), true)
+          q.eq(q.field('type'), 'emergency') &&
+          q.eq(q.field('isActive'), true)
         )
         .first();
 
       if (emergencyAlarm) {
         // Check settings
         const settings = await ctx.db
-          .query("alarmSettings")
-          .withIndex("byUser", (q: any) => q.eq("userId", user._id))
+          .query('alarmSettings')
+          .withIndex('byUser', (q: any) => q.eq('userId', user._id))
           .first();
 
         const shouldNotify =
@@ -168,10 +169,10 @@ export const triggerEmergencyAlarmMutation = internalMutation({
 
         if (shouldNotify) {
           // Create trigger record
-          await ctx.db.insert("alarmTriggers", {
+          await ctx.db.insert('alarmTriggers', {
             alarmId: emergencyAlarm._id,
             userId: user._id,
-            triggerType: "emergency",
+            triggerType: 'emergency',
             message: args.message,
             acknowledged: false,
             triggeredAt: Date.now(),
@@ -195,7 +196,7 @@ export const triggerEmergencyAlarmMutation = internalMutation({
 // Internal mutation to trigger weather alarm
 export const triggerWeatherAlarmMutation = internalMutation({
   args: {
-    weatherAlertId: v.id("weatherAlerts"),
+    weatherAlertId: v.id('weatherAlerts'),
   },
   returns: v.number(),
   handler: async (ctx, args) => {
@@ -208,24 +209,24 @@ export const triggerWeatherAlarmMutation = internalMutation({
 
     // Get all users with weather alarms
     const weatherAlarms = await ctx.db
-      .query("alarms")
-      .withIndex("byType", (q: any) => q.eq("type", "weather"))
-      .filter((q: any) => q.eq(q.field("isActive"), true))
+      .query('alarms')
+      .withIndex('byType', (q: any) => q.eq('type', 'weather'))
+      .filter((q: any) => q.eq(q.field('isActive'), true))
       .collect();
 
     for (const alarm of weatherAlarms) {
       // Check if user is in affected area
       const isAffected = weatherAlert.areas.some((area: string) =>
-        area.toLowerCase().includes("pinto") ||
-        area.toLowerCase().includes("cobquecura") ||
-        area.toLowerCase().includes("ñuble")
+        area.toLowerCase().includes('pinto') ||
+        area.toLowerCase().includes('cobquecura') ||
+        area.toLowerCase().includes('ñuble')
       );
 
       if (isAffected) {
         // Check settings
         const settings = await ctx.db
-          .query("alarmSettings")
-          .withIndex("byUser", (q: any) => q.eq("userId", alarm.userId))
+          .query('alarmSettings')
+          .withIndex('byUser', (q: any) => q.eq('userId', alarm.userId))
           .first();
 
         const shouldTrigger =
@@ -233,10 +234,10 @@ export const triggerWeatherAlarmMutation = internalMutation({
           alarm.notificationEnabled;
 
         if (shouldTrigger) {
-          await ctx.db.insert("alarmTriggers", {
+          await ctx.db.insert('alarmTriggers', {
             alarmId: alarm._id,
             userId: alarm.userId,
-            triggerType: "weather_alert",
+            triggerType: 'weather_alert',
             message: `${weatherAlert.title}: ${weatherAlert.description}`,
             triggerData: {
               weatherAlertId: args.weatherAlertId,
@@ -264,19 +265,19 @@ export const triggerWeatherAlarmMutation = internalMutation({
 // Internal mutation to test alarm
 export const testAlarmMutation = internalMutation({
   args: {
-    alarmId: v.id("alarms"),
+    alarmId: v.id('alarms'),
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const alarm = await ctx.db.get(args.alarmId);
     if (!alarm) {
-      throw new Error("Alarm not found");
+      throw new Error('Alarm not found');
     }
 
     // Check settings
     const settings = await ctx.db
-      .query("alarmSettings")
-      .withIndex("byUser", (q: any) => q.eq("userId", alarm.userId))
+      .query('alarmSettings')
+      .withIndex('byUser', (q: any) => q.eq('userId', alarm.userId))
       .first();
 
     const soundEnabled = (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
@@ -288,10 +289,10 @@ export const testAlarmMutation = internalMutation({
     }
 
     // Create test trigger
-    await ctx.db.insert("alarmTriggers", {
+    await ctx.db.insert('alarmTriggers', {
       alarmId: alarm._id,
       userId: alarm.userId,
-      triggerType: "manual",
+      triggerType: 'manual',
       message: `Test: ${alarm.title}`,
       triggerData: { isTest: true },
       acknowledged: false,
@@ -311,7 +312,7 @@ export const testAlarmMutation = internalMutation({
 // Action to test an alarm
 export const testAlarm = action({
   args: {
-    alarmId: v.id("alarms"),
+    alarmId: v.id('alarms'),
   },
   returns: v.boolean(),
   handler: async (ctx, args): Promise<boolean> => {

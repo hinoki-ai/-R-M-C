@@ -1,5 +1,6 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+
+import { mutation, query } from './_generated/server';
 
 // Get all active emergency protocols
 export const getEmergencyProtocols = query({
@@ -7,7 +8,7 @@ export const getEmergencyProtocols = query({
     category: v.optional(v.union(v.literal('fire'), v.literal('medical'), v.literal('police'), v.literal('natural_disaster'), v.literal('security'), v.literal('evacuation'), v.literal('general'))),
   },
   returns: v.array(v.object({
-    _id: v.id("emergencyProtocols"),
+    _id: v.id('emergencyProtocols'),
     title: v.string(),
     description: v.string(),
     category: v.string(),
@@ -27,13 +28,13 @@ export const getEmergencyProtocols = query({
     createdAt: v.number(),
   })),
   handler: async (ctx, args) => {
-    let query = ctx.db.query("emergencyProtocols").filter(q => q.eq(q.field("isActive"), true));
+    let query = ctx.db.query('emergencyProtocols').filter(q => q.eq(q.field('isActive'), true));
 
     if (args.category) {
-      query = query.filter(q => q.eq(q.field("category"), args.category));
+      query = query.filter(q => q.eq(q.field('category'), args.category));
     }
 
-    const protocols = await query.order("desc").collect();
+    const protocols = await query.order('desc').collect();
 
     return protocols.map(protocol => ({
       _id: protocol._id,
@@ -60,7 +61,7 @@ export const getProtocolsByPriority = query({
     priority: v.union(v.literal('critical'), v.literal('high'), v.literal('medium'), v.literal('low')),
   },
   returns: v.array(v.object({
-    _id: v.id("emergencyProtocols"),
+    _id: v.id('emergencyProtocols'),
     title: v.string(),
     description: v.string(),
     category: v.string(),
@@ -75,14 +76,14 @@ export const getProtocolsByPriority = query({
   })),
   handler: async (ctx, args) => {
     const protocols = await ctx.db
-      .query("emergencyProtocols")
+      .query('emergencyProtocols')
       .filter(q =>
         q.and(
-          q.eq(q.field("priority"), args.priority),
-          q.eq(q.field("isActive"), true)
+          q.eq(q.field('priority'), args.priority),
+          q.eq(q.field('isActive'), true)
         )
       )
-      .order("desc")
+      .order('desc')
       .collect();
 
     return protocols.map(protocol => ({
@@ -101,7 +102,7 @@ export const getProtocolsByPriority = query({
 // Record protocol download/view event
 export const recordProtocolAccess = mutation({
   args: {
-    protocolId: v.id("emergencyProtocols"),
+    protocolId: v.id('emergencyProtocols'),
     accessType: v.union(v.literal('view'), v.literal('download')),
   },
   returns: v.null(),
@@ -135,11 +136,11 @@ export const createEmergencyProtocol = mutation({
     })),
     steps: v.array(v.string()),
     offlineAvailable: v.optional(v.boolean()),
-    createdBy: v.id("users"),
+    createdBy: v.id('users'),
   },
-  returns: v.id("emergencyProtocols"),
+  returns: v.id('emergencyProtocols'),
   handler: async (ctx, args) => {
-    const protocolId = await ctx.db.insert("emergencyProtocols", {
+    const protocolId = await ctx.db.insert('emergencyProtocols', {
       title: args.title,
       description: args.description,
       category: args.category,

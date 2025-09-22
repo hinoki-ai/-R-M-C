@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { createRateLimitMiddleware, getEndpointType } from './lib/utils/rate-limiter';
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);

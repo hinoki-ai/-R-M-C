@@ -4,6 +4,7 @@
 // This bypasses the Convex function system and directly inserts into the database
 
 import { ConvexHttpClient } from 'convex/browser';
+
 import { api } from './convex/_generated/api.js';
 
 async function createAdminUser() {
@@ -18,9 +19,9 @@ async function createAdminUser() {
 
   try {
     console.log('👤 Creating admin user directly...');
-    console.log(`   Name: agustin agostino gratio`);
-    console.log(`   External ID: admin_agustinaramac`);
-    console.log(`   Role: admin`);
+    console.log('   Name: agustin agostino gratio');
+    console.log('   External ID: admin_agustinaramac');
+    console.log('   Role: admin');
     console.log('');
 
     // Since we can't call our custom function, let's try to call an existing mutation

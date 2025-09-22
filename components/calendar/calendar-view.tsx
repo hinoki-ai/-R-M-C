@@ -1,6 +1,6 @@
 'use client'
 
-/* eslint-disable react/forbid-dom-props */
+ 
 
 import { useAction, useQuery } from 'convex/react'
 import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns'
@@ -42,7 +42,7 @@ interface CalendarEvent {
     name: string
   }
   attendeeCount: number
-  userAttendanceStatus?: "pending" | "confirmed" | "declined" | "tentative" | null
+  userAttendanceStatus?: 'pending' | 'confirmed' | 'declined' | 'tentative' | null
   createdAt: number
   updatedAt: number
 }

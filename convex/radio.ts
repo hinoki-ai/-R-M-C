@@ -1,11 +1,12 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+
+import { mutation, query } from './_generated/server';
 
 // Get all active radio stations
 export const getRadioStations = query({
   args: {},
   returns: v.array(v.object({
-    _id: v.id("radioStations"),
+    _id: v.id('radioStations'),
     name: v.string(),
     description: v.optional(v.string()),
     streamUrl: v.string(),
@@ -21,8 +22,8 @@ export const getRadioStations = query({
   })),
   handler: async (ctx) => {
     const stations = await ctx.db
-      .query("radioStations")
-      .filter((q) => q.eq(q.field("isActive"), true))
+      .query('radioStations')
+      .filter((q) => q.eq(q.field('isActive'), true))
       .collect();
 
     return stations.map(station => ({
@@ -49,7 +50,7 @@ export const getRadioStationsByCategory = query({
     category: v.union(v.literal('news'), v.literal('music'), v.literal('sports'), v.literal('cultural'), v.literal('emergency'), v.literal('community')),
   },
   returns: v.array(v.object({
-    _id: v.id("radioStations"),
+    _id: v.id('radioStations'),
     name: v.string(),
     description: v.optional(v.string()),
     streamUrl: v.string(),
@@ -63,11 +64,11 @@ export const getRadioStationsByCategory = query({
   })),
   handler: async (ctx, args) => {
     const stations = await ctx.db
-      .query("radioStations")
+      .query('radioStations')
       .filter((q) =>
         q.and(
-          q.eq(q.field("category"), args.category),
-          q.eq(q.field("isActive"), true)
+          q.eq(q.field('category'), args.category),
+          q.eq(q.field('isActive'), true)
         )
       )
       .collect();
@@ -91,10 +92,10 @@ export const getRadioStationsByCategory = query({
 // Get user's favorite radio stations
 export const getUserFavorites = query({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
   },
   returns: v.array(v.object({
-    _id: v.id("radioStations"),
+    _id: v.id('radioStations'),
     name: v.string(),
     description: v.optional(v.string()),
     streamUrl: v.string(),
@@ -108,11 +109,11 @@ export const getUserFavorites = query({
   })),
   handler: async (ctx, args) => {
     const favorites = await ctx.db
-      .query("radioPlaylists")
+      .query('radioPlaylists')
       .filter((q) =>
         q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.eq(q.field("isFavorite"), true)
+          q.eq(q.field('userId'), args.userId),
+          q.eq(q.field('isFavorite'), true)
         )
       )
       .collect();
@@ -144,19 +145,19 @@ export const getUserFavorites = query({
 // Toggle favorite status for a radio station
 export const toggleFavorite = mutation({
   args: {
-    userId: v.id("users"),
-    stationId: v.id("radioStations"),
+    userId: v.id('users'),
+    stationId: v.id('radioStations'),
   },
   returns: v.object({
     isFavorite: v.boolean(),
   }),
   handler: async (ctx, args) => {
     const existing = await ctx.db
-      .query("radioPlaylists")
+      .query('radioPlaylists')
       .filter((q) =>
         q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.eq(q.field("stationId"), args.stationId)
+          q.eq(q.field('userId'), args.userId),
+          q.eq(q.field('stationId'), args.stationId)
         )
       )
       .first();
@@ -171,7 +172,7 @@ export const toggleFavorite = mutation({
       return { isFavorite: newFavoriteStatus };
     } else {
       // Create new favorite entry
-      await ctx.db.insert("radioPlaylists", {
+      await ctx.db.insert('radioPlaylists', {
         userId: args.userId,
         stationId: args.stationId,
         isFavorite: true,
@@ -187,17 +188,17 @@ export const toggleFavorite = mutation({
 // Record play event for analytics
 export const recordPlay = mutation({
   args: {
-    userId: v.id("users"),
-    stationId: v.id("radioStations"),
+    userId: v.id('users'),
+    stationId: v.id('radioStations'),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
     const existing = await ctx.db
-      .query("radioPlaylists")
+      .query('radioPlaylists')
       .filter((q) =>
         q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.eq(q.field("stationId"), args.stationId)
+          q.eq(q.field('userId'), args.userId),
+          q.eq(q.field('stationId'), args.stationId)
         )
       )
       .first();
@@ -209,7 +210,7 @@ export const recordPlay = mutation({
         updatedAt: Date.now(),
       });
     } else {
-      await ctx.db.insert("radioPlaylists", {
+      await ctx.db.insert('radioPlaylists', {
         userId: args.userId,
         stationId: args.stationId,
         isFavorite: false,
@@ -236,11 +237,11 @@ export const createRadioStation = mutation({
     region: v.string(),
     quality: v.union(v.literal('low'), v.literal('medium'), v.literal('high')),
     backupStreamUrl: v.optional(v.string()),
-    createdBy: v.id("users"),
+    createdBy: v.id('users'),
   },
-  returns: v.id("radioStations"),
+  returns: v.id('radioStations'),
   handler: async (ctx, args) => {
-    const stationId = await ctx.db.insert("radioStations", {
+    const stationId = await ctx.db.insert('radioStations', {
       name: args.name,
       description: args.description,
       streamUrl: args.streamUrl,

@@ -13,16 +13,16 @@ import {
   Wallet,
   Zap
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { ModeToggle } from '@/components/layout/mode-toggle'
 import { AdvancedHeader } from '@/components/layout/advanced-header'
+import { ModeToggle } from '@/components/layout/mode-toggle'
 import { PulsatingButton } from '@/components/magicui/pulsating-button'
 import { InfiniteSlider } from '@/components/motion-primitives/infinite-slider'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TextEffect } from '@/components/ui/text-effect'
 

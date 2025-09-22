@@ -16,7 +16,7 @@ type ViewMode = 'calendar' | 'create' | 'edit' | 'details'
 
 export default function CalendarioPage() {
   const [currentView, setCurrentView] = useState<ViewMode>('calendar')
-  const [selectedEventId, setSelectedEventId] = useState<Id<"calendarEvents"> | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<Id<'calendarEvents'> | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   // Get current user info
@@ -32,12 +32,12 @@ export default function CalendarioPage() {
     setCurrentView('create')
   }
 
-  const handleEditEvent = (eventId: Id<"calendarEvents">) => {
+  const handleEditEvent = (eventId: Id<'calendarEvents'>) => {
     setSelectedEventId(eventId)
     setCurrentView('edit')
   }
 
-  const handleSaveEvent = (eventId: Id<"calendarEvents">) => {
+  const handleSaveEvent = (eventId: Id<'calendarEvents'>) => {
     setCurrentView('calendar')
     setSelectedEventId(null)
     setSelectedDate(null)

@@ -218,6 +218,11 @@ function handleAppForeground() {
   // Refresh data, check for updates, etc.
   console.log('App came to foreground - refreshing data...')
 
+  // Re-sync theme with status bar in case system theme changed
+  if (MobileAPI.Platform.isNative()) {
+    configureNativeUI()
+  }
+
   // Emit custom event for components to listen to
   window.dispatchEvent(new CustomEvent('app-foreground'))
 }

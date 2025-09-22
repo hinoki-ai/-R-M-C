@@ -1,5 +1,6 @@
-import { mutation } from '../_generated/server';
 import { v } from 'convex/values';
+
+import { mutation } from '../_generated/server';
 
 // Emergency protocols for Ñuble region, Chile
 const EMERGENCY_PROTOCOLS = [
@@ -204,7 +205,7 @@ export const seedEmergencyProtocols = mutation({
       }
     }
 
-    console.log(`📋 Emergency protocols seeding completed!`);
+    console.log('📋 Emergency protocols seeding completed!');
     console.log(`   Created: ${protocolsCreated} protocols`);
     console.log(`   Skipped: ${skipped} existing protocols`);
 
@@ -212,7 +213,7 @@ export const seedEmergencyProtocols = mutation({
       seeded: protocolsCreated,
       skipped,
       total: protocolsCreated + skipped,
-      message: `Emergency protocols seeding completed successfully`
+      message: 'Emergency protocols seeding completed successfully'
     };
   },
 });

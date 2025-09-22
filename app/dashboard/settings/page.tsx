@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import SettingsModal from '@/components/settings/settings-modal'
+import { Button } from '@/components/ui/button'
 
 export default function SettingsPage() {
   return (

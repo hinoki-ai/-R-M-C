@@ -1,8 +1,9 @@
-import { useQuery, useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { useEffect, useState } from 'react'
+
 import { api } from '@/convex/_generated/api'
-import { WeatherData, WeatherAlert, WeatherForecast } from '@/types/dashboard'
 import { WeatherService } from '@/lib/services/weather-service'
+import { WeatherAlert, WeatherData, WeatherForecast } from '@/types/dashboard'
 
 interface WeatherStats {
   total: number

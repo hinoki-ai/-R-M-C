@@ -1,5 +1,6 @@
-import { mutation } from '../_generated/server';
 import { v } from 'convex/values';
+
+import { mutation } from '../_generated/server';
 
 // No sample camera data - using only real camera data from actual installations
 const COMMUNITY_CAMERAS: any[] = [] // Empty array - no sample data

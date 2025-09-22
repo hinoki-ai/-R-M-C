@@ -5,13 +5,13 @@ import { dark } from '@clerk/themes'
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+    <div className='min-h-screen flex items-center justify-center bg-background p-4'>
+      <div className='w-full max-w-md'>
+        <div className='text-center mb-8'>
+          <h1 className='text-3xl font-bold text-foreground mb-2'>
             🇨🇱 Junta de Vecinos
           </h1>
-          <p className="text-muted-foreground">
+          <p className='text-muted-foreground'>
             Únete a Pinto Los Pellines, Ñuble
           </p>
         </div>
@@ -41,10 +41,10 @@ export default function SignUpPage() {
               identityPreviewEditButton: 'text-emerald-400 hover:text-emerald-300'
             }
           }}
-          routing="path"
-          path="/sign-up"
-          redirectUrl="/dashboard"
-          signInUrl="/sign-in"
+          routing='path'
+          path='/sign-up'
+          redirectUrl='/dashboard'
+          signInUrl='/sign-in'
         />
       </div>
     </div>

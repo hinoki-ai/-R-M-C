@@ -1,5 +1,6 @@
-import { mutation } from '../_generated/server';
 import { v } from 'convex/values';
+
+import { mutation } from '../_generated/server';
 
 // Chilean radio stations relevant for Ñuble region and Pinto Los Pellines community
 const CHILEAN_RADIO_STATIONS = [
@@ -175,7 +176,7 @@ export const seedRadioStations = mutation({
       }
     }
 
-    console.log(`📻 Radio seeding completed!`);
+    console.log('📻 Radio seeding completed!');
     console.log(`   Created: ${stationsCreated} stations`);
     console.log(`   Skipped: ${skipped} existing stations`);
 
@@ -183,7 +184,7 @@ export const seedRadioStations = mutation({
       seeded: stationsCreated,
       skipped,
       total: stationsCreated + skipped,
-      message: `Radio stations seeding completed successfully`
+      message: 'Radio stations seeding completed successfully'
     };
   },
 });

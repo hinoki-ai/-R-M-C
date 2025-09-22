@@ -205,9 +205,26 @@ export class UnifiedHaptic {
 // Theme management with platform-specific optimizations
 export class UnifiedTheme {
   private static currentTheme: 'light' | 'dark' | 'system' = 'system'
+  private static systemThemeListener: ((event: MediaQueryListEvent) => void) | null = null
 
   static setTheme(theme: 'light' | 'dark' | 'system'): void {
     this.currentTheme = theme
+
+    // Remove existing system theme listener
+    if (this.systemThemeListener) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      mediaQuery.removeEventListener('change', this.systemThemeListener)
+      this.systemThemeListener = null
+    }
+
+    // Add system theme listener if theme is 'system'
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      this.systemThemeListener = (event) => {
+        this.applyTheme('system')
+      }
+      mediaQuery.addEventListener('change', this.systemThemeListener)
+    }
 
     if (Platform.isNative()) {
       // On mobile, also update system UI colors

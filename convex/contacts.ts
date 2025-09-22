@@ -1,5 +1,6 @@
-import { query, mutation } from './_generated/server'
 import { v } from 'convex/values'
+
+import { mutation, query } from './_generated/server'
 
 // Get all active contacts
 export const getContacts = query({

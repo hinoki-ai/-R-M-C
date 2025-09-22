@@ -626,3 +626,25 @@
 .pixel-card-canvas {
   will-change: transform;
 }
+
+/* Footer conveyor animation */
+.conveyor-track {
+  width: max-content;
+  will-change: transform;
+  animation: conveyor 28s linear infinite;
+}
+
+@keyframes conveyor {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conveyor-track {
+    animation: none;
+  }
+}

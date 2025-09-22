@@ -3,15 +3,15 @@
 import {
   IconAlertTriangle,
   IconBug,
+  IconCheck,
   IconClock,
+  IconEye,
+  IconEyeOff,
   IconRefresh,
   IconTrash,
-  IconX,
-  IconCheck,
-  IconEye,
-  IconEyeOff
+  IconX
 } from '@tabler/icons-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -21,8 +21,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useErrorLogger } from '@/lib/error-logger'
 import { ConvexErrorType } from '@/hooks/use-convex-error-handler'
+import { useErrorLogger } from '@/lib/error-logger'
 
 interface ErrorReportingDashboardProps {
   isOpen: boolean

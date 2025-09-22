@@ -19,14 +19,14 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import * as React from 'react'
 
+import { DashboardErrorBoundary } from '@/components/dashboard/dashboard-error-boundary'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DashboardErrorBoundary } from '@/components/dashboard/dashboard-error-boundary'
-import { useConvexQueryWithError } from '@/hooks/use-convex-error-handler'
 import { api } from '@/convex/_generated/api'
+import { useConvexQueryWithError } from '@/hooks/use-convex-error-handler'
 
 
 interface Camera {

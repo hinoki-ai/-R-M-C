@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import { getPWAController, PWAStatus } from '@/lib/services/pwa';
 
 export function usePWAStatus(): PWAStatus {

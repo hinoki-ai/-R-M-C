@@ -2,6 +2,7 @@
 
 import { useQuery } from 'convex/react'
 import { useCallback, useEffect, useState } from 'react'
+
 import { logConvexError } from '@/lib/error-logger'
 
 // Error types matching the dashboard error boundary

@@ -1,7 +1,8 @@
-import { action, query, mutation, internalAction, internalQuery, internalMutation } from './_generated/server'
 import { v } from 'convex/values'
+
 import { api, internal } from './_generated/api'
 import { Id } from './_generated/dataModel'
+import { action, internalAction, internalMutation, internalQuery, mutation, query } from './_generated/server'
 
 // Get upcoming events for notifications
 export const getUpcomingEvents = query({
@@ -152,7 +153,7 @@ export const createEventReminder = action({
     method: v.union(v.literal('notification'), v.literal('email'), v.literal('sms')),
   },
   returns: v.id('eventReminders'),
-  handler: async (ctx, args): Promise<Id<"eventReminders">> => {
+  handler: async (ctx, args): Promise<Id<'eventReminders'>> => {
     return await ctx.runMutation(api.calendar_notifications.createEventReminderMutation, args)
   },
 })

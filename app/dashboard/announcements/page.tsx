@@ -8,9 +8,9 @@ import { motion } from 'framer-motion'
 import { Suspense, useState } from 'react'
 
 import { DocumentDashboardLayout } from '@/components/dashboard/layout/dashboard-layout'
+import RssNewsSection from '@/components/dashboard/news/rss-news-section'
 import { AnnouncementList } from '@/components/dashboard/shared/announcement-card'
 import { AnnouncementHeader } from '@/components/dashboard/shared/section-header'
-import RssNewsSection from '@/components/dashboard/news/rss-news-section'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -108,13 +108,13 @@ function AnnouncementsContent() {
       <div className='space-y-6'>
         <AnnouncementHeader count={unreadCount} />
 
-        <Tabs defaultValue="announcements" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="announcements">Anuncios Comunitarios</TabsTrigger>
-            <TabsTrigger value="news">Noticias RSS</TabsTrigger>
+        <Tabs defaultValue='announcements' className='w-full'>
+          <TabsList className='grid w-full grid-cols-2'>
+            <TabsTrigger value='announcements'>Anuncios Comunitarios</TabsTrigger>
+            <TabsTrigger value='news'>Noticias RSS</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="announcements" className="space-y-6 mt-6">
+          <TabsContent value='announcements' className='space-y-6 mt-6'>
             {/* Quick Actions */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -171,7 +171,7 @@ function AnnouncementsContent() {
             </motion.div>
           </TabsContent>
 
-          <TabsContent value="news" className="mt-6">
+          <TabsContent value='news' className='mt-6'>
             <RssNewsSection />
           </TabsContent>
         </Tabs>

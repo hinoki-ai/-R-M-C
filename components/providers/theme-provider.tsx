@@ -110,10 +110,16 @@ export function ThemeProvider({
     }
   }, [highContrast])
 
-  // Initialize UnifiedTheme on mount
+  // Initialize UnifiedTheme on mount with stored theme
   React.useEffect(() => {
-    // Set initial theme from next-themes default
-    UnifiedTheme.setTheme('light')
+    // Get stored theme from localStorage (next-themes uses 'theme' key)
+    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | null
+
+    // Use stored theme or default to 'light'
+    const initialTheme = storedTheme || 'light'
+
+    // Set initial theme in UnifiedTheme
+    UnifiedTheme.setTheme(initialTheme)
   }, [])
 
   // Handle theme changes and sync with UnifiedTheme

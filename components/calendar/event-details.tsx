@@ -17,9 +17,9 @@ import { Id } from '@/convex/_generated/dataModel'
 
 
 interface EventDetailsProps {
-  eventId: Id<"calendarEvents">
+  eventId: Id<'calendarEvents'>
   onClose: () => void
-  onEdit?: (eventId: Id<"calendarEvents">) => void
+  onEdit?: (eventId: Id<'calendarEvents'>) => void
   isOrganizer?: boolean
 }
 

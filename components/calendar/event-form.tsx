@@ -18,16 +18,16 @@ import { Id } from '@/convex/_generated/dataModel'
 
 
 interface EventFormProps {
-  eventId?: Id<"calendarEvents">
+  eventId?: Id<'calendarEvents'>
   selectedDate?: Date
-  onSave?: (eventId: Id<"calendarEvents">) => void
+  onSave?: (eventId: Id<'calendarEvents'>) => void
   onCancel?: () => void
 }
 
 interface FormData {
   title: string
   description: string
-  categoryId: Id<"eventCategories">
+  categoryId: Id<'eventCategories'>
   startDate: string
   endDate: string
   startTime: string
@@ -45,13 +45,13 @@ interface FormData {
   maxAttendees: number
   isPublic: boolean
   requiresApproval: boolean
-  inviteUserIds: Id<"users">[]
+  inviteUserIds: Id<'users'>[]
 }
 
 const defaultFormData: FormData = {
   title: '',
   description: '',
-  categoryId: '' as Id<"eventCategories">,
+  categoryId: '' as Id<'eventCategories'>,
   startDate: '',
   endDate: '',
   startTime: '09:00',

@@ -11,23 +11,23 @@
 
 1. [Overview](#overview)
 2. [Key Features](#key-features)
-3. [Technical Architecture](#technical-implementation)
-4. [Installation & Setup](#installation--setup)
-5. [Usage Guide](#usage-guide)
-6. [Advanced Features](#advanced-features)
-7. [Accessibility Features](#accessibility-features)
-8. [API Reference](#api-reference)
-9. [Customization](#customization)
-10. [Testing](#testing)
-11. [Troubleshooting](#troubleshooting)
-12. [Performance](#performance-optimizations)
-13. [Migration Guide](#migration-guide)
+3. [Technical Implementation](#technical-implementation)
+4. [Usage Guide](#usage-guide)
+5. [Keyboard Shortcuts](#keyboard-shortcuts)
+6. [Analytics & Insights](#analytics--insights)
+7. [Customization](#customization)
+8. [Error Handling](#error-handling)
+9. [Mobile Integration](#mobile-integration)
+10. [Color System](#color-system)
+11. [Performance Optimizations](#performance-optimizations)
+12. [Testing](#testing)
+13. [API Reference](#api-reference)
 
-## 📋 Overview
+## Overview
 
 JuntaDeVecinos features a **world-class theme system** that goes beyond standard light/dark mode implementations. Built with modern web standards, accessibility best practices, and developer experience in mind, this system provides seamless theme switching across web and mobile platforms.
 
-## ✨ Key Features
+## Key Features
 
 ### 🎨 Core Functionality
 
@@ -59,7 +59,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 - **Responsive Design**: Adapts to all screen sizes
 - **Touch Friendly**: Optimized for mobile interactions
 
-## 🔧 Technical Implementation
+## Technical Implementation
 
 ### Architecture
 
@@ -137,7 +137,7 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 }
 ```
 
-## 🎮 Usage Guide
+## Usage Guide
 
 ### Basic Usage
 
@@ -207,7 +207,7 @@ function UtilityExample() {
 }
 ```
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Shortcut | Action |
 |----------|--------|
@@ -216,7 +216,7 @@ function UtilityExample() {
 | `Enter` / `Space` | Activate theme options |
 | `Escape` | Close theme dropdown |
 
-## 📊 Analytics & Insights
+## Analytics & Insights
 
 The theme system tracks:
 
@@ -244,7 +244,7 @@ The theme system tracks:
 }
 ```
 
-## 🔧 Customization
+## Customization
 
 ### Theme Export/Import
 
@@ -296,7 +296,7 @@ const importTheme = (file: File) => {
 >
 ```
 
-## 🐛 Error Handling
+## Error Handling
 
 ### Automatic Recovery
 
@@ -323,7 +323,7 @@ The system includes comprehensive error handling:
 </ThemeErrorBoundary>
 ```
 
-## 📱 Mobile Integration
+## Mobile Integration
 
 ### Capacitor Support
 
@@ -340,7 +340,7 @@ The theme system works seamlessly with Capacitor:
 - **Offline Support**: Theme persistence without network
 - **Background Sync**: Theme preferences sync across devices
 
-## 🎨 Color System
+## Color System
 
 ### OKLCH Color Space
 
@@ -367,7 +367,7 @@ The theme uses modern OKLCH color space for:
 --ring: oklch(0.708 0 0)          /* Focus rings */
 ```
 
-## 🚀 Performance Optimizations
+## Performance Optimizations
 
 ### Bundle Optimization
 
@@ -388,7 +388,7 @@ The theme uses modern OKLCH color space for:
 - **Memory Cache**: Fast access to computed values
 - **CDN Optimization**: Static assets cached globally
 
-## 🧪 Testing
+## Testing
 
 ### Unit Tests
 
@@ -411,7 +411,7 @@ npm run test:coverage
 # Tests WCAG compliance and keyboard navigation
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### ThemeProvider Props
 
