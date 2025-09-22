@@ -115,14 +115,65 @@ function AnimatedGroup({
   const containerVariants = variants?.container || selectedVariants.container;
   const itemVariants = variants?.item || selectedVariants.item;
 
-  const MotionComponent = React.useMemo(
-    () => (motion as any)[as] || motion.div,
-    [as]
-  );
-  const MotionChild = React.useMemo(
-    () => (motion as any)[asChild] || motion.div,
-    [asChild]
-  );
+  const MotionComponent = React.useMemo(() => {
+    // If 'as' is a string, map it to the corresponding motion component
+    if (typeof as === 'string') {
+      const componentMap: Record<string, React.ComponentType<any>> = {
+        div: motion.div,
+        span: motion.span,
+        p: motion.p,
+        h1: motion.h1,
+        h2: motion.h2,
+        h3: motion.h3,
+        h4: motion.h4,
+        h5: motion.h5,
+        h6: motion.h6,
+        ul: motion.ul,
+        ol: motion.ol,
+        li: motion.li,
+        section: motion.section,
+        article: motion.article,
+        aside: motion.aside,
+        header: motion.header,
+        footer: motion.footer,
+        nav: motion.nav,
+        main: motion.main,
+      }
+      return componentMap[as] || motion.div
+    }
+    // If 'as' is a React component, wrap it with motion
+    return motion(as)
+  }, [as]);
+
+  const MotionChild = React.useMemo(() => {
+    // If 'asChild' is a string, map it to the corresponding motion component
+    if (typeof asChild === 'string') {
+      const componentMap: Record<string, React.ComponentType<any>> = {
+        div: motion.div,
+        span: motion.span,
+        p: motion.p,
+        h1: motion.h1,
+        h2: motion.h2,
+        h3: motion.h3,
+        h4: motion.h4,
+        h5: motion.h5,
+        h6: motion.h6,
+        ul: motion.ul,
+        ol: motion.ol,
+        li: motion.li,
+        section: motion.section,
+        article: motion.article,
+        aside: motion.aside,
+        header: motion.header,
+        footer: motion.footer,
+        nav: motion.nav,
+        main: motion.main,
+      }
+      return componentMap[asChild] || motion.div
+    }
+    // If 'asChild' is a React component, wrap it with motion
+    return motion(asChild)
+  }, [asChild]);
 
   return (
     <MotionComponent

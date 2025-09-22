@@ -3,43 +3,56 @@
 @tailwind utilities;
 @import "tw-animate-css";
 
+/**
+ * Theme System:
+ * - :root: Pastel gradient light theme (soft purple→blue→cyan→green)
+ * - .dark: Midnight starry moonlight dark theme (deep blues with star effects)
+ * - .vineyard, .ocean, .mountain, .patagonia: Chilean countryside themes
+ * - .pastel: Additional pastel theme variant
+ */
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.81 0.1 252);
-  --chart-2: oklch(0.62 0.19 260);
-  --chart-3: oklch(0.55 0.22 263);
-  --chart-4: oklch(0.49 0.22 264);
-  --chart-5: oklch(0.42 0.18 266);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.94 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: linear-gradient(135deg,
+    oklch(0.98 0.02 320) 0%,
+    oklch(0.97 0.03 280) 25%,
+    oklch(0.96 0.04 200) 50%,
+    oklch(0.97 0.03 160) 75%,
+    oklch(0.98 0.02 120) 100%);
+  --foreground: oklch(0.25 0.02 300);
+  --card: oklch(0.99 0.005 300);
+  --card-foreground: oklch(0.25 0.02 300);
+  --popover: oklch(0.98 0.008 290);
+  --popover-foreground: oklch(0.25 0.02 300);
+  --primary: oklch(0.55 0.08 320);
+  --primary-foreground: oklch(0.98 0.005 300);
+  --secondary: oklch(0.92 0.015 280);
+  --secondary-foreground: oklch(0.35 0.03 300);
+  --muted: oklch(0.94 0.01 270);
+  --muted-foreground: oklch(0.5 0.04 300);
+  --accent: oklch(0.85 0.05 200);
+  --accent-foreground: oklch(0.25 0.02 300);
+  --destructive: oklch(0.6 0.12 15);
+  --border: oklch(0.88 0.008 290);
+  --input: oklch(0.95 0.005 290);
+  --ring: oklch(0.65 0.08 320);
+  --chart-1: oklch(0.55 0.08 320);
+  --chart-2: oklch(0.45 0.1 280);
+  --chart-3: oklch(0.85 0.05 200);
+  --chart-4: oklch(0.6 0.06 160);
+  --chart-5: oklch(0.75 0.08 120);
+  --sidebar: oklch(0.96 0.01 290);
+  --sidebar-foreground: oklch(0.28 0.03 300);
+  --sidebar-primary: oklch(0.55 0.08 320);
+  --sidebar-primary-foreground: oklch(0.98 0.005 300);
+  --sidebar-accent: oklch(0.92 0.015 280);
+  --sidebar-accent-foreground: oklch(0.35 0.03 300);
+  --sidebar-border: oklch(0.88 0.008 290);
+  --sidebar-ring: oklch(0.65 0.08 320);
 
-  --shadow-color: oklch(0 0 0);
+  --shadow-color: oklch(0.3 0.02 300);
   --shadow-2xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
   --shadow-xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
   --shadow-sm: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 1px 2px -1px rgb(from var(--shadow-color) r g b / 0.1);
@@ -50,40 +63,72 @@
   --shadow-2xl: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1);
 }
 
+/* Midnight Starry Moonlight Dark Theme */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.269 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.81 0.1 252);
-  --chart-2: oklch(0.62 0.19 260);
-  --chart-3: oklch(0.55 0.22 263);
-  --chart-4: oklch(0.49 0.22 264);
-  --chart-5: oklch(0.42 0.18 266);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.439 0 0);
+  --background: linear-gradient(135deg,
+    oklch(0.08 0.02 250) 0%,
+    oklch(0.06 0.03 260) 25%,
+    oklch(0.05 0.04 270) 50%,
+    oklch(0.07 0.02 280) 75%,
+    oklch(0.09 0.01 290) 100%);
+  --foreground: oklch(0.95 0.005 240);
+  --card: oklch(0.12 0.02 250);
+  --card-foreground: oklch(0.95 0.005 240);
+  --popover: oklch(0.15 0.02 250);
+  --popover-foreground: oklch(0.95 0.005 240);
+  --primary: oklch(0.75 0.08 280);
+  --primary-foreground: oklch(0.95 0.005 240);
+  --secondary: oklch(0.18 0.02 250);
+  --secondary-foreground: oklch(0.9 0.01 240);
+  --muted: oklch(0.15 0.02 250);
+  --muted-foreground: oklch(0.65 0.03 240);
+  --accent: oklch(0.6 0.06 200);
+  --accent-foreground: oklch(0.95 0.005 240);
+  --destructive: oklch(0.65 0.15 15);
+  --border: oklch(0.2 0.02 250);
+  --input: oklch(0.18 0.02 250);
+  --ring: oklch(0.7 0.08 280);
+  --chart-1: oklch(0.75 0.08 280);
+  --chart-2: oklch(0.65 0.1 290);
+  --chart-3: oklch(0.6 0.06 200);
+  --chart-4: oklch(0.7 0.05 260);
+  --chart-5: oklch(0.65 0.08 240);
+  --sidebar: oklch(0.1 0.02 250);
+  --sidebar-foreground: oklch(0.9 0.01 240);
+  --sidebar-primary: oklch(0.75 0.08 280);
+  --sidebar-primary-foreground: oklch(0.95 0.005 240);
+  --sidebar-accent: oklch(0.15 0.02 250);
+  --sidebar-accent-foreground: oklch(0.88 0.01 240);
+  --sidebar-border: oklch(0.2 0.02 250);
+  --sidebar-ring: oklch(0.7 0.08 280);
 
-  --shadow-color: oklch(0 0 0);
+  --shadow-color: oklch(0.05 0.02 250);
+}
+
+/* Subtle starry night effect for midnight theme */
+.dark::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, oklch(0.9 0.02 240), transparent),
+    radial-gradient(1px 1px at 40px 70px, oklch(0.85 0.01 240), transparent),
+    radial-gradient(1.5px 1.5px at 90px 40px, oklch(0.8 0.02 240), transparent),
+    radial-gradient(1px 1px at 130px 80px, oklch(0.88 0.01 240), transparent),
+    radial-gradient(2px 2px at 160px 20px, oklch(0.9 0.02 240), transparent),
+    radial-gradient(1px 1px at 200px 60px, oklch(0.85 0.01 240), transparent),
+    radial-gradient(1.5px 1.5px at 250px 90px, oklch(0.8 0.02 240), transparent),
+    radial-gradient(1px 1px at 280px 30px, oklch(0.88 0.01 240), transparent),
+    radial-gradient(2px 2px at 320px 70px, oklch(0.9 0.02 240), transparent),
+    radial-gradient(1px 1px at 360px 40px, oklch(0.85 0.01 240), transparent);
+  background-repeat: repeat;
+  background-size: 400px 120px;
+  opacity: 0.3;
+  z-index: -1;
 }
 
 /* Chilean Countryside Themes */
@@ -388,6 +433,90 @@
   --shadow-color: oklch(0 0 0);
 }
 
+/* Pastel Theme - Light */
+.pastel {
+  --background: linear-gradient(135deg,
+    oklch(0.98 0.02 320) 0%,
+    oklch(0.97 0.03 280) 25%,
+    oklch(0.96 0.04 200) 50%,
+    oklch(0.97 0.03 160) 75%,
+    oklch(0.98 0.02 120) 100%);
+  --foreground: oklch(0.25 0.02 300);
+  --card: oklch(0.99 0.005 300);
+  --card-foreground: oklch(0.25 0.02 300);
+  --popover: oklch(0.98 0.008 290);
+  --popover-foreground: oklch(0.25 0.02 300);
+  --primary: oklch(0.55 0.08 320);
+  --primary-foreground: oklch(0.98 0.005 300);
+  --secondary: oklch(0.92 0.015 280);
+  --secondary-foreground: oklch(0.35 0.03 300);
+  --muted: oklch(0.94 0.01 270);
+  --muted-foreground: oklch(0.5 0.04 300);
+  --accent: oklch(0.85 0.05 200);
+  --accent-foreground: oklch(0.25 0.02 300);
+  --destructive: oklch(0.6 0.12 15);
+  --border: oklch(0.88 0.008 290);
+  --input: oklch(0.95 0.005 290);
+  --ring: oklch(0.65 0.08 320);
+  --chart-1: oklch(0.55 0.08 320);
+  --chart-2: oklch(0.45 0.1 280);
+  --chart-3: oklch(0.85 0.05 200);
+  --chart-4: oklch(0.6 0.06 160);
+  --chart-5: oklch(0.75 0.08 120);
+  --sidebar: oklch(0.96 0.01 290);
+  --sidebar-foreground: oklch(0.28 0.03 300);
+  --sidebar-primary: oklch(0.55 0.08 320);
+  --sidebar-primary-foreground: oklch(0.98 0.005 300);
+  --sidebar-accent: oklch(0.92 0.015 280);
+  --sidebar-accent-foreground: oklch(0.35 0.03 300);
+  --sidebar-border: oklch(0.88 0.008 290);
+  --sidebar-ring: oklch(0.65 0.08 320);
+
+  --shadow-color: oklch(0.3 0.02 300);
+}
+
+/* Pastel Theme - Dark */
+.dark.pastel,
+.pastel.dark {
+  --background: linear-gradient(135deg,
+    oklch(0.18 0.03 320) 0%,
+    oklch(0.16 0.04 280) 25%,
+    oklch(0.15 0.05 200) 50%,
+    oklch(0.16 0.04 160) 75%,
+    oklch(0.18 0.03 120) 100%);
+  --foreground: oklch(0.92 0.008 300);
+  --card: oklch(0.22 0.02 300);
+  --card-foreground: oklch(0.92 0.008 300);
+  --popover: oklch(0.2 0.02 290);
+  --popover-foreground: oklch(0.92 0.008 300);
+  --primary: oklch(0.7 0.1 320);
+  --primary-foreground: oklch(0.98 0.005 300);
+  --secondary: oklch(0.28 0.03 280);
+  --secondary-foreground: oklch(0.85 0.02 300);
+  --muted: oklch(0.2 0.02 270);
+  --muted-foreground: oklch(0.7 0.04 300);
+  --accent: oklch(0.55 0.08 200);
+  --accent-foreground: oklch(0.92 0.008 300);
+  --destructive: oklch(0.7 0.12 15);
+  --border: oklch(0.3 0.02 290);
+  --input: oklch(0.25 0.02 290);
+  --ring: oklch(0.75 0.1 320);
+  --chart-1: oklch(0.7 0.1 320);
+  --chart-2: oklch(0.65 0.12 280);
+  --chart-3: oklch(0.6 0.08 200);
+  --chart-4: oklch(0.7 0.06 160);
+  --chart-5: oklch(0.65 0.08 120);
+  --sidebar: oklch(0.18 0.03 290);
+  --sidebar-foreground: oklch(0.85 0.02 300);
+  --sidebar-primary: oklch(0.7 0.1 320);
+  --sidebar-primary-foreground: oklch(0.98 0.005 300);
+  --sidebar-accent: oklch(0.25 0.02 280);
+  --sidebar-accent-foreground: oklch(0.82 0.02 300);
+  --sidebar-border: oklch(0.3 0.02 290);
+  --sidebar-ring: oklch(0.75 0.1 320);
+
+  --shadow-color: oklch(0.1 0.02 300);
+}
 
 /* Pulsating button styles - moved outside @theme block */
 .pulsating-button {

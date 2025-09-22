@@ -5,6 +5,7 @@ import Link from 'next/link'
 import * as React from 'react'
 
 import { Logo } from '@/components/logo'
+import { AramacCopyright } from '@/components/ui/copyright'
 
 const columns = [
   {
@@ -95,12 +96,10 @@ export default function FooterSection() {
 
         <div className='text-center'>
           <p className='text-muted-foreground text-sm mb-2'>Contact us:</p>
-          <a href='mailto:contact@pellines.com' className='text-primary hover:text-primary/80 transition-colors duration-200 text-sm'>
-            contact@pellines.com
+          <a href='mailto:agustinaramac@gmail.com' className='text-primary hover:text-primary/80 transition-colors duration-200 text-sm'>
+            agustinaramac@gmail.com
           </a>
-          <span className='text-muted-foreground block text-center text-sm mt-4'>
-            © {new Date().getFullYear()} <span className='font-mono text-lg tracking-wider'>ΛRΛMΛC</span>, All rights reserved
-          </span>
+          <AramacCopyright />
         </div>
       </div>
       <ConveyorStyles />
@@ -109,7 +108,13 @@ export default function FooterSection() {
 }
 
 // Magnetic hover wrapper using Framer Motion
-function MagneticIcon({ href, ariaLabel, children }: { href: string; ariaLabel: string; children: React.ReactNode }) {
+interface MagneticIconProps {
+  href: string;
+  ariaLabel: string;
+  children: React.ReactNode;
+}
+
+function MagneticIcon({ href, ariaLabel, children }: MagneticIconProps) {
   const reduce = useReducedMotion()
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -148,7 +153,7 @@ function MagneticIcon({ href, ariaLabel, children }: { href: string; ariaLabel: 
 
 function IconSet({ ariaHidden = false }: { ariaHidden?: boolean }) {
   return (
-    <div className='flex items-center gap-8' {...(ariaHidden && { 'aria-hidden': 'true' })}>
+    <div className='flex items-center gap-8' aria-hidden={ariaHidden ? 'true' : undefined}>
       <Link href='/' aria-label='Home' className='block'>
         <Logo className='size-6' />
       </Link>

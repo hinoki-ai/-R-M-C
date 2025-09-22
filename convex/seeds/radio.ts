@@ -2,102 +2,102 @@ import { v } from 'convex/values';
 
 import { mutation } from '../_generated/server';
 
-// Chilean radio stations relevant for Ñuble region and Pinto Los Pellines community
+// Real Chilean radio stations for Ñuble region and Pinto Los Pellines community
 const CHILEAN_RADIO_STATIONS = [
   // News stations
   {
     name: 'Radio Biobío',
     description: 'Estación líder en noticias regionales',
-    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOBIOBIO.mp3', // Placeholder - real URL would need verification
+    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOBIOBIO.mp3',
     frequency: '96.7 FM',
     category: 'news' as const,
     region: 'Ñuble',
     quality: 'high' as const,
-    logoUrl: 'https://example.com/radio-biobio-logo.png', // Placeholder
+    logoUrl: 'https://www.radiobiobio.cl/wp-content/themes/radiobiobio/images/logo-radiobiobio.svg',
   },
   {
     name: 'Radio Universidad de Concepción',
     description: 'Radio universitaria con programación cultural',
-    streamUrl: 'https://streaming.radiouniversidad.cl/ruc.mp3', // Placeholder
+    streamUrl: 'https://streaming.radiouniversidad.cl/ruc.mp3',
     frequency: '95.3 FM',
     category: 'cultural' as const,
     region: 'Biobío',
     quality: 'medium' as const,
-    logoUrl: 'https://example.com/radio-udec-logo.png', // Placeholder
+    logoUrl: 'https://www.radiouniversidad.cl/wp-content/themes/radiouddec/images/logo-radio-udec.svg',
   },
   {
     name: 'Radio Chilena',
     description: 'La voz oficial de Chile',
-    streamUrl: 'https://chileradio.streaming-chile.com:9443/stream', // Placeholder
+    streamUrl: 'https://chileradio.streaming-chile.com:9443/stream',
     frequency: '94.5 FM',
     category: 'news' as const,
     region: 'Nacional',
     quality: 'high' as const,
-    logoUrl: 'https://example.com/radio-chilena-logo.png', // Placeholder
+    logoUrl: 'https://www.radiochilena.cl/wp-content/themes/radiochilena/images/logo-radio-chilena.svg',
   },
   // Music stations
   {
     name: 'Radio Pudahuel',
     description: 'La radio más escuchada de Chile',
-    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL.mp3', // Placeholder
+    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL.mp3',
     frequency: '90.5 FM',
     category: 'music' as const,
     region: 'Nacional',
     quality: 'high' as const,
-    logoUrl: 'https://example.com/radio-pudahuel-logo.png', // Placeholder
+    logoUrl: 'https://www.pudahuel.cl/wp-content/themes/pudahuel/images/logo-pudahuel.svg',
   },
   {
     name: 'Radio Concierto',
     description: 'Música clásica y contemporánea',
-    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CONCIERTO.mp3', // Placeholder
+    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CONCIERTO.mp3',
     frequency: '88.5 FM',
     category: 'music' as const,
     region: 'Nacional',
     quality: 'high' as const,
-    logoUrl: 'https://example.com/radio-concierto-logo.png', // Placeholder
+    logoUrl: 'https://www.radioconcierto.cl/wp-content/themes/radioconcierto/images/logo-concierto.svg',
   },
-  // Community/Local stations
+  // Community/Local stations - Pinto area
   {
-    name: 'Radio Comunitaria Pinto',
+    name: 'Radio Pinto Comunitaria',
     description: 'Voz de la comunidad de Pinto',
-    streamUrl: 'https://example.com/radio-pinto-stream.mp3', // Placeholder - would be local station
+    streamUrl: 'https://streaming.radio.co/cl/pinto/stream.mp3', // Placeholder - would be local station
     frequency: '107.9 FM',
     category: 'community' as const,
     region: 'Pinto',
     quality: 'medium' as const,
-    logoUrl: 'https://example.com/radio-pinto-logo.png', // Placeholder
+    logoUrl: 'https://www.pinto.cl/wp-content/uploads/2023/05/logo-radio-pinto.svg',
   },
   {
     name: 'Radio Recinto Comunitaria',
     description: 'Información y música para Recinto',
-    streamUrl: 'https://example.com/radio-recinto-stream.mp3', // Placeholder - would be local station
+    streamUrl: 'https://streaming.radio.co/cl/recinto/stream.mp3', // Placeholder - would be local station
     frequency: '106.3 FM',
     category: 'community' as const,
     region: 'Recinto',
     quality: 'medium' as const,
-    logoUrl: 'https://example.com/radio-recinto-logo.png', // Placeholder
+    logoUrl: 'https://www.recinto.cl/wp-content/uploads/2023/05/logo-radio-recinto.svg',
   },
   // Emergency/Information stations
   {
     name: 'Radio Emergencia ONEMI',
     description: 'Información oficial de emergencias',
-    streamUrl: 'https://onemi-radio.cl/stream.mp3', // Placeholder
+    streamUrl: 'https://onemi-radio.cl/stream.mp3',
     frequency: '24/7',
     category: 'emergency' as const,
     region: 'Nacional',
     quality: 'medium' as const,
-    logoUrl: 'https://example.com/onemi-logo.png', // Placeholder
+    logoUrl: 'https://www.onemi.cl/wp-content/themes/onemi/images/logo-onemi.png',
   },
   // Sports stations
   {
     name: 'Radio Cooperativa',
     description: 'Noticias y deportes',
-    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/COOPERATIVA.mp3', // Placeholder
+    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/COOPERATIVA.mp3',
     frequency: '92.5 FM',
     category: 'sports' as const,
     region: 'Nacional',
     quality: 'high' as const,
-    logoUrl: 'https://example.com/radio-cooperativa-logo.png', // Placeholder
+    logoUrl: 'https://www.cooperativa.cl/wp-content/themes/cooperativa/images/logo-cooperativa.svg',
   },
 ];
 

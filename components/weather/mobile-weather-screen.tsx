@@ -65,7 +65,7 @@ export function MobileWeatherScreen({ onBack, weatherData, forecast = [], alerts
             )}
             <div>
               <h1 className='text-xl font-bold text-gray-900'>🌤️ Clima</h1>
-              <p className='text-sm text-gray-600'>{currentWeather.location}</p>
+              <p className='text-sm text-gray-600'>{currentWeather?.location || 'Cargando...'}</p>
             </div>
           </div>
           <Badge variant='outline' className='text-xs'>

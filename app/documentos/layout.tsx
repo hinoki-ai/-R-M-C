@@ -1,4 +1,4 @@
-import { AdvancedHeader } from '@/components/layout/advanced-header'
+import { PublicLayout } from '@/components/layout/public-layout'
 
 export default function DocumentosLayout({
   children,
@@ -6,11 +6,8 @@ export default function DocumentosLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
-      <AdvancedHeader />
-      <div className='pt-16'> {/* Add top padding to account for fixed header */}
-        {children}
-      </div>
-    </>
+    <PublicLayout>
+      {children}
+    </PublicLayout>
   )
 }

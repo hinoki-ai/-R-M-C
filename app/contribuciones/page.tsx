@@ -21,9 +21,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
+import { PublicLayout } from '@/components/layout/public-layout'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+
+interface ContributionItem {
+  title: string
+  description: string
+  action: string
+  link: string
+  icon: any
+  external?: boolean
+}
 
 export default function ContribucionesPage() {
   const router = useRouter()
@@ -43,14 +53,16 @@ export default function ContribucionesPage() {
           description: 'Contribuciones únicas o recurrentes para proyectos comunitarios',
           action: 'Ir a Donar',
           link: '/donate',
-          icon: Heart
+          icon: Heart,
+          external: false
         },
         {
           title: 'Patrocinios Empresariales',
           description: 'Alianzas con empresas locales para proyectos específicos',
           action: 'Contactar',
           link: '/contactos',
-          icon: Building2
+          icon: Building2,
+          external: false
         }
       ]
     },
@@ -68,21 +80,24 @@ export default function ContribucionesPage() {
           description: 'Ayuda en organización de fiestas, talleres y actividades sociales',
           action: 'Ver Eventos',
           link: '/eventos',
-          icon: Calendar
+          icon: Calendar,
+          external: false
         },
         {
           title: 'Mantenimiento',
           description: 'Colabora en reparaciones, limpieza y mejoras del barrio',
           action: 'Postular',
           link: '/contactos',
-          icon: Wrench
+          icon: Wrench,
+          external: false
         },
         {
           title: 'Educación y Talleres',
           description: 'Comparte conocimientos y organiza capacitaciones',
           action: 'Proponer',
           link: '/contactos',
-          icon: Users
+          icon: Users,
+          external: false
         }
       ]
     },
@@ -135,136 +150,51 @@ export default function ContribucionesPage() {
           description: 'Participa en reuniones y decisiones comunitarias',
           action: 'Información',
           link: '/contactos',
-          icon: Building2
+          icon: Building2,
+          external: false
         },
         {
           title: 'Ideas y Sugerencias',
           description: 'Comparte tus ideas para mejorar el barrio',
           action: 'Enviar',
           link: '/contactos',
-          icon: Lightbulb
+          icon: Lightbulb,
+          external: false
         },
         {
           title: 'Difusión',
           description: 'Ayuda a promover la plataforma en redes sociales',
           action: 'Compartir',
           link: '/contactos',
-          icon: MessageSquare
+          icon: MessageSquare,
+          external: false
         }
       ]
     }
   ]
 
   return (
-    <div className='min-h-screen relative overflow-hidden bg-background'>
-      {/* INVITING BACKGROUND with Warm Community Theme */}
-      <div className='fixed inset-0 -z-10'>
-        <Image
-          src='/images/backgrounds/bg4.jpg'
-          alt='Pinto Los Pellines Community Background'
-          fill
-          className='object-cover object-center dark:opacity-25 opacity-90'
-          priority
-          quality={95}
-        />
-        {/* Warm, inviting overlay gradients */}
-        <div className='absolute inset-0 bg-gradient-to-br from-amber-100/40 via-orange-50/30 to-yellow-100/40 dark:from-amber-900/20 dark:via-orange-900/15 dark:to-yellow-900/20' />
-        <div className='absolute inset-0 bg-gradient-to-t from-red-900/15 via-transparent to-blue-900/15 dark:from-red-900/10 dark:via-transparent dark:to-blue-900/10' />
-        <div className='absolute inset-0 bg-gradient-to-r from-green-900/8 via-transparent to-purple-900/8 dark:from-green-900/5 dark:via-transparent dark:to-purple-900/5' />
-        {/* Soft light overlay for readability */}
-        <div className='absolute inset-0 bg-white/15 dark:bg-black/20' />
-      </div>
-
-      {/* Floating Decorative Elements */}
-      <div className='fixed inset-0 -z-5 pointer-events-none'>
-        <motion.div
-          animate={{
-            y: [0, -20, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-          className='absolute top-20 left-10 opacity-20'
-        >
-          <Heart className='w-8 h-8 text-red-400' />
-        </motion.div>
-        <motion.div
-          animate={{
-            y: [0, 15, 0],
-            rotate: [0, -3, 0]
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 1
-          }}
-          className='absolute top-32 right-20 opacity-15'
-        >
-          <Sparkles className='w-6 h-6 text-yellow-400' />
-        </motion.div>
-        <motion.div
-          animate={{
-            y: [0, -25, 0],
-            rotate: [0, 8, 0]
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2
-          }}
-          className='absolute bottom-40 left-16 opacity-20'
-        >
-          <Star className='w-7 h-7 text-amber-400' />
-        </motion.div>
-        <motion.div
-          animate={{
-            y: [0, 20, 0],
-            rotate: [0, -4, 0]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 0.5
-          }}
-          className='absolute bottom-32 right-32 opacity-15'
-        >
-          <Users className='w-9 h-9 text-blue-400' />
-        </motion.div>
-      </div>
-
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='bg-white/85 dark:bg-gray-900/85 backdrop-blur-md border-b border-white/20 dark:border-gray-800/20 shadow-lg'
-      >
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-4'>
-              <Link href='/' className='text-2xl font-bold text-gray-900 dark:text-white'>
-                Pinto Los Pellines
-              </Link>
-              <Badge variant='secondary' className='bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'>
-                Formas de Contribuir
-              </Badge>
-            </div>
-            <Button
-              variant='outline'
-              onClick={() => router.push('/dashboard')}
-            >
-              Volver al Dashboard
-            </Button>
-          </div>
+    <PublicLayout>
+      <div className='min-h-screen relative overflow-hidden bg-background'>
+        {/* INVITING BACKGROUND with Warm Community Theme */}
+        <div className='fixed inset-0 -z-10'>
+          <Image
+            src='/images/backgrounds/bg4.jpg'
+            alt='Pinto Los Pellines Community Background'
+            fill
+            className='object-cover object-center dark:opacity-25 opacity-90'
+            priority
+            quality={95}
+          />
+          {/* Warm, inviting overlay gradients */}
+          <div className='absolute inset-0 bg-gradient-to-br from-amber-100/40 via-orange-50/30 to-yellow-100/40 dark:from-amber-900/20 dark:via-orange-900/15 dark:to-yellow-900/20' />
+          <div className='absolute inset-0 bg-gradient-to-t from-red-900/15 via-transparent to-blue-900/15 dark:from-red-900/10 dark:via-transparent dark:to-blue-900/10' />
+          <div className='absolute inset-0 bg-gradient-to-r from-green-900/8 via-transparent to-purple-900/8 dark:from-green-900/5 dark:via-transparent dark:to-purple-900/5' />
+          {/* Soft light overlay for readability */}
+          <div className='absolute inset-0 bg-white/15 dark:bg-black/20' />
         </div>
-      </motion.div>
 
-      {/* Main Content */}
+        {/* Main Content */}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10'>
         {/* Enhanced Hero Section with Beautiful Typography */}
         <motion.div
@@ -551,5 +481,6 @@ export default function ContribucionesPage() {
         </motion.div>
       </div>
     </div>
+    </PublicLayout>
   )
 }

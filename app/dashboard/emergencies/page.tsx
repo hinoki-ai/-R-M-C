@@ -118,7 +118,7 @@ function EmergencyProtocols() {
     recordAccess({ protocolId, accessType: 'download' });
   };
 
-  const getCategoryIcon = (category: any) => {
+  const getCategoryIcon = (category: string) => {
     const icons = {
       fire: IconAlertTriangle,
       medical: IconPhone,
@@ -128,10 +128,10 @@ function EmergencyProtocols() {
       evacuation: IconMessage,
       general: IconFileText,
     };
-    return icons[category] || IconFileText;
+    return icons[category as keyof typeof icons] || IconFileText;
   };
 
-  const getCategoryColor = (category: any) => {
+  const getCategoryColor = (category: string) => {
     const colors = {
       fire: 'text-red-600 bg-red-50',
       medical: 'text-blue-600 bg-blue-50',
@@ -141,7 +141,7 @@ function EmergencyProtocols() {
       evacuation: 'text-yellow-600 bg-yellow-50',
       general: 'text-gray-600 bg-gray-50',
     };
-    return colors[category] || 'text-gray-600 bg-gray-50';
+    return colors[category as keyof typeof colors] || 'text-gray-600 bg-gray-50';
   };
 
   return (

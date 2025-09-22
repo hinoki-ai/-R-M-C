@@ -107,7 +107,7 @@ JuntaDeVecinos is a comprehensive community management platform designed specifi
 
 ## 🆘 Support & Community
 
-- **📧 Email**: [support@juntadevecinos.com](mailto:support@juntadevecinos.com)
+- **📧 Email**: [agustinaramac@gmail.com](mailto:agustinaramac@gmail.com)
 - **💬 Discord**: [Join our community](https://discord.gg/hinoki-ai)
 - **🐛 Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 

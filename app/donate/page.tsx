@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { PublicLayout } from '@/components/layout/public-layout'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -83,34 +84,9 @@ export default function DonatePage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800'>
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b'
-      >
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-4'>
-              <Link href='/' className='text-2xl font-bold text-gray-900 dark:text-white'>
-                Pinto Los Pellines
-              </Link>
-              <Badge variant='secondary' className='bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'>
-                Apoya a la Comunidad
-              </Badge>
-            </div>
-            <Button
-              variant='outline'
-              onClick={() => router.push('/dashboard')}
-            >
-Volver al Dashboard
-            </Button>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
+    <PublicLayout>
+      <div className='min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800'>
+        {/* Main Content */}
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         {/* Hero Section */}
         <motion.div
@@ -197,7 +173,8 @@ Volver al Dashboard
               </CardHeader>
               <CardContent>
                 <Button
-                  className='w-full bg-purple-600 hover:bg-purple-700'
+                  variant='gradientPrimary'
+                  className='w-full'
                   onClick={() => handleDonation('stripe', selectedAmount)}
                   disabled={!selectedAmount}
                 >
@@ -322,5 +299,6 @@ Todas las contribuciones se destinan al mantenimiento del barrio, organización 
         </motion.div>
       </div>
     </div>
+    </PublicLayout>
   )
 }

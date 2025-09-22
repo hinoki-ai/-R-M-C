@@ -291,7 +291,7 @@ export function useConvexQueriesWithError<T extends Record<string, any>>(
   retryAll: () => void
   retryQuery: (key: keyof T) => void
 } {
-  const [retryTriggers, setRetryTriggers] = useState<Record<string, number>>({} as Record<string, number>)
+  const [retryTriggers, setRetryTriggers] = useState<Record<keyof T, number>>({} as Record<keyof T, number>)
 
   const queryResults = Object.entries(queries).reduce((acc, [key, query]) => {
     const result = useConvexQueryWithError(query, {
@@ -330,7 +330,7 @@ export function useConvexQueriesWithError<T extends Record<string, any>>(
   const retryQuery = useCallback((key: keyof T) => {
     setRetryTriggers(prev => ({
       ...prev,
-      [key]: (prev[key] || 0) + 1
+      [key as string]: (prev[key as string] || 0) + 1
     }))
   }, [])
 
@@ -412,7 +412,7 @@ export function useOfflineFallback<T>(
           data: onlineResult.data,
           timestamp: Date.now()
         }))
-        setCachedData(onlineResult.data)
+        setCachedData(onlineResult.data as T)
       } catch (error) {
         console.warn('Failed to cache data:', error)
       }

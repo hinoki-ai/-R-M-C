@@ -7,59 +7,134 @@ import axios from 'axios'
 
 export interface WeatherAPIResponse {
   temperature: number
-  humidity: number
-  pressure: number
-  windSpeed: number
-  windDirection: number
   precipitation: number
-  uvIndex: number
-  visibility: number
-  description: string
-  icon: string
-  feelsLike: number
-  dewPoint: number
-  cloudCover: number
+  humidity?: number
+  pressure?: number
+  windSpeed?: number
+  windDirection?: number
+  uvIndex?: number
+  visibility?: number
+  description?: string
+  icon?: string
+  feelsLike?: number
+  dewPoint?: number
+  cloudCover?: number
   location: string
   lastUpdated: string
 }
 
 export interface ForecastAPIResponse {
   date: string
-  tempMin: number
-  tempMax: number
-  humidity: number
+  temperature: number
   precipitation: number
   precipitationProbability: number
-  windSpeed: number
-  windDirection: number
-  description: string
-  icon: string
-  uvIndex: number
+  visibility: number
   sunrise: string
   sunset: string
+  tempMin?: number
+  tempMax?: number
+  humidity?: number
+  windSpeed?: number
+  windDirection?: number
+  description?: string
+  icon?: string
+  uvIndex?: number
+}
+
+export interface HourlyWeatherData {
+  time: string
+  temperature: number
+  precipitation: number
+  precipitationProbability: number
+  visibility: number
+  humidity: number
+  pressure: number
+  windSpeed: number
+  windDirection: number
+}
+
+export interface OpenMeteoResponse {
+  latitude: number
+  longitude: number
+  generationtime_ms: number
+  utc_offset_seconds: number
+  timezone: string
+  timezone_abbreviation: string
+  elevation: number
+  current_units: {
+    time: string
+    interval: string
+    temperature_2m: string
+    precipitation: string
+    relative_humidity_2m: string
+    pressure_msl: string
+    wind_speed_10m: string
+    wind_direction_10m: string
+    visibility: string
+  }
+  current: {
+    time: string
+    interval: number
+    temperature_2m: number
+    precipitation: number
+    relative_humidity_2m: number
+    pressure_msl: number
+    wind_speed_10m: number
+    wind_direction_10m: number
+    visibility: number
+  }
+  hourly_units: {
+    time: string
+    temperature_2m: string
+    precipitation_probability: string
+    precipitation: string
+    visibility: string
+    relative_humidity_2m: string
+    pressure_msl: string
+    wind_speed_10m: string
+    wind_direction_10m: string
+  }
+  hourly: {
+    time: string[]
+    temperature_2m: number[]
+    precipitation_probability: number[]
+    precipitation: number[]
+    visibility: number[]
+    relative_humidity_2m: number[]
+    pressure_msl: number[]
+    wind_speed_10m: number[]
+    wind_direction_10m: number[]
+  }
+  daily_units: {
+    time: string
+    sunrise: string
+    sunset: string
+  }
+  daily: {
+    time: string[]
+    sunrise: string[]
+    sunset: string[]
+  }
 }
 
 export class WeatherService {
-  private static readonly API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || ''
-  private static readonly BASE_URL = 'https://api.openweathermap.org/data/2.5'
-  private static readonly GEO_URL = 'https://api.openweathermap.org/geo/1.0'
+  private static readonly BASE_URL = 'https://api.open-meteo.com/v1/forecast'
+
+  // Default coordinates for Pinto Los Pellines, Chile (from the provided URL)
+  private static readonly DEFAULT_LAT = -36.8139
+  private static readonly DEFAULT_LON = -71.7316
 
   /**
    * Get current weather for a location
    */
   static async getCurrentWeather(location: string): Promise<WeatherAPIResponse | null> {
     try {
-      // First, get coordinates for the location
-      const coords = await this.getCoordinates(location)
-      if (!coords) return null
-
-      const response = await axios.get(`${this.BASE_URL}/weather`, {
+      const response = await axios.get<OpenMeteoResponse>(this.BASE_URL, {
         params: {
-          lat: coords.lat,
-          lon: coords.lon,
-          appid: this.API_KEY,
-          units: 'metric',
-          lang: 'es'
+          latitude: this.DEFAULT_LAT,
+          longitude: this.DEFAULT_LON,
+          current: 'temperature_2m,precipitation,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,visibility',
+          timezone: 'America/New_York'
         }
       })
 
@@ -71,172 +146,152 @@ export class WeatherService {
   }
 
   /**
-   * Get 7-day weather forecast
+   * Get weather forecast with hourly and daily data
    */
   static async getWeatherForecast(location: string): Promise<ForecastAPIResponse[]> {
     try {
-      const coords = await this.getCoordinates(location)
-      if (!coords) return []
-
-      const response = await axios.get(`${this.BASE_URL}/forecast`, {
+      const response = await axios.get<OpenMeteoResponse>(this.BASE_URL, {
         params: {
-          lat: coords.lat,
-          lon: coords.lon,
-          appid: this.API_KEY,
-          units: 'metric',
-          lang: 'es',
-          cnt: 40 // Get 5-day forecast with 3-hour intervals
+          latitude: this.DEFAULT_LAT,
+          longitude: this.DEFAULT_LON,
+          daily: 'sunrise,sunset',
+          hourly: 'temperature_2m,precipitation_probability,precipitation,visibility,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m',
+          past_days: 31,
+          timezone: 'America/New_York'
         }
       })
 
-      return this.transformForecastData(response.data.list, location)
+      return this.transformForecastData(response.data, location)
     } catch (error) {
       console.error('Error fetching weather forecast:', error)
       return []
     }
   }
 
-  /**
-   * Get coordinates for a location name
-   */
-  private static async getCoordinates(location: string): Promise<{ lat: number; lon: number } | null> {
-    try {
-      const response = await axios.get(`${this.GEO_URL}/direct`, {
-        params: {
-          q: location,
-          limit: 1,
-          appid: this.API_KEY
-        }
-      })
-
-      if (response.data && response.data.length > 0) {
-        const { lat, lon } = response.data[0]
-        return { lat, lon }
-      }
-
-      return null
-    } catch (error) {
-      console.error('Error getting coordinates:', error)
-      return null
-    }
-  }
 
   /**
-   * Transform OpenWeather API response to our format
+   * Transform Open-Meteo API response to our format
    */
-  private static transformCurrentWeatherData(data: any, location: string): WeatherAPIResponse {
+  private static transformCurrentWeatherData(data: OpenMeteoResponse, location: string): WeatherAPIResponse {
     return {
-      temperature: Math.round(data.main.temp),
-      humidity: data.main.humidity,
-      pressure: data.main.pressure,
-      windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-      windDirection: data.wind.deg || 0,
-      precipitation: data.rain?.['1h'] || 0,
-      uvIndex: 0, // UV index not available in current weather endpoint
-      visibility: Math.round((data.visibility || 10000) / 1000), // Convert to km
-      description: data.weather[0].description,
-      icon: this.mapWeatherIcon(data.weather[0].icon),
-      feelsLike: Math.round(data.main.feels_like),
-      dewPoint: this.calculateDewPoint(data.main.temp, data.main.humidity),
-      cloudCover: data.clouds?.all || 0,
+      temperature: Math.round(data.current.temperature_2m),
+      precipitation: data.current.precipitation,
+      humidity: data.current.relative_humidity_2m,
+      pressure: Math.round(data.current.pressure_msl),
+      windSpeed: Math.round(data.current.wind_speed_10m),
+      windDirection: data.current.wind_direction_10m,
+      uvIndex: undefined, // Not available from Open-Meteo
+      visibility: Math.round(data.current.visibility / 1000), // Convert to km
+      description: 'Current weather', // Generic description
+      icon: 'partly-cloudy', // Default icon
+      feelsLike: Math.round(data.current.temperature_2m), // Approximate with current temp
+      dewPoint: undefined, // Not available
+      cloudCover: undefined, // Not available from Open-Meteo
       location,
       lastUpdated: new Date().toISOString()
     }
   }
 
   /**
-   * Transform forecast data
+   * Transform Open-Meteo forecast data to our format
    */
-  private static transformForecastData(data: any[], location: string): ForecastAPIResponse[] {
-    const dailyForecasts: { [key: string]: any[] } = {}
+  private static transformForecastData(data: OpenMeteoResponse, location: string): ForecastAPIResponse[] {
+    const dailyData = data.daily
+    const hourlyData = data.hourly
 
-    // Group by date
-    data.forEach(item => {
-      const date = new Date(item.dt * 1000).toISOString().split('T')[0]
-      if (!dailyForecasts[date]) {
-        dailyForecasts[date] = []
+    // Group hourly data by date
+    const hourlyByDate: { [key: string]: HourlyWeatherData[] } = {}
+    hourlyData.time.forEach((timeStr, index) => {
+      const date = timeStr.split('T')[0]
+      if (!hourlyByDate[date]) {
+        hourlyByDate[date] = []
       }
-      dailyForecasts[date].push(item)
+      hourlyByDate[date].push({
+        time: timeStr,
+        temperature: hourlyData.temperature_2m[index],
+        precipitation: hourlyData.precipitation[index],
+        precipitationProbability: hourlyData.precipitation_probability[index],
+        visibility: hourlyData.visibility[index],
+        humidity: hourlyData.relative_humidity_2m[index],
+        pressure: hourlyData.pressure_msl[index],
+        windSpeed: hourlyData.wind_speed_10m[index],
+        windDirection: hourlyData.wind_direction_10m[index]
+      })
     })
 
-    // Process each day's data
-    return Object.entries(dailyForecasts)
-      .slice(0, 7) // Limit to 7 days
-      .map(([date, items]) => {
-        const temps = items.map(item => item.main.temp)
-        const humidities = items.map(item => item.main.humidity)
-        const windSpeeds = items.map(item => item.wind.speed)
-        const precipitations = items.map(item => item.rain?.['3h'] || 0)
-        const weatherDescriptions = items.map(item => item.weather[0])
+    // Create daily forecasts
+    return dailyData.time.map((date, index) => {
+      const dayHourly = hourlyByDate[date] || []
 
-        // Use midday weather for the day (around 12:00)
-        const middayWeather = items.find(item => {
-          const hour = new Date(item.dt * 1000).getHours()
-          return hour >= 11 && hour <= 13
-        }) || items[0]
+      // Calculate daily aggregates
+      const temperatures = dayHourly.map(h => h.temperature)
+      const precipitations = dayHourly.map(h => h.precipitation)
+      const precipitationProbabilities = dayHourly.map(h => h.precipitationProbability)
+      const visibilities = dayHourly.map(h => h.visibility)
+      const humidities = dayHourly.map(h => h.humidity)
+      const pressures = dayHourly.map(h => h.pressure)
+      const windSpeeds = dayHourly.map(h => h.windSpeed)
+      const windDirections = dayHourly.map(h => h.windDirection)
 
-        return {
-          date,
-          tempMin: Math.round(Math.min(...temps)),
-          tempMax: Math.round(Math.max(...temps)),
-          humidity: Math.round(humidities.reduce((a, b) => a + b, 0) / humidities.length),
-          precipitation: Math.round(precipitations.reduce((a, b) => a + b, 0) * 100) / 100,
-          precipitationProbability: Math.round(
-            (weatherDescriptions.filter(w => w.main === 'Rain').length / weatherDescriptions.length) * 100
-          ),
-          windSpeed: Math.round((windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length) * 3.6),
-          windDirection: middayWeather.wind.deg || 0,
-          description: middayWeather.weather[0].description,
-          icon: this.mapWeatherIcon(middayWeather.weather[0].icon),
-          uvIndex: 5, // Default UV index
-          sunrise: '07:00', // Would need separate API call for accurate sunrise/sunset
-          sunset: '19:00'
-        }
-      })
+      const avgTemperature = temperatures.length > 0
+        ? temperatures.reduce((a, b) => a + b, 0) / temperatures.length
+        : 0
+
+      const minTemperature = temperatures.length > 0 ? Math.min(...temperatures) : 0
+      const maxTemperature = temperatures.length > 0 ? Math.max(...temperatures) : 0
+
+      const totalPrecipitation = precipitations.length > 0
+        ? precipitations.reduce((a, b) => a + b, 0)
+        : 0
+
+      const maxPrecipitationProbability = precipitationProbabilities.length > 0
+        ? Math.max(...precipitationProbabilities)
+        : 0
+
+      const avgVisibility = visibilities.length > 0
+        ? visibilities.reduce((a, b) => a + b, 0) / visibilities.length
+        : 10000
+
+      const avgHumidity = humidities.length > 0
+        ? humidities.reduce((a, b) => a + b, 0) / humidities.length
+        : undefined
+
+      const avgPressure = pressures.length > 0
+        ? pressures.reduce((a, b) => a + b, 0) / pressures.length
+        : undefined
+
+      const avgWindSpeed = windSpeeds.length > 0
+        ? windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length
+        : undefined
+
+      const dominantWindDirection = windDirections.length > 0
+        ? windDirections[Math.floor(windDirections.length / 2)] // Use median direction
+        : undefined
+
+      return {
+        date,
+        temperature: Math.round(avgTemperature),
+        precipitation: Math.round(totalPrecipitation * 100) / 100,
+        precipitationProbability: Math.round(maxPrecipitationProbability),
+        visibility: Math.round(avgVisibility / 1000), // Convert to km
+        sunrise: dailyData.sunrise[index],
+        sunset: dailyData.sunset[index],
+        tempMin: Math.round(minTemperature),
+        tempMax: Math.round(maxTemperature),
+        humidity: avgHumidity ? Math.round(avgHumidity) : undefined,
+        windSpeed: avgWindSpeed ? Math.round(avgWindSpeed) : undefined,
+        windDirection: dominantWindDirection,
+        description: 'Weather forecast', // Generic description
+        icon: 'partly-cloudy', // Default icon
+        uvIndex: undefined // Not available
+      }
+    })
   }
 
   /**
-   * Map OpenWeather icons to our icon format
-   */
-  private static mapWeatherIcon(openWeatherIcon: string): string {
-    const iconMap: { [key: string]: string } = {
-      '01d': 'sunny',
-      '01n': 'clear',
-      '02d': 'partly-cloudy',
-      '02n': 'partly-cloudy',
-      '03d': 'partly-cloudy',
-      '03n': 'partly-cloudy',
-      '04d': 'cloudy',
-      '04n': 'cloudy',
-      '09d': 'rain',
-      '09n': 'rain',
-      '10d': 'rain',
-      '10n': 'rain',
-      '11d': 'heavy-rain',
-      '11n': 'heavy-rain',
-      '13d': 'snow',
-      '13n': 'snow',
-      '50d': 'fog',
-      '50n': 'fog'
-    }
-
-    return iconMap[openWeatherIcon] || 'partly-cloudy'
-  }
-
-  /**
-   * Calculate dew point
-   */
-  private static calculateDewPoint(temperature: number, humidity: number): number {
-    const a = 17.27
-    const b = 237.7
-    const alpha = ((a * temperature) / (b + temperature)) + Math.log(humidity / 100)
-    return Math.round((b * alpha) / (a - alpha))
-  }
-
-  /**
-   * Check if API key is configured
+   * Check if weather service is configured (always true for Open-Meteo)
    */
   static isConfigured(): boolean {
-    return Boolean(this.API_KEY)
+    return true
   }
 }

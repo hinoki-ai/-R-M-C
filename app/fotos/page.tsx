@@ -268,7 +268,7 @@ export default function FotosPage() {
                       </div>
                     </div>
                     <div className='mt-6 pt-4 border-t'>
-                      <Button className='w-full bg-green-600 hover:bg-green-700'>
+                      <Button variant='gradientForest' className='w-full'>
                         📸 Ver Álbum Completo
                       </Button>
                     </div>
@@ -328,7 +328,7 @@ export default function FotosPage() {
             de Pinto Los Pellines, puedes compartirlas con la comunidad.
           </p>
           <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <Button className='bg-blue-600 hover:bg-blue-700'>
+            <Button variant='gradientOcean'>
               <Camera className='w-4 h-4 mr-2' />
               Subir Fotos
             </Button>

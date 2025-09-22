@@ -249,10 +249,10 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   // Error handling
   const error = null // Could be enhanced with proper error handling
 
-  return {
-    weatherData: weatherData ? { ...weatherData, id: weatherData._id } : null,
-    forecast: forecast ? forecast.map(f => ({ ...f, id: f._id })) : null,
-    alerts: alerts ? alerts.map(a => ({ ...a, id: a._id })) : null,
+  return { // Type assertions to handle Convex query result types
+    weatherData: weatherData ? { ...weatherData, id: (weatherData as any)._id?.toString(), timestamp: new Date((weatherData as any).timestamp || (weatherData as any).createdAt).toISOString() } : null,
+    forecast: forecast ? forecast.map(f => ({ ...f, id: (f as any)._id, updatedAt: new Date((f as any).updatedAt || (f as any).createdAt).toISOString() })) : null,
+    alerts: alerts ? alerts.map(a => ({ ...a, id: (a as any)._id, startTime: new Date((a as any).startTime || (a as any).createdAt).toISOString(), endTime: new Date((a as any).endTime || (a as any).createdAt).toISOString(), createdAt: new Date((a as any).createdAt).toISOString() })) : null,
     loading,
     error: null,
     stats: calculatedStats,

@@ -16,8 +16,8 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { AdvancedHeader } from '@/components/layout/advanced-header'
 import { ModeToggle } from '@/components/layout/mode-toggle'
+import { PublicLayout } from '@/components/layout/public-layout'
 import { PulsatingButton } from '@/components/magicui/pulsating-button'
 import { InfiniteSlider } from '@/components/motion-primitives/infinite-slider'
 import { AnimatedGroup } from '@/components/ui/animated-group'
@@ -29,27 +29,25 @@ import { TextEffect } from '@/components/ui/text-effect'
 
 export default function Home() {
   return (
-    <main className='min-h-screen relative overflow-hidden bg-background' >
-      {/* THEME-ADAPTIVE BACKGROUND */}
-      <div className='fixed inset-0 -z-10' >
-        <Image
-          src='/images/backgrounds/bg2.jpg'
-          alt='Pinto Los Pellines Background'
-          fill
-          className='object-cover object-center dark:opacity-30 opacity-100'
-          priority
-          quality={95}
-        />
-        {/* Theme-adaptive overlay */}
-        <div className='absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/90 dark:from-black/60 dark:via-black/40 dark:to-black/80' />
-        <div className='absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-blue-900/20 dark:from-red-900/10 dark:via-transparent dark:to-blue-900/10' />
-        <div className='absolute inset-0 bg-gradient-to-r from-green-900/10 via-transparent to-yellow-900/10 dark:from-green-900/5 dark:via-transparent dark:to-yellow-900/5' />
-        {/* Light theme overlay for better contrast */}
-        <div className='absolute inset-0 bg-white/20 dark:bg-transparent' />
-      </div>
-
-      {/* ADVANCED HEADER */}
-      <AdvancedHeader />
+    <PublicLayout>
+      <main className='min-h-screen relative overflow-hidden bg-background' >
+        {/* THEME-ADAPTIVE BACKGROUND */}
+        <div className='fixed inset-0 -z-10' >
+          <Image
+            src='/images/backgrounds/bg2.jpg'
+            alt='Pinto Los Pellines Background'
+            fill
+            className='object-cover object-center dark:opacity-30 opacity-100'
+            priority
+            quality={95}
+          />
+          {/* Theme-adaptive overlay */}
+          <div className='absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/90 dark:from-black/60 dark:via-black/40 dark:to-black/80' />
+          <div className='absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-blue-900/20 dark:from-red-900/10 dark:via-transparent dark:to-blue-900/10' />
+          <div className='absolute inset-0 bg-gradient-to-r from-green-900/10 via-transparent to-yellow-900/10 dark:from-green-900/5 dark:via-transparent dark:to-yellow-900/5' />
+          {/* Light theme overlay for better contrast */}
+          <div className='absolute inset-0 bg-white/20 dark:bg-transparent' />
+        </div>
 
       {/* SUPREME HERO SECTION */}
       <section className='relative min-h-screen flex items-center justify-center pt-20' >
@@ -261,7 +259,7 @@ export default function Home() {
                   Especialistas en productos agrícolas de la zona.
                 </p>
                 <div className='flex justify-between items-center'>
-                  <div className='text-muted-foreground/60 text-sm'>📞 +56 42 987 6543</div>
+                  <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
                   <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
                     Ver Más
                   </Button>
@@ -290,7 +288,7 @@ export default function Home() {
                   con ingredientes locales de la más alta calidad.
                 </p>
                 <div className='flex justify-between items-center'>
-                  <div className='text-muted-foreground/60 text-sm'>📞 +56 42 555 1234</div>
+                  <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
                   <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
                     Ver Más
                   </Button>
@@ -319,7 +317,7 @@ export default function Home() {
                   con productos frescos de productores locales.
                 </p>
                 <div className='flex justify-between items-center'>
-                  <div className='text-muted-foreground/60 text-sm'>📞 +56 42 777 4567</div>
+                  <div className='text-muted-foreground/60 text-sm'>📞 Contactar</div>
                   <Button size='sm' variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
                     Ver Más
                   </Button>
@@ -329,7 +327,7 @@ export default function Home() {
           </AnimatedGroup>
 
           <div className='text-center mt-8'>
-            <Button variant='outline' className='bg-card/10 border-border/30 text-foreground hover:bg-card/20'>
+            <Button variant='gradientWarm'>
               Ver Todos los Comercios →
             </Button>
           </div>
@@ -792,43 +790,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SUPREME FOOTER */}
-      <footer className='relative bg-gradient-to-br from-gray-900 via-black to-gray-900 py-16' >
-        <div className='absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-blue-900/10' />
-        <div className='container mx-auto px-4 text-center relative z-10' >
-          <AnimatedGroup preset='fade' className='space-y-8' >
-            <TextEffect
-              preset='fade-in-blur'
-              per='word'
-              as='h3'
-              className='text-3xl font-bold mb-4 text-foreground drop-shadow-lg'
-            >
-              Junta de Vecinos Pinto Los Pellines
-            </TextEffect>
-            <p className='text-xl text-muted-foreground mb-6 drop-shadow-lg' >
-              Ñuble, Chile
-            </p>
-            <p className='text-lg text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed' >
-              La plataforma comunitaria más avanzada de Chile con tecnología de vanguardia,
-              diseñada para conectar y fortalecer nuestra comunidad rural.
-            </p>
-            <div className='flex justify-center gap-8 mt-8' >
-              <div className='flex items-center gap-2 text-muted-foreground' >
-                <Shield className='w-5 h-5' />
-                <span>Seguro</span>
-              </div>
-              <div className='flex items-center gap-2 text-muted-foreground' >
-                <Zap className='w-5 h-5' />
-                <span>Rápido</span>
-              </div>
-              <div className='flex items-center gap-2 text-muted-foreground' >
-                <Heart className='w-5 h-5' />
-                <span>Confiable</span>
-              </div>
-            </div>
-          </AnimatedGroup>
-        </div>
-      </footer>
     </main>
+    </PublicLayout>
   )
 }

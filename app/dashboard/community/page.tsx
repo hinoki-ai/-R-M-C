@@ -18,7 +18,7 @@ export default function CommunityPage() {
         <div className={`${DASHBOARD_SPACING.card.padding} border rounded-lg bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20`}>
           <h4 className='font-semibold mb-2'>🎗️ Presidenta Junta de Vecinos</h4>
           <p className='text-sm text-gray-600 dark:text-gray-400'>Doña Rosa del Carmen Pérez Muñoz</p>
-          <p className='text-xs text-gray-500 mt-1'>Directiva 2024-2026 • Tel: +56 9 8765 4321</p>
+                    <p className='text-xs text-gray-500 mt-1'>Directiva 2024-2026 • Tel: +56 9 8889 6773</p>
         </div>
         <div className={`${DASHBOARD_SPACING.card.padding} border rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20`}>
           <h4 className='font-semibold mb-2'>📋 Secretaría</h4>

@@ -1,14 +1,17 @@
 'use client'
 
-import { useAuth, UserButton } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
+import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react'
 import {
+  AlertTriangle,
   Calendar,
   ChevronDown,
   Cloud,
   DollarSign,
   FileText,
   Heart,
-  Home,
+  Image,
+  Loader2,
   MapPin,
   Megaphone,
   Menu,
@@ -18,6 +21,7 @@ import {
   X
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 import { ModeToggle } from '@/components/layout/mode-toggle'
@@ -34,19 +38,14 @@ import { cn } from '@/lib/utils'
 
 const navigationItems = [
   {
-    name: 'Inicio',
-    href: '/',
-    icon: Home,
-  },
-  {
     name: 'Comunidad',
     href: '#',
     icon: Users,
     subpages: [
       { name: 'Anuncios', href: '/anuncios', icon: Megaphone },
       { name: 'Eventos', href: '/eventos', icon: Calendar },
-      { name: 'Documentos', href: '/documentos', icon: FileText },
-      { name: 'Fotos', href: '/fotos', icon: Phone },
+      { name: 'Calendario', href: '/calendario', icon: Calendar },
+      { name: 'Contactos', href: '/contactos', icon: Phone },
     ]
   },
   {
@@ -55,14 +54,18 @@ const navigationItems = [
     icon: MapPin,
     subpages: [
       { name: 'Mapa', href: '/mapa', icon: MapPin },
-      { name: 'Clima', href: '/weather', icon: Cloud },
-      { name: 'Contactos', href: '/contactos', icon: Phone },
+      { name: 'Emergencias', href: '/emergencias', icon: AlertTriangle },
     ]
   },
   {
-    name: 'Calendario',
-    href: '/calendario',
-    icon: Calendar,
+    name: 'Recursos',
+    href: '#',
+    icon: FileText,
+    subpages: [
+      { name: 'Documentos', href: '/documentos', icon: FileText },
+      { name: 'Fotos', href: '/fotos', icon: Image },
+      { name: 'Clima', href: '/weather', icon: Cloud },
+    ]
   },
   {
     name: 'Contribuciones',
@@ -76,9 +79,10 @@ const navigationItems = [
 ]
 
 export const AdvancedHeader = () => {
-  const { isSignedIn, isLoaded } = useAuth()
+  const pathname = usePathname()
   const [menuState, setMenuState] = React.useState(false)
   const [isScrolled, setIsScrolled] = React.useState(false)
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -88,13 +92,29 @@ export const AdvancedHeader = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Reset dropdown state on navigation
+  React.useEffect(() => {
+    setOpenDropdown(null)
+  }, [pathname])
+
   return (
-    <header className={cn(
-      'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-      isScrolled
-        ? 'bg-background/95 backdrop-blur-md border-b border-border/50 shadow-lg'
-        : 'bg-background/80 backdrop-blur-sm'
-    )}>
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isScrolled
+          ? 'bg-background/95 backdrop-blur-md border-b border-border/50 shadow-lg'
+          : 'bg-background/80 backdrop-blur-sm'
+      )}
+      suppressHydrationWarning
+    >
+      {/* Skip to main content link for accessibility */}
+      <a
+        href='#main-content'
+        className='sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md'
+      >
+        Saltar al contenido principal
+      </a>
+
       <div className='container mx-auto px-4 py-3'>
         <div className='flex items-center justify-between'>
           {/* Logo and Branding */}
@@ -102,10 +122,10 @@ export const AdvancedHeader = () => {
             <Link href='/' className='flex items-center gap-3'>
               <Logo />
               <div className='hidden sm:block'>
-                <div className='text-lg font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent'>
+                <div className='text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent'>
                   Pinto Los Pellines
                 </div>
-                <div className='text-xs text-muted-foreground'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Junta de Vecinos
                 </div>
               </div>
@@ -113,19 +133,25 @@ export const AdvancedHeader = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className='hidden lg:flex items-center gap-6'>
+          <nav className='hidden lg:flex items-center gap-6' role='navigation' aria-label='Navegación principal'>
             {navigationItems.map((item) => (
               <div key={item.name}>
                 {item.subpages ? (
-                  <DropdownMenu>
+                  <DropdownMenu
+                    open={openDropdown === item.name}
+                    onOpenChange={(open) => setOpenDropdown(open ? item.name : null)}
+                  >
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant='ghost'
                         className='flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 data-[state=open]:bg-accent/50 data-[state=open]:text-foreground'
+                        aria-label={`${item.name} menu`}
+                        aria-haspopup='menu'
+                        suppressHydrationWarning
                       >
-                        <item.icon className='w-4 h-4' />
+                        <item.icon className='w-4 h-4' aria-hidden='true' />
                         {item.name}
-                        <ChevronDown className='w-4 h-4 transition-transform duration-200 data-[state=open]:rotate-180' />
+                        <ChevronDown className='w-4 h-4 transition-transform duration-200 data-[state=open]:rotate-180' aria-hidden='true' />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -134,12 +160,17 @@ export const AdvancedHeader = () => {
                       sideOffset={8}
                       className='w-48 z-[60]'
                       avoidCollisions={true}
+                      aria-label={`${item.name} submenu`}
                     >
                       {item.subpages.map((subpage, index) => (
                         <React.Fragment key={subpage.name}>
                           <DropdownMenuItem asChild>
-                            <Link href={subpage.href} className='flex items-center gap-2'>
-                              <subpage.icon className='w-4 h-4' />
+                            <Link
+                              href={subpage.href}
+                              className='flex items-center gap-2'
+                              onClick={() => setOpenDropdown(null)}
+                            >
+                              <subpage.icon className='w-4 h-4' aria-hidden='true' />
                               {subpage.name}
                             </Link>
                           </DropdownMenuItem>
@@ -151,7 +182,7 @@ export const AdvancedHeader = () => {
                 ) : (
                   <Button variant='ghost' asChild>
                     <Link href={item.href} className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'>
-                      <item.icon className='w-4 h-4' />
+                      <item.icon className='w-4 h-4' aria-hidden='true' />
                       {item.name}
                     </Link>
                   </Button>
@@ -165,18 +196,18 @@ export const AdvancedHeader = () => {
             {/* Theme Toggle */}
             <ModeToggle />
 
-            {/* Auth Buttons */}
-            {!isLoaded ? (
-              <div className='flex items-center justify-center'>
-                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
-              </div>
-            ) : isSignedIn ? (
-              <div className='flex items-center gap-3'>
-                <Button asChild size='sm' className='hidden sm:inline-flex'>
-                  <Link href='/dashboard' className='flex items-center gap-2'>
-                    <Users className='w-4 h-4' />
-                    Dashboard
-                    <Sparkles className='w-3 h-3' />
+            {/* Auth Buttons - Following template pattern */}
+            <div className='flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit'>
+              <AuthLoading>
+                <div className='flex items-center justify-center'>
+                  <Loader2 className='size-8 p-2 animate-spin' />
+                </div>
+              </AuthLoading>
+
+              <Authenticated>
+                <Button asChild size='sm'>
+                  <Link href='/dashboard'>
+                    <span>Dashboard</span>
                   </Link>
                 </Button>
                 <UserButton
@@ -187,17 +218,17 @@ export const AdvancedHeader = () => {
                     }
                   }}
                 />
-              </div>
-            ) : (
-              <div className='flex items-center gap-2'>
-                <Button variant='ghost' size='sm' asChild>
+              </Authenticated>
+
+              <Unauthenticated>
+                <Button variant='outline' size='sm' asChild>
                   <Link href='/sign-in'>Iniciar Sesión</Link>
                 </Button>
                 <Button size='sm' asChild>
                   <Link href='/sign-up'>Registrarse</Link>
                 </Button>
-              </div>
-            )}
+              </Unauthenticated>
+            </div>
 
             {/* Mobile Menu Button */}
             <Button
@@ -215,13 +246,13 @@ export const AdvancedHeader = () => {
         {/* Mobile Menu */}
         {menuState && (
           <div className='lg:hidden mt-4 pb-4 border-t border-border/50'>
-            <nav className='flex flex-col gap-2 pt-4'>
+            <nav className='flex flex-col gap-2 pt-4' role='navigation' aria-label='Navegación móvil'>
               {navigationItems.map((item) => (
                 <div key={item.name}>
                   {item.subpages ? (
                     <div className='space-y-2'>
                       <div className='flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground'>
-                        <item.icon className='w-4 h-4' />
+                        <item.icon className='w-4 h-4' aria-hidden='true' />
                         {item.name}
                       </div>
                       <div className='ml-6 space-y-1'>
@@ -235,7 +266,7 @@ export const AdvancedHeader = () => {
                             onClick={() => setMenuState(false)}
                           >
                             <Link href={subpage.href} className='flex items-center gap-2'>
-                              <subpage.icon className='w-4 h-4' />
+                              <subpage.icon className='w-4 h-4' aria-hidden='true' />
                               {subpage.name}
                             </Link>
                           </Button>
@@ -251,7 +282,7 @@ export const AdvancedHeader = () => {
                       onClick={() => setMenuState(false)}
                     >
                       <Link href={item.href} className='flex items-center gap-2'>
-                        <item.icon className='w-4 h-4' />
+                        <item.icon className='w-4 h-4' aria-hidden='true' />
                         {item.name}
                       </Link>
                     </Button>
@@ -259,17 +290,29 @@ export const AdvancedHeader = () => {
                 </div>
               ))}
 
-              {/* Mobile Auth Buttons */}
-              {!isLoaded ? null : !isSignedIn && (
-                <div className='flex flex-col gap-2 mt-4 pt-4 border-t border-border/50'>
+              {/* Mobile Auth Buttons - Following template pattern */}
+              <div className='flex flex-col gap-2 mt-4 pt-4 border-t border-border/50'>
+                <AuthLoading>
+                  <div className='flex items-center justify-center'>
+                    <Loader2 className='size-6 animate-spin' />
+                  </div>
+                </AuthLoading>
+
+                <Authenticated>
+                  <Button size='sm' asChild onClick={() => setMenuState(false)}>
+                    <Link href='/dashboard'>Dashboard</Link>
+                  </Button>
+                </Authenticated>
+
+                <Unauthenticated>
                   <Button variant='outline' size='sm' asChild onClick={() => setMenuState(false)}>
                     <Link href='/sign-in'>Iniciar Sesión</Link>
                   </Button>
                   <Button size='sm' asChild onClick={() => setMenuState(false)}>
                     <Link href='/sign-up'>Registrarse</Link>
                   </Button>
-                </div>
-              )}
+                </Unauthenticated>
+              </div>
             </nav>
           </div>
         )}

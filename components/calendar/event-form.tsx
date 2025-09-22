@@ -38,9 +38,9 @@ interface FormData {
   recurrenceRule: {
     frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
     interval: number
-    endDate: string
-    daysOfWeek: number[]
-    count: number
+    endDate?: string
+    daysOfWeek?: number[]
+    count?: number
   } | null
   maxAttendees: number
   isPublic: boolean
@@ -69,18 +69,18 @@ const defaultFormData: FormData = {
 export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventFormProps) {
   const [formData, setFormData] = useState<FormData>(defaultFormData)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errors, setErrors] = useState<Partial<FormData>>({})
+  const [errors, setErrors] = useState<Record<keyof FormData, string>>({} as Record<keyof FormData, string>)
 
   const categories = useQuery(api.calendar.getEventCategories) || []
 
   const createEvent = useMutation(api.calendar.createEvent)
   const updateEvent = useMutation(api.calendar.updateEvent)
 
-  // If editing existing event, load its data
-  const existingEvent = useQuery(
-    eventId ? api.calendar.getEvents : 'skip',
-    eventId ? { userId: undefined } : 'skip'
-  )?.find(event => event._id === eventId)
+  // Always load events data
+  const allEvents = useQuery(api.calendar.getEvents, { userId: undefined }) || []
+
+  // If editing existing event, find its data
+  const existingEvent = eventId ? allEvents.find((event: any) => event._id === eventId) : null
 
   useEffect(() => {
     if (selectedDate) {
@@ -106,7 +106,7 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
         location: existingEvent.location || '',
         isAllDay: existingEvent.isAllDay,
         isRecurring: existingEvent.isRecurring,
-        recurrenceRule: existingEvent.recurrenceRule,
+        recurrenceRule: existingEvent.recurrenceRule || null,
         maxAttendees: existingEvent.maxAttendees || 0,
         isPublic: existingEvent.isPublic,
         requiresApproval: existingEvent.requiresApproval,
@@ -116,7 +116,7 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
   }, [existingEvent])
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {}
+    const newErrors: Record<keyof FormData, string> = {} as Record<keyof FormData, string>
 
     if (!formData.title.trim()) {
       newErrors.title = 'El título es requerido'

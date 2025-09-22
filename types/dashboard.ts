@@ -54,7 +54,7 @@ export interface Event {
   time: string
   location: string
   organizer: string
-  category: 'cultural' | 'social' | 'maintenance' | 'assembly'
+  category: string
   isMandatory?: boolean
   attendees?: number
 }
@@ -69,7 +69,7 @@ export interface MaintenanceRequest {
   reportedBy: string
   reportedAt: string
   assignedTo?: string
-  category: 'roads' | 'lighting' | 'cleaning' | 'infrastructure' | 'other'
+  category: 'roads' | 'lighting' | 'cleaning' | 'infrastructure' | 'other' | 'water' | 'sewage' | 'buildings'
   photos?: string[]
 }
 
@@ -78,8 +78,8 @@ export interface PaymentRecord {
   amount: number
   description: string
   date: string
-  status: 'pending' | 'completed' | 'failed'
-  type: 'contribution' | 'project' | 'maintenance'
+  status: 'pending' | 'completed' | 'failed' | 'cancelled'
+  type: 'contribution' | 'project' | 'maintenance' | 'event' | 'other'
   userId: string
 }
 
@@ -271,8 +271,8 @@ export interface Project {
   goal: number
   raised: number
   deadline: string
-  category: 'infrastructure' | 'agricultural' | 'cultural' | 'health'
-  status: 'active' | 'completed' | 'paused'
+  category: 'infrastructure' | 'agricultural' | 'cultural' | 'health' | 'education' | 'other'
+  status: 'active' | 'completed' | 'paused' | 'cancelled' | 'planning'
   photos?: string[]
 }
 
@@ -345,7 +345,7 @@ export type DashboardRole = 'admin' | 'user'
 export type AnnouncementPriority = 'high' | 'medium' | 'low'
 export type MaintenanceStatus = 'pending' | 'in-progress' | 'completed' | 'cancelled'
 export type PaymentStatus = 'pending' | 'completed' | 'failed'
-export type EventCategory = 'cultural' | 'social' | 'maintenance' | 'assembly'
+export type EventCategory = string
 export type DocumentType = 'statutes' | 'minutes' | 'regulation' | 'financial' | 'plan'
 export type ProjectStatus = 'active' | 'completed' | 'paused'
 export type ProjectCategory = 'infrastructure' | 'agricultural' | 'cultural' | 'health'

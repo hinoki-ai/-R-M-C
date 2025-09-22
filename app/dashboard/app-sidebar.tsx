@@ -3,43 +3,27 @@
 import {
   IconActivity,
   IconAlertTriangle,
-  IconBolt,
-  IconBrain,
-  IconBuilding,
   IconCalendar,
   IconCalendarEvent,
-  IconCalendarPlus,
   IconCamera,
   IconChartBar,
   IconChartLine,
-  IconChartPie,
-  IconClipboardList,
   IconCloud,
-  IconConfetti,
-  IconCpu,
   IconCreditCard,
   IconDashboard,
-  IconDatabase,
-  IconDesk,
-  IconDeviceMobile,
-  IconDog,
   IconEye,
-  IconFileReport,
   IconFileText,
   IconFileTypography,
   IconHelp,
   IconHome,
   IconMail,
-  IconMapPin,
   IconMessageCircle,
   IconRadio,
   IconReceipt,
-  IconReport,
   IconSearch,
   IconSettings,
   IconShield,
   IconSparkles,
-  IconStar,
   IconTool,
   IconTrendingUp,
   IconTrophy,
@@ -64,11 +48,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 
-interface SidebarProps {
-  children?: React.ReactNode;
-}
-
-export function AppSidebar(props: SidebarProps) {
+export function AppSidebar() {
   const pathname = usePathname();
 
   const data = {

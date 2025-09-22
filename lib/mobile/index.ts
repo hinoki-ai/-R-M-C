@@ -221,7 +221,10 @@ export class UnifiedTheme {
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
       this.systemThemeListener = (event) => {
-        this.applyTheme('system')
+        // Just update mobile theme when system theme changes, don't apply CSS classes
+        if (Platform.isNative()) {
+          this.updateMobileTheme('system')
+        }
       }
       mediaQuery.addEventListener('change', this.systemThemeListener)
     }
@@ -231,8 +234,8 @@ export class UnifiedTheme {
       this.updateMobileTheme(theme)
     }
 
-    // Update CSS custom properties and classes
-    this.applyTheme(theme)
+    // Note: CSS class management is now handled by next-themes
+    // this.applyTheme(theme) - removed to prevent conflicts
   }
 
   private static async updateMobileTheme(theme: 'light' | 'dark' | 'system'): Promise<void> {

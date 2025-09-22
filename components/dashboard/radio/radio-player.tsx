@@ -331,8 +331,8 @@ const RadioPlayer: React.FC = () => {
                                 {station.frequency} • {station.region}
                               </p>
                               <div className='flex items-center space-x-2 mt-1'>
-                                <Badge variant={getQualityBadge(station.quality || 'unknown')} className='text-xs'>
-                                  {station.quality || 'Desconocida'}
+                                <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
+                                  {(station as any).quality || 'Desconocida'}
                                 </Badge>
                                 <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
                                   {station.category}
@@ -367,7 +367,7 @@ const RadioPlayer: React.FC = () => {
                               >
                                 <Heart
                                   className={`h-4 w-4 ${
-                                    station.isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
+                                    (station as any).isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                                   }`}
                                 />
                               </Button>

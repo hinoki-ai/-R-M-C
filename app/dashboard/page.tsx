@@ -5,16 +5,12 @@ import {
   IconActivity,
   IconAlertCircle,
   IconAlertTriangle,
-  IconBuilding,
   IconCalendar,
   IconCircleCheck,
   IconCloud,
-  IconFileText,
   IconHome,
-  IconMapPin,
   IconMessage,
   IconPhone,
-  IconSettings,
   IconShield,
   IconUsers,
 } from '@tabler/icons-react';
@@ -31,130 +27,7 @@ import {
 } from '@/components/ui/card';
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing';
 
-// Community Announcements Component
-function CommunityAnnouncements() {
-  const announcements = [
-    { id: 1, title: 'Reunión Junta de Vecinos', priority: 'high', time: '2 horas atrás' },
-    { id: 2, title: 'Corte de Agua Programado', priority: 'medium', time: '5 horas atrás' },
-    { id: 3, title: 'Campaña de Reciclaje', priority: 'low', time: '1 día atrás' },
-  ];
 
-  return (
-    <Card>
-      <CardHeader className={DASHBOARD_SPACING.card.header}>
-        <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-          <IconMessage className='h-5 w-5' />
-          Anuncios Comunidad
-        </CardTitle>
-        <CardDescription>Últimas noticias y avisos importantes</CardDescription>
-      </CardHeader>
-      <CardContent className={DASHBOARD_SPACING.card.padding}>
-        <div className={DASHBOARD_SPACING.element.normal}>
-          {announcements.map((announcement) => (
-            <div key={announcement.id} className='flex items-center justify-between p-4 bg-muted rounded'>
-              <div>
-                <p className='font-medium text-sm'>{announcement.title}</p>
-                <p className='text-xs text-muted-foreground'>{announcement.time}</p>
-              </div>
-              <Badge variant={
-                announcement.priority === 'high' ? 'destructive' :
-                announcement.priority === 'medium' ? 'default' : 'secondary'
-              }>
-                {announcement.priority === 'high' ? 'Urgente' :
-                 announcement.priority === 'medium' ? 'Importante' : 'Información'}
-              </Badge>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Emergency Contacts Component
-function EmergencyContacts() {
-  const contacts = [
-    { name: 'Policía Local', phone: '133', type: 'emergency' },
-    { name: 'Bomberos', phone: '132', type: 'emergency' },
-    { name: 'Hospital', phone: '+56 2 1234 5678', type: 'health' },
-  ];
-
-  return (
-    <Card>
-      <CardHeader className={DASHBOARD_SPACING.card.header}>
-        <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-          <IconPhone className='h-5 w-5' />
-          Contactos de Emergencia
-        </CardTitle>
-        <CardDescription>Números importantes para situaciones de emergencia</CardDescription>
-      </CardHeader>
-      <CardContent className={DASHBOARD_SPACING.card.padding}>
-        <div className={DASHBOARD_SPACING.element.normal}>
-          {contacts.map((contact, index) => (
-            <div key={index} className='flex items-center justify-between'>
-              <div>
-                <p className='font-medium'>{contact.name}</p>
-                <p className='text-sm text-muted-foreground'>{contact.phone}</p>
-              </div>
-              <Badge variant={contact.type === 'emergency' ? 'destructive' : 'default'}>
-                {contact.type === 'emergency' ? 'Emergencia' : 'Salud'}
-              </Badge>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Maintenance Requests Component
-function MaintenanceRequests() {
-  const requests = [
-    { id: 1, title: 'Reparación de alumbrado público', location: 'Calle Principal', priority: 'high', status: 'pending' },
-    { id: 2, title: 'Bache en vía de acceso', location: 'Entrada Norte', priority: 'medium', status: 'in-progress' },
-    { id: 3, title: 'Limpieza de áreas verdes', location: 'Parque Central', priority: 'low', status: 'completed' },
-  ];
-
-  return (
-    <Card>
-      <CardHeader className={DASHBOARD_SPACING.card.header}>
-        <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-          <IconAlertCircle className='h-5 w-5' />
-          Solicitudes de Mantenimiento
-        </CardTitle>
-        <CardDescription>Reportes de mantenimiento y reparaciones pendientes</CardDescription>
-      </CardHeader>
-      <CardContent className={DASHBOARD_SPACING.card.padding}>
-        <div className={DASHBOARD_SPACING.element.normal}>
-          {requests.map((request) => (
-            <div key={request.id} className='p-4 bg-muted rounded'>
-              <div className='flex justify-between items-start mb-3'>
-                <p className='font-medium text-sm'>{request.title}</p>
-                <Badge variant={
-                  request.priority === 'high' ? 'destructive' :
-                  request.priority === 'medium' ? 'default' : 'secondary'
-                }>
-                  {request.priority === 'high' ? 'Alta' :
-                   request.priority === 'medium' ? 'Media' : 'Baja'}
-                </Badge>
-              </div>
-              <div className='flex justify-between text-xs text-muted-foreground'>
-                <span>{request.location}</span>
-                <span className={`font-medium ${
-                  request.status === 'completed' ? 'text-green-600' :
-                  request.status === 'in-progress' ? 'text-blue-600' : 'text-orange-600'
-                }`}>
-                  {request.status === 'completed' ? 'Completado' :
-                   request.status === 'in-progress' ? 'En Progreso' : 'Pendiente'}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 // Community Events Component
 function CommunityEvents() {

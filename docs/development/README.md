@@ -86,7 +86,6 @@ This document outlines the comprehensive development standards for the JuntaDeVe
 - **Types**: `PascalCase` with descriptive names (e.g., `UserProfile.ts`)
 - **Directories**: `kebab-case` (e.g., `user-profile/`)
 
-
 #### Variables and Functions
 
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_RETRY_ATTEMPTS`)
@@ -94,7 +93,6 @@ This document outlines the comprehensive development standards for the JuntaDeVe
 - **Functions**: `camelCase` (e.g., `formatUserName`)
 - **Components**: `PascalCase` (e.g., `UserProfile`)
 - **Enums**: `PascalCase` (e.g., `UserRole`)
-
 
 #### Database and API
 

@@ -27,7 +27,7 @@ const emergencyContacts = [
   {
     id: 3,
     name: 'Bomberos Pinto',
-    number: '+56 9 1234 5678',
+    number: '132',
     description: 'Cuerpo de bomberos local - Incendios y rescates',
     type: 'fire',
     available: '24/7'
@@ -35,7 +35,7 @@ const emergencyContacts = [
   {
     id: 4,
     name: 'Hospital Pinto',
-    number: '+56 43 123 4567',
+    number: '131',
     description: 'Centro de salud de urgencia',
     type: 'medical',
     available: '24/7'
@@ -43,7 +43,7 @@ const emergencyContacts = [
   {
     id: 5,
     name: 'Presidenta Junta de Vecinos',
-    number: '+56 9 8765 4321',
+    number: '+56 9 8889 6773',
     description: 'Doña Rosa del Carmen Pérez Muñoz - Directiva',
     type: 'community',
     available: '08:00 - 20:00'
@@ -51,7 +51,7 @@ const emergencyContacts = [
   {
     id: 6,
     name: 'Ronda Vecinal Nocturna',
-    number: '+56 9 1122 3344',
+    number: '+56 9 8889 6773',
     description: 'Coordinador de rondas de seguridad comunitaria',
     type: 'security',
     available: '20:00 - 06:00'

@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 
 import './globals.css';
 
@@ -9,38 +10,16 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { OfflineIndicator } from '@/components/shared/offline-indicator';
 import { PWA } from '@/components/shared/pwa';
 
-// Font configuration - use system fonts for mobile builds to avoid network issues
-const isMobileBuild = process.env.MOBILE_BUILD === 'true';
+// Font configuration
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
 
-interface FontConfig {
-  variable: string;
-  className: string;
-}
-
-let geistSans: FontConfig, geistMono: FontConfig;
-
-if (!isMobileBuild) {
-  try {
-     
-    const { Geist, Geist_Mono } = require('next/font/google');
-    geistSans = Geist({
-      variable: '--font-geist-sans',
-      subsets: ['latin'],
-    });
-    geistMono = Geist_Mono({
-      variable: '--font-geist-mono',
-      subsets: ['latin'],
-    });
-  } catch {
-    console.warn('Failed to load Google Fonts, using system fonts');
-    geistSans = { variable: '--font-geist-sans', className: '' };
-    geistMono = { variable: '--font-geist-mono', className: '' };
-  }
-} else {
-  // Use system fonts for mobile builds
-  geistSans = { variable: '--font-geist-sans', className: '' };
-  geistMono = { variable: '--font-geist-mono', className: '' };
-}
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: 'Pinto Los Pellines - Plataforma de Gestión Comunitaria',
@@ -123,12 +102,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
       >
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='light'
-          enableSystem
-          disableTransitionOnChange={false}
-        >
+        <ThemeProvider>
           <OfflineIndicator />
           <ClerkProvider>
             <ConvexClientProvider>

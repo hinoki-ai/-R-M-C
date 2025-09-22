@@ -194,7 +194,7 @@ class ErrorLogger {
       type: 'unknown',
       message: error.message,
       stack: error.stack,
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack ? errorInfo.componentStack : undefined,
       additionalData: {
         ...additionalData,
         errorBoundary: true

@@ -23,7 +23,7 @@ const categoryConfig = {
 }
 
 export function EventCard({ event, onRSVP, onViewDetails, compact = false }: EventCardProps) {
-  const category = categoryConfig[event.category]
+  const category = categoryConfig[event.category as keyof typeof categoryConfig] || categoryConfig.cultural
 
   if (compact) {
     return (
@@ -250,7 +250,7 @@ export function EventList({
         </h3>
         <p className='text-gray-600 dark:text-gray-400'>
           {filterByCategory
-            ? `No se encontraron eventos de tipo ${categoryConfig[filterByCategory].label.toLowerCase()}.`
+            ? `No se encontraron eventos de tipo ${categoryConfig[filterByCategory as keyof typeof categoryConfig]?.label.toLowerCase()}.`
             : showUpcomingOnly
               ? 'No hay eventos próximos programados.'
               : 'Los eventos aparecerán aquí cuando estén disponibles.'
@@ -309,7 +309,7 @@ export function EventFilter({
         Todos ({Object.values(eventCounts).reduce((a, b) => a + b, 0)})
       </Button>
       {categories.map(category => {
-        const config = categoryConfig[category]
+        const config = categoryConfig[category as keyof typeof categoryConfig]
         return (
           <Button
             key={category}

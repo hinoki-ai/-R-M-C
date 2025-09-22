@@ -288,8 +288,8 @@ function AdminAnnouncementsContent() {
           ) : (
             <div className='space-y-4'>
               {filteredAnnouncements.map((announcement: any, index: number) => {
-                const priority = priorityConfig[announcement.priority]
-                const category = categoryConfig[announcement.category]
+                const priority = priorityConfig[announcement.priority as keyof typeof priorityConfig]
+                const category = categoryConfig[announcement.category as keyof typeof categoryConfig]
                 const PriorityIcon = priority.icon
 
                 return (

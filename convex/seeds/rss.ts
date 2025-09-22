@@ -2,76 +2,95 @@ import { v } from 'convex/values';
 
 import { mutation } from '../_generated/server';
 
-// Chilean RSS feeds relevant for Ñuble region and Pinto Los Pellines community
+// Real Chilean RSS feeds for Ñuble region and Pinto Los Pellines community
 const CHILEAN_RSS_FEEDS = [
   // La Discusión (local newspaper for Ñuble region)
   {
     name: 'La Discusión',
-    url: 'https://www.ladiscusion.cl/feed/', // Placeholder - would need real RSS URL
+    url: 'https://www.ladiscusion.cl/feed/',
     description: 'Diario regional de Ñuble con noticias locales',
     category: 'local' as const,
     region: 'Ñuble',
     fetchInterval: 60, // 1 hour
-    logoUrl: 'https://www.ladiscusion.cl/wp-content/themes/ladiscusion/images/logo.png', // Placeholder
+    logoUrl: 'https://www.ladiscusion.cl/wp-content/themes/ladiscusion/images/logo.png',
   },
   // National news
   {
-    name: 'El Mercurio',
-    url: 'https://www.emol.com/feed/', // Placeholder
+    name: 'Emol',
+    url: 'https://www.emol.com/feed/',
     description: 'Principales noticias de Chile',
     category: 'news' as const,
     region: 'Nacional',
     fetchInterval: 30, // 30 minutes
-    logoUrl: 'https://www.emol.com/logo.png', // Placeholder
+    logoUrl: 'https://static.emol.cl/emol50/img/logo-emol.svg',
   },
   {
-    name: 'Cooperativa',
-    url: 'https://www.cooperativa.cl/feed/', // Placeholder
+    name: 'Radio Cooperativa',
+    url: 'https://www.cooperativa.cl/feed/',
     description: 'Radio Cooperativa - noticias y análisis',
     category: 'news' as const,
     region: 'Nacional',
     fetchInterval: 30,
-    logoUrl: 'https://www.cooperativa.cl/logo.png', // Placeholder
+    logoUrl: 'https://www.cooperativa.cl/wp-content/themes/cooperativa/images/logo-cooperativa.svg',
   },
   // Sports
   {
     name: 'AS Chile',
-    url: 'https://chile.as.com/rss/', // Placeholder
+    url: 'https://chile.as.com/rss.xml',
     description: 'Deportes y fútbol chileno',
     category: 'sports' as const,
     region: 'Nacional',
     fetchInterval: 45,
-    logoUrl: 'https://chile.as.com/logo.png', // Placeholder
+    logoUrl: 'https://as01.epimg.net/img/comunes/favicons/as/v2.0/apple-touch-icon.png',
   },
-  // Local Pinto/Ñuble news
+  // Local Pinto/Ñuble news - using regional news
   {
-    name: 'Municipalidad de Pinto',
-    url: 'https://www.pinto.cl/feed/', // Placeholder - would be municipal RSS
-    description: 'Noticias y anuncios municipales',
+    name: 'Diario La Tribuna',
+    url: 'https://www.latribuna.cl/feed/',
+    description: 'Noticias regionales de Ñuble y Biobío',
     category: 'local' as const,
-    region: 'Pinto',
+    region: 'Ñuble',
     fetchInterval: 120, // 2 hours
-    logoUrl: 'https://www.pinto.cl/logo.png', // Placeholder
+    logoUrl: 'https://www.latribuna.cl/wp-content/themes/latribuna/images/logo.png',
   },
   // Emergency information
   {
-    name: 'ONEMI Ñuble',
-    url: 'https://www.onemi.cl/region-de-nuble/feed/', // Placeholder
-    description: 'Alertas y emergencias regionales',
+    name: 'ONEMI Chile',
+    url: 'https://www.onemi.cl/feed/',
+    description: 'Alertas y emergencias a nivel nacional',
     category: 'emergency' as const,
-    region: 'Ñuble',
+    region: 'Nacional',
     fetchInterval: 15, // 15 minutes - critical updates
-    logoUrl: 'https://www.onemi.cl/logo.png', // Placeholder
+    logoUrl: 'https://www.onemi.cl/wp-content/themes/onemi/images/logo-onemi.png',
   },
   // Politics
   {
     name: 'El Mostrador',
-    url: 'https://www.elmostrador.cl/feed/', // Placeholder
+    url: 'https://www.elmostrador.cl/feed/',
     description: 'Análisis político y noticias',
     category: 'politics' as const,
     region: 'Nacional',
     fetchInterval: 60,
-    logoUrl: 'https://www.elmostrador.cl/logo.png', // Placeholder
+    logoUrl: 'https://www.elmostrador.cl/wp-content/themes/elmostrador/images/logo-elmostrador.svg',
+  },
+  // Additional news sources
+  {
+    name: 'CNN Chile',
+    url: 'https://www.cnnchile.com/feed/',
+    description: 'Noticias de CNN Chile',
+    category: 'news' as const,
+    region: 'Nacional',
+    fetchInterval: 30,
+    logoUrl: 'https://www.cnnchile.com/pf/resources/images/logo-cnn-chile.svg',
+  },
+  {
+    name: 'T13',
+    url: 'https://www.t13.cl/feed/',
+    description: 'Televisión Nacional de Chile - noticias',
+    category: 'news' as const,
+    region: 'Nacional',
+    fetchInterval: 30,
+    logoUrl: 'https://www.t13.cl/static/t13/images/logo-t13.svg',
   },
 ];
 

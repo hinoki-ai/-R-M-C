@@ -82,6 +82,7 @@ export default function HeroSection() {
                                         <div className='md:pr-1.5 lg:pr-0' >
                                             <Button
                                                 aria-label='submit'
+                                                variant='gradientCool'
                                                 size='sm'
                                                 className='rounded-(--radius)' >
                                                 <span className='hidden md:block' >Comenzar</span>

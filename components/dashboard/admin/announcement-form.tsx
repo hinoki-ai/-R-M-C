@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 
 interface Announcement {
   id: string
@@ -67,7 +68,7 @@ export function AnnouncementForm({ announcement, onSuccess, onCancel }: Announce
         const expiresAt = formData.expiresAt ? new Date(formData.expiresAt).getTime() : undefined
 
         await updateAnnouncement({
-          announcementId: announcement.id,
+          announcementId: announcement.id as Id<'announcements'>,
           title: formData.title.trim(),
           content: formData.content.trim(),
           priority: formData.priority,

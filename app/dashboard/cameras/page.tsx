@@ -145,7 +145,7 @@ function CamerasPageContent() {
   }, [])
 
   useEffect(() => {
-    if (camerasData) {
+    if (camerasData && Array.isArray(camerasData)) {
       setCameras(camerasData)
     }
   }, [camerasData])

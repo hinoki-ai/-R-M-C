@@ -44,7 +44,7 @@ const locations: Location[] = [
     type: 'emergency',
     coordinates: [-36.698, -71.897],
     address: 'Calle Real 123, Pinto',
-    phone: '+56 42 123 4567',
+    phone: '+56 42 222 0000',
     description: 'Centro médico de urgencias 24/7',
     category: 'Salud'
   },
@@ -54,7 +54,7 @@ const locations: Location[] = [
     type: 'emergency',
     coordinates: [-36.695, -71.895],
     address: 'Av. Los Pellines 456',
-    phone: '+56 42 123 8910',
+    phone: '132',
     description: 'Estación de bomberos y rescate',
     category: 'Emergencias'
   },
@@ -76,7 +76,7 @@ const locations: Location[] = [
     type: 'business',
     coordinates: [-36.702, -71.898],
     address: 'Calle Comercio 321',
-    phone: '+56 42 987 6543',
+    phone: 'Contactar',
     description: 'Alimentos, productos y servicios básicos',
     category: 'Supermercado',
     rating: 4.5
@@ -87,7 +87,7 @@ const locations: Location[] = [
     type: 'business',
     coordinates: [-36.699, -71.896],
     address: 'Calle Principal 654',
-    phone: '+56 42 555 1234',
+    phone: 'Contactar',
     description: 'Pan artesanal y productos horneados tradicionales',
     category: 'Panadería',
     rating: 4.8
@@ -98,7 +98,7 @@ const locations: Location[] = [
     type: 'business',
     coordinates: [-36.698, -71.894],
     address: 'Av. Salud 987',
-    phone: '+56 42 666 7890',
+    phone: 'Contactar',
     description: 'Medicamentos y productos farmacéuticos',
     category: 'Farmacia',
     rating: 4.2
@@ -109,7 +109,7 @@ const locations: Location[] = [
     type: 'business',
     coordinates: [-36.701, -71.899],
     address: 'Calle Gastronomía 147',
-    phone: '+56 42 777 4567',
+    phone: 'Contactar',
     description: 'Comida típica chilena y menú del día',
     category: 'Restaurante',
     rating: 4.6
@@ -122,7 +122,7 @@ const locations: Location[] = [
     type: 'service',
     coordinates: [-36.703, -71.901],
     address: 'Calle Educación 258',
-    phone: '+56 42 888 1234',
+    phone: 'Contactar',
     description: 'Educación básica para niños y jóvenes',
     category: 'Educación'
   },
@@ -132,7 +132,7 @@ const locations: Location[] = [
     type: 'service',
     coordinates: [-36.700, -71.898],
     address: 'Plaza Comunidad 369',
-    phone: '+56 42 999 5678',
+    phone: '+56 9 8889 6773',
     description: 'Oficina administrativa de la comunidad',
     category: 'Administración'
   },
@@ -142,7 +142,7 @@ const locations: Location[] = [
     type: 'service',
     coordinates: [-36.696, -71.902],
     address: 'Calle Fe 741',
-    phone: '+56 42 222 3456',
+    phone: 'Contactar',
     description: 'Centro espiritual y comunitario',
     category: 'Religión'
   }
@@ -254,7 +254,7 @@ export default function CommunityMapPage() {
                         key={location.id}
                         onClick={() => setSelectedLocation(location)}
                         className={`absolute w-8 h-8 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform ${getTypeColor(location.type)}`}
-                        style={{ left: `${x}px`, top: `${y}px` }}  
+                        style={{ left: x, top: y }}
                         aria-label={`Ver detalles de ${location.name}`}
                         title={`Ver detalles de ${location.name}`}
                       >

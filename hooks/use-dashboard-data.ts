@@ -205,7 +205,7 @@ export function useDashboardData(): UseDashboardDataReturn {
   // Transform data to match expected format
   const data: DashboardData | null = currentUser && stats && announcements && recentEvents && pendingMaintenance && recentPayments && activeProjects ? {
     user: {
-      id: currentUser._id,
+      id: currentUser._id.toString(),
       name: currentUser.name,
       email: '', // Email not stored in users table for privacy
       role: 'user', // Default role
@@ -263,7 +263,7 @@ export function useDashboardData(): UseDashboardDataReturn {
       time: event.startTime || 'Todo el día',
       location: event.location || 'Por confirmar',
       organizer: currentUser.name, // Simplified - would need to join with users table
-      category: event.categoryId, // Would need to resolve category name
+      category: 'cultural' as const, // Default category - would need to resolve from categoryId
       isMandatory: false, // Event mandatory status not available in current schema
       attendees: event.attendeeCount || 0 // Use real attendee count from event
     })),
@@ -272,7 +272,7 @@ export function useDashboardData(): UseDashboardDataReturn {
       title: request.title,
       description: request.description,
       location: request.location,
-      priority: request.priority,
+      priority: request.priority === 'critical' ? 'high' as const : request.priority,
       status: request.status,
       reportedBy: currentUser.name, // Simplified - would need to join with users table
       reportedAt: new Date(request.reportedAt).toISOString(),
@@ -285,7 +285,7 @@ export function useDashboardData(): UseDashboardDataReturn {
       description: payment.description,
       date: payment.paidAt ? new Date(payment.paidAt).toISOString().split('T')[0] : new Date(payment.createdAt).toISOString().split('T')[0],
       status: payment.status,
-      type: payment.type,
+      type: (payment.type === 'event' || payment.type === 'other') ? 'contribution' as const : payment.type,
       userId: payment.userId
     })),
     activeProjects: activeProjects.map(project => ({
@@ -295,8 +295,8 @@ export function useDashboardData(): UseDashboardDataReturn {
       goal: project.goal,
       raised: project.raised,
       deadline: project.deadline,
-      category: project.category,
-      status: project.status
+      category: (project.category === 'education' || project.category === 'other') ? 'cultural' as const : project.category,
+      status: project.status === 'planning' ? 'active' as const : project.status === 'cancelled' ? 'paused' as const : project.status
     }))
   } : null
 

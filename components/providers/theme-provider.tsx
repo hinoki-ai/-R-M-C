@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * Theme System Overview:
+ * - Light: Pastel gradient theme with soft colors (purple→blue→cyan→green)
+ * - Dark: Midnight starry moonlight theme with deep blues and subtle star effects
+ * - System: Follows OS preference (light/dark)
+ * - Custom: Vineyard, Ocean, Mountain, Patagonia themes (Chilean countryside inspired)
+ */
+
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import * as React from 'react'
 
@@ -32,11 +40,11 @@ export function ThemeProvider({
   const [highContrast, setHighContrast] = React.useState(false)
   const [themeAnalytics, setThemeAnalytics] = React.useState<{
     switches: number
-    preference: 'light' | 'dark' | 'system'
+    preference: 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel'
     lastChanged: Date | null
   }>({
     switches: 0,
-    preference: 'system',
+    preference: 'light', // Default to pastel light theme
     lastChanged: null
   })
 
@@ -113,26 +121,45 @@ export function ThemeProvider({
   // Initialize UnifiedTheme on mount with stored theme
   React.useEffect(() => {
     // Get stored theme from localStorage (next-themes uses 'theme' key)
-    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | null
+    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel' | null
 
     // Use stored theme or default to 'light'
     const initialTheme = storedTheme || 'light'
 
-    // Set initial theme in UnifiedTheme
-    UnifiedTheme.setTheme(initialTheme)
+    // Apply custom theme class if it's a custom theme
+    const customThemes = ['vineyard', 'ocean', 'mountain', 'patagonia', 'pastel']
+    if (customThemes.includes(initialTheme)) {
+      document.documentElement.classList.add(initialTheme)
+      UnifiedTheme.setTheme('light') // Custom themes handle their own dark variants
+    } else {
+      UnifiedTheme.setTheme(initialTheme as 'light' | 'dark' | 'system')
+    }
   }, [])
 
-  // Handle theme changes and sync with UnifiedTheme
+  // Handle theme changes and sync with UnifiedTheme (for mobile features only)
   const handleThemeChange = React.useCallback((theme: string | undefined) => {
     if (theme) {
-      UnifiedTheme.setTheme(theme as 'light' | 'dark' | 'system')
+      // Remove all custom theme classes first
+      const customThemes = ['vineyard', 'ocean', 'mountain', 'patagonia', 'pastel']
+      customThemes.forEach(themeClass => {
+        document.documentElement.classList.remove(themeClass)
+      })
+
+      // Apply custom theme class if it's a custom theme
+      if (customThemes.includes(theme)) {
+        document.documentElement.classList.add(theme)
+        // For custom themes, we still use light/dark from next-themes for dark mode
+        UnifiedTheme.setTheme('light') // Custom themes handle their own dark variants
+      } else {
+        UnifiedTheme.setTheme(theme as 'light' | 'dark' | 'system')
+      }
 
       // Update analytics
       if (enableAnalytics) {
         setThemeAnalytics(prev => ({
           ...prev,
           switches: prev.switches + 1,
-          preference: theme as 'light' | 'dark' | 'system',
+          preference: theme as 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel',
           lastChanged: new Date()
         }))
       }
@@ -172,12 +199,12 @@ interface ThemeContextType {
   highContrast: boolean
   themeAnalytics: {
     switches: number
-    preference: 'light' | 'dark' | 'system'
+    preference: 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel'
     lastChanged: Date | null
   }
   setThemeAnalytics: React.Dispatch<React.SetStateAction<{
     switches: number
-    preference: 'light' | 'dark' | 'system'
+    preference: 'light' | 'dark' | 'system' | 'vineyard' | 'ocean' | 'mountain' | 'patagonia' | 'pastel'
     lastChanged: Date | null
   }>>
   themeTransitionDuration: number

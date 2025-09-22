@@ -56,6 +56,7 @@ export default function Pricing() {
                                     <div className='@3xl:mx-0 -mx-1 border-y px-8 py-4' >
                                         <Button
                                             asChild
+                                            variant='gradientSunset'
                                             className='w-full' >
                                             <Link href='#' >Get Started</Link>
                                         </Button>
