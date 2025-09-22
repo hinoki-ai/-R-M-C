@@ -4,6 +4,8 @@ interface AnimationMetrics {
   totalAnimations: number;
   reducedMotionUsers: number;
   averageAnimationTime: number;
+  fps: number;
+  frameTime: number;
 }
 
 export function usePerformanceAnimations() {
@@ -12,7 +14,20 @@ export function usePerformanceAnimations() {
     totalAnimations: 0,
     reducedMotionUsers: 0,
     averageAnimationTime: 0,
+    fps: 60,
+    frameTime: 16.67,
   });
+
+  // Initialize metrics with safe defaults
+  useEffect(() => {
+    setMetrics({
+      totalAnimations: 0,
+      reducedMotionUsers: isReducedMotion ? 1 : 0,
+      averageAnimationTime: 0,
+      fps: 60,
+      frameTime: 16.67,
+    });
+  }, [isReducedMotion]);
 
   useEffect(() => {
     // Check for reduced motion preference

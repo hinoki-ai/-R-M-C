@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@capacitor/core', '@capacitor/android', '@capacitor/ios'],
   },
+
+  // Disable static generation for pages that have SSR issues
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
   serverExternalPackages: [],
 
   // Configure for Capacitor compatibility
