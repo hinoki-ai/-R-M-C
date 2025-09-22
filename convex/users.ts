@@ -1,4 +1,4 @@
-import { query, internalMutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // Get all users (for admin purposes)
@@ -132,5 +132,95 @@ export const deleteFromClerk = internalMutation({
     }
 
     return null;
+  },
+});
+
+// Update user external ID (for linking Clerk users)
+export const updateUserExternalId = mutation({
+  args: {
+    currentExternalId: v.string(),
+    newExternalId: v.string(),
+    newName: v.optional(v.string()),
+  },
+  returns: v.object({
+    _id: v.id("users"),
+    name: v.string(),
+    externalId: v.string(),
+    role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
+  }),
+  handler: async (ctx, args) => {
+    // Find user by current external ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.currentExternalId))
+      .first();
+
+    if (!user) {
+      throw new Error(`User with external ID ${args.currentExternalId} not found`);
+    }
+
+    // Update the user
+    await ctx.db.patch(user._id, {
+      externalId: args.newExternalId,
+      name: args.newName || user.name,
+    });
+
+    return {
+      _id: user._id,
+      name: args.newName || user.name,
+      externalId: args.newExternalId,
+      role: user.role,
+    };
+  },
+});
+
+// Create admin user manually (for bootstrapping) - public wrapper
+export const createAdminUser = mutation({
+  args: {
+    name: v.string(),
+    externalId: v.string(),
+    role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
+  },
+  returns: v.object({
+    _id: v.id("users"),
+    name: v.string(),
+    externalId: v.string(),
+    role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
+  }),
+  handler: async (ctx, args) => {
+    // Check if user already exists
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("byExternalId", (q: any) => q.eq("externalId", args.externalId))
+      .first();
+
+    if (existingUser) {
+      // Update existing user to admin
+      await ctx.db.patch(existingUser._id, {
+        name: args.name,
+        role: args.role || 'admin',
+      });
+
+      return {
+        _id: existingUser._id,
+        name: args.name,
+        externalId: args.externalId,
+        role: args.role || 'admin',
+      };
+    } else {
+      // Create new admin user
+      const userId = await ctx.db.insert("users", {
+        name: args.name,
+        externalId: args.externalId,
+        role: args.role || 'admin',
+      });
+
+      return {
+        _id: userId,
+        name: args.name,
+        externalId: args.externalId,
+        role: args.role || 'admin',
+      };
+    }
   },
 });

@@ -17,11 +17,29 @@ const seedPayments = async (ctx: any) => {
   return await ctx.runMutation(seedPaymentsFn, {});
 };
 
+const seedRadio = async (ctx: any, forceProduction?: boolean) => {
+  const { seedRadioStations: seedRadioFn } = await import('./radio');
+  return await ctx.runMutation(seedRadioFn, { forceProduction });
+};
+
+const seedRss = async (ctx: any, forceProduction?: boolean) => {
+  const { seedRssFeeds: seedRssFn } = await import('./rss');
+  return await ctx.runMutation(seedRssFn, { forceProduction });
+};
+
+const seedEmergencyProtocols = async (ctx: any, forceProduction?: boolean) => {
+  const { seedEmergencyProtocols: seedProtocolsFn } = await import('./emergency_protocols');
+  return await ctx.runMutation(seedProtocolsFn, { forceProduction });
+};
+
 export const seedAll = mutation({
   args: {
     cameras: v.optional(v.boolean()),
     weather: v.optional(v.boolean()),
     payments: v.optional(v.boolean()),
+    radio: v.optional(v.boolean()),
+    rss: v.optional(v.boolean()),
+    emergencyProtocols: v.optional(v.boolean()),
     forceProduction: v.optional(v.boolean()), // Explicit flag for production seeding
   },
   handler: async (ctx, args) => {
@@ -58,11 +76,17 @@ export const seedAll = mutation({
     const cameras = args.cameras ?? false;
     const weather = args.weather ?? false;
     const payments = args.payments ?? false;
+    const radio = args.radio ?? false;
+    const rss = args.rss ?? false;
+    const emergencyProtocols = args.emergencyProtocols ?? false;
 
     const results = {
       cameras: null as any,
       weather: null as any,
       payments: null as any,
+      radio: null as any,
+      rss: null as any,
+      emergencyProtocols: null as any,
     };
 
     const errors = [];
@@ -89,6 +113,27 @@ export const seedAll = mutation({
         console.log('');
       }
 
+      // Seed radio stations if requested
+      if (radio) {
+        console.log('📻 Seeding radio station data...');
+        results.radio = await seedRadio(ctx, args.forceProduction);
+        console.log('');
+      }
+
+      // Seed RSS feeds if requested
+      if (rss) {
+        console.log('📰 Seeding RSS feeds data...');
+        results.rss = await seedRss(ctx, args.forceProduction);
+        console.log('');
+      }
+
+      // Seed emergency protocols if requested
+      if (emergencyProtocols) {
+        console.log('📋 Seeding emergency protocols data...');
+        results.emergencyProtocols = await seedEmergencyProtocols(ctx, args.forceProduction);
+        console.log('');
+      }
+
       console.log('🎉 Database seeding completed successfully!');
       console.log('');
       console.log('📊 Summary:');
@@ -103,6 +148,18 @@ export const seedAll = mutation({
 
       if (results.payments) {
         console.log(`   💰 Payments: ${results.payments.paymentsCreated} attempts (${results.payments.summary.succeeded} succeeded, ${results.payments.summary.pending} pending, ${results.payments.summary.failed} failed)`);
+      }
+
+      if (results.radio) {
+        console.log(`   📻 Radio: ${results.radio.seeded} stations created, ${results.radio.skipped} skipped`);
+      }
+
+      if (results.rss) {
+        console.log(`   📰 RSS: ${results.rss.seeded} feeds created, ${results.rss.skipped} skipped`);
+      }
+
+      if (results.emergencyProtocols) {
+        console.log(`   📋 Protocols: ${results.emergencyProtocols.seeded} protocols created, ${results.emergencyProtocols.skipped} skipped`);
       }
 
       console.log('');
@@ -137,3 +194,6 @@ export const seedAll = mutation({
 export { seedCameras } from './cameras';
 export { seedWeather } from './weather';
 export { seedPayments } from './payments';
+export { seedRadioStations } from './radio';
+export { seedRssFeeds } from './rss';
+export { seedEmergencyProtocols } from './emergency_protocols';

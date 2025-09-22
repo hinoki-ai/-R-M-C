@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
@@ -11,21 +10,22 @@ import {
   Eye,
   Gauge,
   MapPin,
+  RefreshCw,
   Sun,
   Sunrise,
   Sunset,
   Thermometer,
   Wind,
-  Zap,
-  RefreshCw
+  Zap
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { WeatherData, WeatherAlert, WeatherForecast } from '@/types/dashboard'
-import { WeatherAPIResponse, ForecastAPIResponse } from '@/lib/weather-service'
+import { ForecastAPIResponse, WeatherAPIResponse } from '@/lib/weather-service'
+import { WeatherAlert } from '@/types/dashboard'
 
 interface WeatherState {
   current: WeatherAPIResponse | null

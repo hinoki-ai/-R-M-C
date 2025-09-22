@@ -1,4 +1,4 @@
-# JuntaDeVecinos
+# PintoPellines
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -7,9 +7,9 @@
 
 [🌐 Live Website](https://pintopellines.vercel.app/) – Visit our community website!
 
-## ✨ What is JuntaDeVecinos?
+## ✨ What is PintoPellines?
 
-JuntaDeVecinos is a comprehensive community management platform designed specifically for Pinto Los Pellines, providing:
+PintoPellines is a comprehensive community management platform designed specifically for Pinto Los Pellines, providing:
 
 - **🏘️ Community Management**: Tools for neighborhood governance and citizen participation
 - **📹 Security Camera System**: 24/7 neighborhood monitoring and surveillance

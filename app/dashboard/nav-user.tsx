@@ -1,5 +1,6 @@
-"use client";
+'use client';
 
+import { UserButton, useUser } from '@clerk/nextjs';
 import {
   BadgeCheck,
   Bell,
@@ -7,13 +8,13 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react";
+} from 'lucide-react';
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar";
+} from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,14 +23,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { useUser, UserButton } from "@clerk/nextjs";
+} from '@/components/ui/sidebar';
 
 export function NavUser() {
   const { user } = useUser();
@@ -41,7 +41,7 @@ export function NavUser() {
 
   const userInitials = user.firstName && user.lastName
     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
-    : user.firstName?.charAt(0) || user.username?.charAt(0) || "U";
+    : user.firstName?.charAt(0) || user.username?.charAt(0) || 'U';
 
   return (
     <SidebarMenu>
@@ -49,52 +49,52 @@ export function NavUser() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              size='lg'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className='h-8 w-8 rounded-lg'>
                 <AvatarImage
                   src={user.imageUrl}
-                  alt={user.firstName || user.username || "User"}
+                  alt={user.firstName || user.username || 'User'}
                 />
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className='rounded-lg'>
                   {userInitials}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {user.firstName || user.username || "User"}
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <span className='truncate font-semibold'>
+                  {user.firstName || user.username || 'User'}
                 </span>
-                <span className="truncate text-xs">
-                  {user.primaryEmailAddress?.emailAddress || "No email"}
+                <span className='truncate text-xs'>
+                  {user.primaryEmailAddress?.emailAddress || 'No email'}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className='ml-auto size-4' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
+            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+            side={isMobile ? 'bottom' : 'right'}
+            align='end'
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+            <DropdownMenuLabel className='p-0 font-normal'>
+              <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                <Avatar className='h-8 w-8 rounded-lg'>
                   <AvatarImage
                     src={user.imageUrl}
-                    alt={user.firstName || user.username || "User"}
+                    alt={user.firstName || user.username || 'User'}
                   />
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback className='rounded-lg'>
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {user.firstName || user.username || "User"}
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-semibold'>
+                    {user.firstName || user.username || 'User'}
                   </span>
-                  <span className="truncate text-xs">
-                    {user.primaryEmailAddress?.emailAddress || "No email"}
+                  <span className='truncate text-xs'>
+                    {user.primaryEmailAddress?.emailAddress || 'No email'}
                   </span>
                 </div>
               </div>
@@ -109,7 +109,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              <UserButton afterSignOutUrl="/" />
+              <UserButton afterSignOutUrl='/' />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

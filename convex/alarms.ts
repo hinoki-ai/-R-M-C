@@ -427,3 +427,47 @@ export const getActiveAlarmsToTrigger = query({
     return alarmsToTrigger;
   },
 });
+
+// Create alarm trigger
+export const createAlarmTrigger = mutation({
+  args: {
+    alarmId: v.id("alarms"),
+    userId: v.id("users"),
+    triggerType: v.union(
+      v.literal("scheduled"),
+      v.literal("manual"),
+      v.literal("weather_alert"),
+      v.literal("emergency"),
+      v.literal("security"),
+      v.literal("maintenance")
+    ),
+    triggerData: v.optional(v.any()),
+    message: v.string(),
+  },
+  returns: v.id("alarmTriggers"),
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("alarmTriggers", {
+      alarmId: args.alarmId,
+      userId: args.userId,
+      triggerType: args.triggerType,
+      triggerData: args.triggerData,
+      message: args.message,
+      acknowledged: false,
+      triggeredAt: Date.now(),
+    });
+  },
+});
+
+// Update alarm last triggered time
+export const updateAlarmLastTriggered = mutation({
+  args: {
+    alarmId: v.id("alarms"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.alarmId, {
+      lastTriggered: Date.now(),
+    });
+    return null;
+  },
+});

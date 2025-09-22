@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: [],
 
-  // Disable static optimization to avoid build issues
+  // Configure for Capacitor compatibility
   trailingSlash: true,
   output: 'standalone',
   generateBuildId: async () => {
@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
-  // PWA and mobile optimizations
+  // Security headers
   headers: async () => [
     {
       source: '/(.*)',
@@ -50,6 +50,22 @@ const nextConfig: NextConfig = {
         {
           key: 'Referrer-Policy',
           value: 'strict-origin-when-cross-origin',
+        },
+        {
+          key: 'X-XSS-Protection',
+          value: '1; mode=block',
+        },
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=31536000; includeSubDomains',
+        },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=()',
+        },
+        {
+          key: 'Content-Security-Policy',
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: wss:;",
         },
       ],
     },
@@ -82,7 +98,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Disable TypeScript checking for deployment
+  // Temporarily disable TypeScript checking for operability
+  // TODO: Fix remaining type annotation issues
   typescript: {
     ignoreBuildErrors: true,
   },

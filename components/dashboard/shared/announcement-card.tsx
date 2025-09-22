@@ -14,6 +14,11 @@ interface AnnouncementCardProps {
 }
 
 const priorityConfig = {
+  critical: {
+    color: 'border-red-600 bg-red-50 dark:bg-red-950/20',
+    icon: AlertTriangle,
+    badge: 'Crítico'
+  },
   high: {
     color: 'border-red-500 bg-red-50 dark:bg-red-950/20',
     icon: AlertTriangle,
@@ -62,7 +67,7 @@ export function AnnouncementCard({ announcement, onMarkAsRead, compact = false }
                   {announcement.title}
                 </h4>
                 <span className={category.color}>{category.emoji}</span>
-                {announcement.priority === 'high' && (
+                {(announcement.priority === 'high' || announcement.priority === 'critical') && (
                   <Badge variant='destructive' className='text-xs'>
                     {priority.badge}
                   </Badge>
@@ -105,7 +110,7 @@ export function AnnouncementCard({ announcement, onMarkAsRead, compact = false }
                 <span className={category.color}>{category.emoji}</span>
               </CardTitle>
             </div>
-            {announcement.priority === 'high' && (
+            {(announcement.priority === 'high' || announcement.priority === 'critical') && (
               <Badge variant='destructive'>
                 {priority.badge}
               </Badge>

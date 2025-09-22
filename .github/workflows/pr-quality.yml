@@ -1,0 +1,105 @@
+name: PR Quality Checks
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check PR size
+        run: |
+          # Get the number of lines changed
+          LINES_CHANGED=$(git diff --stat ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | tail -1 | awk '{print $4+$6}')
+
+          echo "Lines changed: $LINES_CHANGED"
+
+          if [ "$LINES_CHANGED" -gt 1000 ]; then
+            echo "❌ PR is too large ($LINES_CHANGED lines changed). Please split into smaller PRs."
+            echo "Consider breaking this PR into multiple smaller ones for easier review."
+            exit 1
+          elif [ "$LINES_CHANGED" -gt 500 ]; then
+            echo "⚠️  PR is quite large ($LINES_CHANGED lines changed). Consider if it can be split."
+          else
+            echo "✅ PR size looks good ($LINES_CHANGED lines changed)."
+          fi
+
+      - name: Check PR description
+        run: |
+          # Check if PR has a description
+          if [ -z "${{ github.event.pull_request.body }}" ]; then
+            echo "⚠️  PR description is empty. Please add a description explaining what this PR does."
+          else
+            echo "✅ PR has a description."
+          fi
+
+      - name: Check branch naming
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ $BRANCH_NAME =~ ^(feature|fix|docs|style|refactor|test|chore)/.+ ]]; then
+            echo "✅ Branch name follows conventional naming: $BRANCH_NAME"
+          else
+            echo "⚠️  Branch name doesn't follow conventional naming. Consider using: feature/, fix/, docs/, style/, refactor/, test/, or chore/"
+            echo "Example: feature/add-user-authentication"
+          fi
+
+      - name: Check for large files
+        run: |
+          # Check for files larger than 1MB
+          LARGE_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | xargs ls -lh 2>/dev/null | awk '$5 > 1048576 {print $9 ": " $5}')
+          if [ ! -z "$LARGE_FILES" ]; then
+            echo "⚠️  Large files detected:"
+            echo "$LARGE_FILES"
+            echo "Consider using Git LFS for large files or optimizing file sizes."
+          else
+            echo "✅ No large files detected."
+          fi
+
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Label PR based on size
+        uses: codacy/git-version@2.7.1
+        with:
+          release-branch: main
+          dev-branch: develop
+
+      - name: Add size label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            const linesChanged = pr.additions + pr.deletions;
+
+            let sizeLabel = '';
+            if (linesChanged < 10) {
+              sizeLabel = 'size/xs';
+            } else if (linesChanged < 50) {
+              sizeLabel = 'size/s';
+            } else if (linesChanged < 100) {
+              sizeLabel = 'size/m';
+            } else if (linesChanged < 500) {
+              sizeLabel = 'size/l';
+            } else {
+              sizeLabel = 'size/xl';
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [sizeLabel]
+            });

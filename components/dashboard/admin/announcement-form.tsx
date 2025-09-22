@@ -1,18 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { motion } from 'framer-motion'
 import { Calendar, Clock } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { toast } from 'sonner'
-
+import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/convex/_generated/api'
 
 interface Announcement {
@@ -68,7 +67,7 @@ export function AnnouncementForm({ announcement, onSuccess, onCancel }: Announce
         const expiresAt = formData.expiresAt ? new Date(formData.expiresAt).getTime() : undefined
 
         await updateAnnouncement({
-          announcementId: announcement.id as any,
+          announcementId: announcement.id,
           title: formData.title.trim(),
           content: formData.content.trim(),
           priority: formData.priority,
@@ -100,7 +99,7 @@ export function AnnouncementForm({ announcement, onSuccess, onCancel }: Announce
     }
   }
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -153,7 +152,7 @@ export function AnnouncementForm({ announcement, onSuccess, onCancel }: Announce
           <Label htmlFor='priority'>Prioridad</Label>
           <Select
             value={formData.priority}
-            onValueChange={(value: any) => handleInputChange('priority', value)}
+            onValueChange={(value: string) => handleInputChange('priority', value)}
           >
             <SelectTrigger>
               <SelectValue />
@@ -171,7 +170,7 @@ export function AnnouncementForm({ announcement, onSuccess, onCancel }: Announce
           <Label htmlFor='category'>Categoría</Label>
           <Select
             value={formData.category}
-            onValueChange={(value: any) => handleInputChange('category', value)}
+            onValueChange={(value: string) => handleInputChange('category', value)}
           >
             <SelectTrigger>
               <SelectValue />

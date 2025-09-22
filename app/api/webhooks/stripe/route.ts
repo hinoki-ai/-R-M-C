@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { headers } from 'next/headers'
-import Stripe from 'stripe'
 import { ConvexHttpClient } from 'convex/browser'
+import { headers } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
+
 import { api } from '@/convex/_generated/api'
 
 // Initialize Stripe and Convex

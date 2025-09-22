@@ -3,7 +3,7 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'com.juntadevecinos.app',
-  appName: 'JuntaDeVecinos',
+  appName: 'PintoPellines',
   webDir: '.next',
   plugins: {
     // Splash Screen
@@ -84,7 +84,7 @@ const config: CapacitorConfig = {
 
   // iOS specific configuration
   ios: {
-    scheme: 'JuntaDeVecinos',
+    scheme: 'PintoPellines',
     allowsLinkPreview: true,
   },
 };

@@ -8,7 +8,7 @@ const crons = cronJobs();
 crons.interval(
   "check-scheduled-alarms",
   { minutes: 1 },
-  api.alarmScheduler.checkScheduledAlarms,
+  internal.utils.alarmScheduler.checkScheduledAlarms,
   {}
 );
 

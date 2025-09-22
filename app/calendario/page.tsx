@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { CalendarView } from '@/components/calendar/calendar-view'
-import { EventForm } from '@/components/calendar/event-form'
-import { EventDetails } from '@/components/calendar/event-details'
 import { useQuery } from 'convex/react'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+
+import { CalendarView } from '@/components/calendar/calendar-view'
+import { EventDetails } from '@/components/calendar/event-details'
+import { EventForm } from '@/components/calendar/event-form'
+import { ModeToggle } from '@/components/layout/mode-toggle'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { api } from '@/convex/_generated/api'
 
 type ViewMode = 'calendar' | 'create' | 'edit' | 'details'
@@ -51,7 +53,7 @@ export default function CalendarioPage() {
       case 'create':
         return (
           <Dialog open={true} onOpenChange={handleCancel}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
               <EventForm
                 selectedDate={selectedDate || undefined}
                 onSave={handleSaveEvent}
@@ -64,7 +66,7 @@ export default function CalendarioPage() {
       case 'edit':
         return selectedEventId ? (
           <Dialog open={true} onOpenChange={handleCancel}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
               <EventForm
                 eventId={selectedEventId}
                 onSave={handleSaveEvent}
@@ -77,7 +79,7 @@ export default function CalendarioPage() {
       case 'details':
         return selectedEventId ? (
           <Dialog open={true} onOpenChange={handleCancel}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
               <EventDetails
                 eventId={selectedEventId}
                 onClose={handleCancel}
@@ -114,6 +116,11 @@ export default function CalendarioPage() {
         <div className='absolute bottom-20 right-24 text-4xl'>🏘️</div>
         <div className='absolute top-40 right-8 text-3xl'>🌾</div>
         <div className='absolute bottom-80 right-40 text-2xl'>🇨🇱</div>
+      </div>
+
+      {/* Theme Toggle */}
+      <div className='absolute top-4 right-4 z-10'>
+        <ModeToggle />
       </div>
 
       <div className='relative'>

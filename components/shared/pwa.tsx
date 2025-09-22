@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getPWAController, schedulePeriodicCleanup } from '@/lib/pwa';
+
 import { MobileAPI } from '@/lib/mobile';
+import { getPWAController, schedulePeriodicCleanup } from '@/lib/pwa';
 
 export function PWA() {
   const [isInstallable, setIsInstallable] = useState(false);

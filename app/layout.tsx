@@ -1,19 +1,27 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
+
 import './globals.css';
-import ConvexClientProvider from '@/components/providers/convex-client-provider';
+
 import { MobileInitializer } from '@/components/mobile/mobile-initializer';
+import ConvexClientProvider from '@/components/providers/convex-client-provider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { OfflineIndicator } from '@/components/shared/offline-indicator';
 import { PWA } from '@/components/shared/pwa';
-import { ThemeProvider } from '@/components/providers/theme-provider';
 
 // Font configuration - use system fonts for mobile builds to avoid network issues
 const isMobileBuild = process.env.MOBILE_BUILD === 'true';
 
-let geistSans: any, geistMono: any;
+interface FontConfig {
+  variable: string;
+  className: string;
+}
+
+let geistSans: FontConfig, geistMono: FontConfig;
 
 if (!isMobileBuild) {
   try {
+     
     const { Geist, Geist_Mono } = require('next/font/google');
     geistSans = Geist({
       variable: '--font-geist-sans',
@@ -23,7 +31,7 @@ if (!isMobileBuild) {
       variable: '--font-geist-mono',
       subsets: ['latin'],
     });
-  } catch (error) {
+  } catch {
     console.warn('Failed to load Google Fonts, using system fonts');
     geistSans = { variable: '--font-geist-sans', className: '' };
     geistMono = { variable: '--font-geist-mono', className: '' };
@@ -111,7 +119,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang='es' suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
       >

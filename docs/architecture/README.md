@@ -2,13 +2,13 @@
 
 ## System Architecture
 
-JuntaDeVecinos is a comprehensive community management platform designed for Pinto Los Pellines, Chile, providing unified web and mobile experiences for community engagement, security, and administration.
+PintoPellines is a comprehensive community management platform designed for Pinto Los Pellines, Chile, providing unified web and mobile experiences for community engagement, security, and administration.
 
 ### High-Level Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                    JuntaDeVecinos Platform                       │
+│                    PintoPellines Platform                       │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │
 │  │   Web App       │    │   Mobile App    │    │   Convex DB  │  │
@@ -171,4 +171,4 @@ Client → Clerk → JWT → Convex → Database
 - **API Performance**: Endpoint response times and error rates
 - **User Experience**: Platform-specific performance metrics
 
-This architecture provides a solid foundation for the JuntaDeVecinos platform, designed to scale with community growth while maintaining high performance and security standards.
+This architecture provides a solid foundation for the PintoPellines platform, designed to scale with community growth while maintaining high performance and security standards.

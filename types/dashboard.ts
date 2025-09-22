@@ -29,7 +29,7 @@ export interface Announcement {
   content: string
   author: string
   publishedAt: string
-  priority: 'high' | 'medium' | 'low'
+  priority: 'critical' | 'high' | 'medium' | 'low'
   category: 'general' | 'emergency' | 'event' | 'maintenance'
   isRead?: boolean
 }

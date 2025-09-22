@@ -1,4 +1,13 @@
-"use client";
+'use client';
+
+import {
+  IconBell,
+  IconSearch,
+  IconSettings,
+} from '@tabler/icons-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import {
   Breadcrumb,
@@ -7,19 +16,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import {
-  IconSearch,
-  IconBell,
-  IconSettings,
-} from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 
 export function SiteHeader({ tab }: { tab?: string }) {
   const pathname = usePathname();
@@ -38,89 +39,89 @@ export function SiteHeader({ tab }: { tab?: string }) {
     const inferredTab =
       tab ||
       (() => {
-        const segments = pathname.split("/").filter(Boolean);
+        const segments = pathname.split('/').filter(Boolean);
         // Expect paths like /dashboard, /dashboard/<section>
-        if (segments[0] === "dashboard" && segments.length >= 2) {
+        if (segments[0] === 'dashboard' && segments.length >= 2) {
           return segments[1];
         }
-        return "overview";
+        return 'overview';
       })();
 
     switch (inferredTab) {
-      case "overview":
-        return "Dashboard Overview";
-      case "revenue":
-        return "Revenue Management";
-      case "customers":
-        return "Customer Management";
-      case "maintenance":
-        return "Maintenance Operations";
-      case "pricing":
-        return "Pricing Management";
-      case "calendar":
-        return "Calendar System";
-      case "search":
-        return "Search";
-      case "settings":
-        return "Settings";
-      case "help":
-        return "Help & Documentation";
+      case 'overview':
+        return 'Dashboard Overview';
+      case 'revenue':
+        return 'Revenue Management';
+      case 'customers':
+        return 'Customer Management';
+      case 'maintenance':
+        return 'Maintenance Operations';
+      case 'pricing':
+        return 'Pricing Management';
+      case 'calendar':
+        return 'Calendar System';
+      case 'search':
+        return 'Search';
+      case 'settings':
+        return 'Settings';
+      case 'help':
+        return 'Help & Documentation';
       default:
-        return "Dashboard Overview";
+        return 'Dashboard Overview';
     }
   };
 
   const getBreadcrumbs = () => {
-    const segments = pathname.split("/").filter(Boolean);
+    const segments = pathname.split('/').filter(Boolean);
     const breadcrumbs = [
-      { title: "Dashboard", url: "/dashboard" },
+      { title: 'Dashboard', url: '/dashboard' },
     ];
 
-    if (segments[0] === "dashboard" && segments.length > 1) {
+    if (segments[0] === 'dashboard' && segments.length > 1) {
       const section = segments[1];
 
       // Add section breadcrumb
       switch (section) {
-        case "customers":
+        case 'customers':
           breadcrumbs.push({
-            title: "Customer Management",
-            url: "/dashboard/customers",
+            title: 'Customer Management',
+            url: '/dashboard/customers',
           });
           break;
-        case "revenue":
+        case 'revenue':
           breadcrumbs.push({
-            title: "Revenue",
-            url: "/dashboard/revenue",
+            title: 'Revenue',
+            url: '/dashboard/revenue',
           });
           break;
-        case "maintenance":
+        case 'maintenance':
           breadcrumbs.push({
-            title: "Maintenance",
-            url: "/dashboard/maintenance",
+            title: 'Maintenance',
+            url: '/dashboard/maintenance',
           });
           break;
-        case "calendar":
+        case 'calendar':
           breadcrumbs.push({
-            title: "Calendar",
-            url: "/dashboard/calendar",
+            title: 'Calendar',
+            url: '/dashboard/calendar',
           });
           break;
-        case "settings":
+        case 'settings':
           breadcrumbs.push({
-            title: "Settings",
-            url: "/dashboard/settings",
+            title: 'Settings',
+            url: '/dashboard/settings',
           });
           break;
-        case "search":
+        case 'search':
           breadcrumbs.push({
-            title: "Search",
-            url: "/dashboard/search",
+            title: 'Search',
+            url: '/dashboard/search',
           });
           break;
-        case "help":
+        case 'help':
           breadcrumbs.push({
-            title: "Help",
-            url: "/dashboard/help",
+            title: 'Help',
+            url: '/dashboard/help',
           });
           break;
       }
@@ -142,17 +143,17 @@ export function SiteHeader({ tab }: { tab?: string }) {
 
   return (
     <header className={cn(
-      "sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 transition-all duration-300 ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
-      isScrolled && "bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm"
+      'sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 transition-all duration-300 ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+      isScrolled && 'bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm'
     )}>
-      <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
+      <div className='flex items-center gap-2 px-4'>
+        <SidebarTrigger className='-ml-1' />
+        <Separator orientation='vertical' className='mr-2 h-4' />
         <Breadcrumb>
           <BreadcrumbList>
             {breadcrumbs.map((breadcrumb, index) => (
-              <div key={breadcrumb.url} className="flex items-center">
-                {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
+              <div key={breadcrumb.url} className='flex items-center'>
+                {index > 0 && <BreadcrumbSeparator className='hidden md:block' />}
                 <BreadcrumbItem>
                   {index === breadcrumbs.length - 1 ? (
                     <BreadcrumbPage>{breadcrumb.title}</BreadcrumbPage>
@@ -168,23 +169,23 @@ export function SiteHeader({ tab }: { tab?: string }) {
         </Breadcrumb>
       </div>
 
-      <div className="ml-auto flex items-center gap-2 px-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard/search">
-            <IconSearch className="h-4 w-4" />
-            <span className="sr-only">Search</span>
+      <div className='ml-auto flex items-center gap-2 px-4'>
+        <Button variant='ghost' size='icon' asChild>
+          <Link href='/dashboard/search'>
+            <IconSearch className='h-4 w-4' />
+            <span className='sr-only'>Search</span>
           </Link>
         </Button>
 
-        <Button variant="ghost" size="icon">
-          <IconBell className="h-4 w-4" />
-          <span className="sr-only">Notifications</span>
+        <Button variant='ghost' size='icon'>
+          <IconBell className='h-4 w-4' />
+          <span className='sr-only'>Notifications</span>
         </Button>
 
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard/settings">
-            <IconSettings className="h-4 w-4" />
-            <span className="sr-only">Settings</span>
+        <Button variant='ghost' size='icon' asChild>
+          <Link href='/dashboard/settings'>
+            <IconSettings className='h-4 w-4' />
+            <span className='sr-only'>Settings</span>
           </Link>
         </Button>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
+import { Maximize, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -9,14 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface CameraFeedViewerProps {
   cameraId: string;
-  streamUrl?: string;
   location: string;
   className?: string;
 }
 
 export function CameraFeedViewer({
   cameraId,
-  streamUrl,
   location,
   className
 }: CameraFeedViewerProps) {

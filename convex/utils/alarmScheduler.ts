@@ -19,13 +19,18 @@ export const checkScheduledAlarms = internalAction({
     const users = await ctx.runQuery(api.users.listUsers, {});
     
     // Get all active alarms for all users
-    const allAlarms = [];
+    const allAlarmIds = [];
     for (const user of users) {
-      const userAlarms = await ctx.runQuery(api.alarms.getActiveAlarmsToTrigger, { userId: user._id });
-      allAlarms.push(...userAlarms);
+      const userAlarmIds = await ctx.runQuery(api.alarms.getActiveAlarmsToTrigger, { userId: user._id });
+      allAlarmIds.push(...userAlarmIds);
     }
     
-    const alarms = allAlarms;
+    // Get full alarm objects
+    const alarms = [];
+    for (const alarmId of allAlarmIds) {
+      const alarm = await ctx.runQuery(api.alarms.getAlarm, { alarmId });
+      if (alarm) alarms.push(alarm);
+    }
 
     for (const alarm of alarms) {
       if (!alarm.schedule) continue;
@@ -74,14 +79,11 @@ export const checkScheduledAlarms = internalAction({
             userId: alarm.userId,
             triggerType: "scheduled",
             message: `Scheduled alarm: ${alarm.title}`,
-            acknowledged: false,
-            triggeredAt: now.getTime(),
           });
 
           // Update last triggered
           await ctx.runMutation(api.alarms.updateAlarmLastTriggered, {
             alarmId: alarm._id,
-            lastTriggered: now.getTime(),
           });
 
           // Send notification if enabled
@@ -109,9 +111,10 @@ export const triggerEmergencyAlarm = action({
   },
   returns: v.number(), // Returns number of users notified
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(api.alarmScheduler.triggerEmergencyAlarmMutation, args);
+    return await ctx.runMutation(internal.utils.alarmScheduler.triggerEmergencyAlarmMutation, args);
   },
 });
+
 
 // Internal action to trigger weather-based alarms
 export const triggerWeatherAlarm = internalAction({
@@ -120,9 +123,10 @@ export const triggerWeatherAlarm = internalAction({
   },
   returns: v.number(),
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(api.alarmScheduler.triggerWeatherAlarmMutation, args);
+    return await ctx.runMutation(internal.utils.alarmScheduler.triggerWeatherAlarmMutation, args);
   },
 });
+
 
 // Mutations for database operations
 
@@ -311,6 +315,6 @@ export const testAlarm = action({
   },
   returns: v.boolean(),
   handler: async (ctx, args): Promise<boolean> => {
-    return await ctx.runMutation(api.alarmScheduler.testAlarmMutation, args);
+    return await ctx.runMutation(internal.utils.alarmScheduler.testAlarmMutation, args);
   },
 });

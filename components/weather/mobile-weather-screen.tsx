@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { WeatherData, WeatherForecast, WeatherAlert } from '@/types/dashboard'
+import { WeatherAlert, WeatherData, WeatherForecast } from '@/types/dashboard'
 
 interface MobileWeatherScreenProps {
   onBack?: () => void
@@ -164,7 +164,7 @@ export function MobileWeatherScreen({ onBack, weatherData, forecast = [], alerts
                   {alerts.map((alert, index) => (
                     <div key={index} className='p-3 bg-white rounded-lg border border-red-200'>
                       <h4 className='font-medium text-gray-900 mb-1'>{alert.title}</h4>
-                      <p className='text-sm text-gray-600'>{alert.message}</p>
+                      <p className='text-sm text-gray-600'>{alert.description}</p>
                     </div>
                   ))}
                 </div>
@@ -225,12 +225,12 @@ export function MobileWeatherScreen({ onBack, weatherData, forecast = [], alerts
                           <div className='flex items-center space-x-3'>
                             {getWeatherIcon(day.icon, 8)}
                             <div>
-                              <p className='font-medium'>{day.day}</p>
-                              <p className='text-sm text-gray-600 capitalize'>{day.desc}</p>
+                              <p className='font-medium'>{new Date(day.date).toLocaleDateString('es-CL', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                              <p className='text-sm text-gray-600 capitalize'>{day.description}</p>
                             </div>
                           </div>
                           <div className='text-right'>
-                            <p className='text-lg font-bold'>{day.temp}°C</p>
+                            <p className='text-lg font-bold'>{day.tempMax}°C</p>
                           </div>
                         </div>
                       ))}

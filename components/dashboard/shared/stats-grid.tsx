@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion'
 
 import { Card, CardContent } from '@/components/ui/card'
-import { SystemStats } from '@/types/dashboard'
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
+import { SystemStats } from '@/types/dashboard'
 
 interface StatsGridProps {
   stats: SystemStats[]

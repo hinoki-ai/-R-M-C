@@ -4,19 +4,19 @@ import {
   AlertTriangle,
   CheckCircle,
   Download,
+  Eye,
+  EyeOff,
+  Filter,
   RefreshCw,
   Save,
+  Search,
   Settings,
   Shield,
   Upload,
   X,
   Zap,
-  Search,
-  Filter,
-  Eye,
-  EyeOff,
 } from 'lucide-react';
-import React, { useCallback, useEffect, useReducer, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,9 +24,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getModifiedSettings, hasUnsavedChanges, settingsReducer } from '@/lib/stores/settings-reducer';
 import { DEFAULT_SETTINGS, SettingsState, SystemHealth } from '@/types/settings';

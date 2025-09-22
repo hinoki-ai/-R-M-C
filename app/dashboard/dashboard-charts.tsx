@@ -1,5 +1,6 @@
-"use client";
+'use client';
 
+import { useQuery } from 'convex/react';
 import {
   Area,
   AreaChart,
@@ -11,17 +12,17 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { api } from '@/convex/_generated/api';
 
 // Real data from Convex database - shows 0 when no data exists
 const useParticipationData = () => {
@@ -118,25 +119,25 @@ export function DashboardCharts() {
   const engagementData = useEngagementData();
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className='space-y-6'>
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-lg font-semibold">Estadísticas Comunidad</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className='text-lg font-semibold'>Estadísticas Comunidad</h2>
+          <p className='text-sm text-muted-foreground'>
             Indicadores clave de participación y actividad comunitaria (datos reales - muestra 0 si no hay datos)
           </p>
         </div>
       </div>
 
-      <Tabs defaultValue="participacion" className="space-y-4">
+      <Tabs defaultValue='participacion' className='space-y-4'>
         <TabsList>
-          <TabsTrigger value="participacion">Participación</TabsTrigger>
-          <TabsTrigger value="mantenimiento">Mantenimiento</TabsTrigger>
-          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value='participacion'>Participación</TabsTrigger>
+          <TabsTrigger value='mantenimiento'>Mantenimiento</TabsTrigger>
+          <TabsTrigger value='engagement'>Engagement</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="participacion" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+        <TabsContent value='participacion' className='space-y-4'>
+          <div className='grid gap-4 md:grid-cols-2'>
             <Card>
               <CardHeader>
                 <CardTitle>Eventos y Asistencia</CardTitle>
@@ -145,16 +146,16 @@ export function DashboardCharts() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width='100%' height={300}>
                   <AreaChart data={participationData}>
-                    <XAxis dataKey="month" />
+                    <XAxis dataKey='month' />
                     <YAxis />
                     <Tooltip />
                     <Area
-                      type="monotone"
-                      dataKey="asistencia"
-                      stroke="#10b981"
-                      fill="#10b981"
+                      type='monotone'
+                      dataKey='asistencia'
+                      stroke='#10b981'
+                      fill='#10b981'
                       fillOpacity={0.6}
                     />
                   </AreaChart>
@@ -170,12 +171,12 @@ export function DashboardCharts() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width='100%' height={300}>
                   <BarChart data={participationData}>
-                    <XAxis dataKey="month" />
+                    <XAxis dataKey='month' />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="anuncios" fill="#82ca9d" />
+                    <Bar dataKey='anuncios' fill='#82ca9d' />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -183,7 +184,7 @@ export function DashboardCharts() {
           </div>
         </TabsContent>
 
-        <TabsContent value="mantenimiento" className="space-y-4">
+        <TabsContent value='mantenimiento' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>Solicitudes de Mantenimiento</CardTitle>
@@ -192,20 +193,20 @@ export function DashboardCharts() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width='100%' height={400}>
                 <BarChart data={maintenanceData}>
-                  <XAxis dataKey="semana" />
+                  <XAxis dataKey='semana' />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="solicitudes" fill="#3b82f6" />
-                  <Bar dataKey="completadas" fill="#10b981" />
+                  <Bar dataKey='solicitudes' fill='#3b82f6' />
+                  <Bar dataKey='completadas' fill='#10b981' />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="engagement" className="space-y-4">
+        <TabsContent value='engagement' className='space-y-4'>
           <Card>
             <CardHeader>
               <CardTitle>Engagement Diario</CardTitle>
@@ -214,13 +215,13 @@ export function DashboardCharts() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width='100%' height={300}>
                 <BarChart data={engagementData}>
-                  <XAxis dataKey="dia" />
+                  <XAxis dataKey='dia' />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="vistas" fill="#8b5cf6" />
-                  <Bar dataKey="interacciones" fill="#06b6d4" />
+                  <Bar dataKey='vistas' fill='#8b5cf6' />
+                  <Bar dataKey='interacciones' fill='#06b6d4' />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

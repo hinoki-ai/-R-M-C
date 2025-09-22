@@ -1,17 +1,16 @@
 'use client'
 
 import {
+  BarChart3,
   Bell,
   Calendar,
   Camera,
   Cloud,
-  LayoutDashboard,
   Database,
   FileText,
-  FileText as FileText,
   HelpCircle,
+  LayoutDashboard,
   MessageCircle,
-  BarChart3,
   Search,
   Settings,
   Shield,
@@ -22,10 +21,10 @@ import {
 import Link from 'next/link'
 import * as React from 'react'
 
-import { NavDocuments } from '@/components/dashboard/shared/nav-documents'
 import { NavMain } from '@/app/dashboard/nav-main'
 import { NavSecondary } from '@/app/dashboard/nav-secondary'
 import { NavUser } from '@/app/dashboard/nav-user'
+import { NavDocuments } from '@/components/dashboard/shared/nav-documents'
 import { ChatMaxingIconColoured } from '@/components/layout/logo'
 import { Badge } from '@/components/ui/badge'
 import {

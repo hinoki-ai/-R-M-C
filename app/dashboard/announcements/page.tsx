@@ -10,8 +10,10 @@ import { Suspense, useState } from 'react'
 import { DocumentDashboardLayout } from '@/components/dashboard/layout/dashboard-layout'
 import { AnnouncementList } from '@/components/dashboard/shared/announcement-card'
 import { AnnouncementHeader } from '@/components/dashboard/shared/section-header'
+import RssNewsSection from '@/components/dashboard/news/rss-news-section'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAnnouncements } from '@/hooks/use-dashboard-data'
 
 
@@ -106,60 +108,73 @@ function AnnouncementsContent() {
       <div className='space-y-6'>
         <AnnouncementHeader count={unreadCount} />
 
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className='bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700'
-        >
-          <h3 className='text-sm font-medium text-gray-900 dark:text-white mb-3'>
-            Filtros Rápidos
-          </h3>
-          {quickActions}
-        </motion.div>
+        <Tabs defaultValue="announcements" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="announcements">Anuncios Comunitarios</TabsTrigger>
+            <TabsTrigger value="news">Noticias RSS</TabsTrigger>
+          </TabsList>
 
-        {/* Announcements List */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <AnnouncementList
-            announcements={filteredAnnouncements}
-            onMarkAsRead={handleMarkAsRead}
-            loading={loading}
-            compact={false}
-          />
-        </motion.div>
+          <TabsContent value="announcements" className="space-y-6 mt-6">
+            {/* Quick Actions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className='bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700'
+            >
+              <h3 className='text-sm font-medium text-gray-900 dark:text-white mb-3'>
+                Filtros Rápidos
+              </h3>
+              {quickActions}
+            </motion.div>
 
-        {/* Statistics Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className='bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800'
-        >
-          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-            📊 Estadísticas de Anuncios
-          </h3>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-600'>{announcements.length}</div>
-              <div className='text-sm text-gray-600 dark:text-gray-400'>Total de Anuncios</div>
-            </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-green-600'>{unreadCount}</div>
-              <div className='text-sm text-gray-600 dark:text-gray-400'>No Leídos</div>
-            </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-red-600'>
-                {announcements.filter(a => a.priority === 'high').length}
+            {/* Announcements List */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <AnnouncementList
+                announcements={filteredAnnouncements}
+                onMarkAsRead={handleMarkAsRead}
+                loading={loading}
+                compact={false}
+              />
+            </motion.div>
+
+            {/* Statistics Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className='bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800'
+            >
+              <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+                📊 Estadísticas de Anuncios
+              </h3>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                <div className='text-center'>
+                  <div className='text-2xl font-bold text-blue-600'>{announcements.length}</div>
+                  <div className='text-sm text-gray-600 dark:text-gray-400'>Total de Anuncios</div>
+                </div>
+                <div className='text-center'>
+                  <div className='text-2xl font-bold text-green-600'>{unreadCount}</div>
+                  <div className='text-sm text-gray-600 dark:text-gray-400'>No Leídos</div>
+                </div>
+                <div className='text-center'>
+                  <div className='text-2xl font-bold text-red-600'>
+                    {announcements.filter(a => a.priority === 'high').length}
+                  </div>
+                  <div className='text-sm text-gray-600 dark:text-gray-400'>Prioridad Alta</div>
+                </div>
               </div>
-              <div className='text-sm text-gray-600 dark:text-gray-400'>Prioridad Alta</div>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="news" className="mt-6">
+            <RssNewsSection />
+          </TabsContent>
+        </Tabs>
       </div>
     </DocumentDashboardLayout>
   )

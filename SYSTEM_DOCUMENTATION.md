@@ -8,7 +8,7 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 
 ### Core Architecture
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Next.js App   │    │     Convex      │    │   External APIs │
 │   (Frontend)    │◄──►│   (Backend)     │◄──►│   (Weather,     │
@@ -25,6 +25,7 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 ### Technology Stack
 
 #### Frontend Layer
+
 - **Framework**: Next.js 15 with React 19
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -33,17 +34,20 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 - **Authentication**: Clerk
 
 #### Backend Layer
+
 - **Database**: Convex (real-time database)
 - **Authentication**: Clerk with JWT
 - **File Storage**: Convex storage
 - **API Integration**: REST APIs for weather, payments
 
 #### Mobile Layer
+
 - **Framework**: Capacitor
 - **Platforms**: iOS, Android
 - **PWA Support**: Service workers, offline functionality
 
 #### DevOps & Quality
+
 - **Testing**: Jest, React Testing Library
 - **Linting**: ESLint, Prettier
 - **Build**: Next.js build system
@@ -54,15 +58,17 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 ### Core Tables
 
 #### Users (`users`)
+
 ```typescript
 {
-  _id: Id<"users">
-  name: string
-  externalId: string  // Clerk ID
+  _id: Id<'users'>;
+  name: string;
+  externalId: string; // Clerk ID
 }
 ```
 
 #### Cameras (`cameras`)
+
 ```typescript
 {
   _id: Id<"cameras">
@@ -83,23 +89,27 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 ```
 
 #### Community Features
+
 - **Announcements**: Community news and notifications
 - **Maintenance Requests**: Infrastructure issue reporting
 - **Community Projects**: Fundraising and project management
 - **Contacts**: Emergency and community contact directory
 
 #### Calendar System
+
 - **Events**: Community events and gatherings
 - **Categories**: Event categorization
 - **Attendees**: RSVP management
 - **Reminders**: Automated notifications
 
 #### Weather Integration
+
 - **Weather Data**: Current conditions and forecasts
 - **Alerts**: Weather warnings and notifications
 - **Historical Data**: Weather history tracking
 
 #### Payment System
+
 - **Payment Attempts**: Stripe payment processing
 - **Contributions**: Community fundraising
 - **Project Funding**: Project-specific payments
@@ -109,39 +119,46 @@ JuntaDeVecinos is a comprehensive community management platform designed for Pin
 ### User Journey
 
 #### 1. Authentication Flow
-```
+
+```text
 User visits site → Clerk authentication → User profile creation → Dashboard access
 ```
 
 #### 2. Camera Management Flow
-```
+
+```text
 Login → Navigate to cameras → View camera list → Add/Edit cameras → Monitor streams → Receive alerts
 ```
 
 #### 3. Community Engagement Flow
-```
+
+```text
 Login → View announcements → Submit maintenance requests → Participate in projects → Access emergency contacts
 ```
 
 #### 4. Administrative Flow
-```
+
+```text
 Admin login → Access admin dashboard → Manage users → Configure system → Monitor activity → Generate reports
 ```
 
 ### Data Flow Architecture
 
 #### Real-time Updates
-```
+
+```text
 User Action → Convex Mutation → Database Update → Real-time Subscription → UI Update
 ```
 
 #### File Upload Flow
-```
+
+```text
 File Selection → Client Validation → Convex Storage → URL Generation → Database Record → UI Display
 ```
 
 #### Payment Processing
-```
+
+```text
 Payment Intent → Stripe API → Webhook → Payment Record → User Notification → Access Grant
 ```
 
@@ -150,11 +167,13 @@ Payment Intent → Stripe API → Webhook → Payment Record → User Notificati
 ### Environment Setup
 
 #### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 - Git
 
 #### Installation
+
 ```bash
 # Clone repository
 git clone https://github.com/hinoki-ai/-R-M-C.git
@@ -169,6 +188,7 @@ cp .env.example .env.local
 ```
 
 #### Environment Variables
+
 ```bash
 # Required
 NEXT_PUBLIC_CONVEX_URL=your_convex_url
@@ -183,6 +203,7 @@ CONVEX_ADMIN_KEY=your_admin_key
 ### Development Commands
 
 #### Core Development
+
 ```bash
 # Start development server
 npm run dev
@@ -204,6 +225,7 @@ npm run type-check
 ```
 
 #### Database Management
+
 ```bash
 # Seed database with test data
 npm run seed:all
@@ -215,6 +237,7 @@ npm run seed:payments
 ```
 
 #### Mobile Development
+
 ```bash
 # Build for mobile
 npm run build:mobile
@@ -232,7 +255,8 @@ npm run cap:open:ios
 ### Code Organization
 
 #### Directory Structure
-```
+
+```text
 /
 ├── app/                    # Next.js app directory
 │   ├── (landing)/         # Landing page components
@@ -260,11 +284,13 @@ npm run cap:open:ios
 ### Component Architecture
 
 #### Atomic Design Pattern
-```
+
+```text
 Atoms (Buttons, Inputs) → Molecules (Forms, Cards) → Organisms (Sections, Navigation) → Templates (Page Layouts) → Pages
 ```
 
 #### Component Guidelines
+
 - **Single Responsibility**: Each component has one clear purpose
 - **TypeScript**: Full type safety with interfaces and types
 - **Accessibility**: WCAG 2.1 AA compliance
@@ -274,6 +300,7 @@ Atoms (Buttons, Inputs) → Molecules (Forms, Cards) → Organisms (Sections, Na
 ### State Management
 
 #### Local State
+
 ```typescript
 // Component-level state with hooks
 const [cameras, setCameras] = useState<Camera[]>([]);
@@ -281,6 +308,7 @@ const [loading, setLoading] = useState(false);
 ```
 
 #### Server State
+
 ```typescript
 // Convex queries for server state
 const cameras = useQuery(api.cameras.getCameras);
@@ -288,6 +316,7 @@ const announcements = useQuery(api.community.getAnnouncements);
 ```
 
 #### Global State
+
 ```typescript
 // Context providers for global state
 const ThemeProvider = ({ children }) => {
@@ -301,6 +330,7 @@ const ThemeProvider = ({ children }) => {
 ### Build Process
 
 #### Development Build
+
 ```bash
 npm run dev
 # Starts Next.js development server with hot reloading
@@ -308,6 +338,7 @@ npm run dev
 ```
 
 #### Production Build
+
 ```bash
 npm run build
 # Creates optimized production build
@@ -316,6 +347,7 @@ npm run build
 ```
 
 #### Build Optimization
+
 - **Code Splitting**: Automatic route-based splitting
 - **Image Optimization**: Next.js Image component
 - **CSS Optimization**: Tailwind purging and minification
@@ -324,17 +356,19 @@ npm run build
 ### Deployment Strategies
 
 #### Web Deployment (Vercel)
+
 ```yaml
 # vercel.json
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs"
+  'buildCommand': 'npm run build',
+  'devCommand': 'npm run dev',
+  'installCommand': 'npm install',
+  'framework': 'nextjs',
 }
 ```
 
 #### Mobile Deployment
+
 ```bash
 # Android
 npm run cap:build:android
@@ -348,12 +382,14 @@ npm run cap:build:ios
 ### Environment Configuration
 
 #### Development
+
 - Hot reloading enabled
 - Source maps generated
 - Debug logging enabled
 - Development API endpoints
 
 #### Production
+
 - Code minification
 - Source maps stripped
 - Production API endpoints
@@ -364,6 +400,7 @@ npm run cap:build:ios
 ### Code Quality
 
 #### Linting and Formatting
+
 ```javascript
 // eslint.config.js
 export default [
@@ -380,6 +417,7 @@ export default [
 ```
 
 #### Type Checking
+
 ```json
 // tsconfig.json
 {
@@ -415,12 +453,14 @@ export default [
 ### Testing Strategy
 
 #### Test Categories
+
 1. **Unit Tests**: Component and utility function testing
 2. **Integration Tests**: Component interaction testing
 3. **E2E Tests**: Complete user workflow testing
 4. **Performance Tests**: Load and responsiveness testing
 
 #### Test Execution
+
 ```bash
 # Run all tests
 npm run test
@@ -436,12 +476,14 @@ npm run test:integration
 ### Performance Optimization
 
 #### Frontend Optimization
+
 - **Lazy Loading**: Route and component lazy loading
 - **Image Optimization**: Next.js Image component with WebP
 - **Bundle Splitting**: Automatic code splitting
 - **Caching**: Service worker caching strategy
 
 #### Backend Optimization
+
 - **Database Indexing**: Optimized Convex indexes
 - **Query Optimization**: Efficient data fetching
 - **Caching**: Redis caching for frequently accessed data
@@ -450,17 +492,20 @@ npm run test:integration
 ### Security Measures
 
 #### Authentication
+
 - **Clerk Integration**: Secure authentication with JWT
 - **Role-based Access**: Admin, user, and guest roles
 - **Session Management**: Secure session handling
 
 #### Data Protection
+
 - **Input Validation**: Server-side input validation
 - **SQL Injection Prevention**: Parameterized queries
 - **XSS Protection**: Content Security Policy
 - **CSRF Protection**: Token-based protection
 
 #### API Security
+
 - **Rate Limiting**: Request rate limiting
 - **API Keys**: Secure API key management
 - **HTTPS Only**: SSL/TLS encryption
@@ -469,18 +514,21 @@ npm run test:integration
 ## Monitoring and Maintenance
 
 ### Logging and Monitoring
+
 - **Error Tracking**: Sentry integration
 - **Performance Monitoring**: Core Web Vitals tracking
 - **User Analytics**: Usage pattern analysis
 - **System Health**: Database and API monitoring
 
 ### Backup and Recovery
+
 - **Database Backups**: Automated daily backups
 - **File Storage**: Redundant file storage
 - **Disaster Recovery**: Recovery time objectives
 - **Data Retention**: Compliance with data retention policies
 
 ### Update Strategy
+
 - **Version Control**: Semantic versioning
 - **Changelog**: Detailed change documentation
 - **Migration Scripts**: Database migration handling
@@ -491,6 +539,7 @@ npm run test:integration
 ### Common Issues
 
 #### Build Failures
+
 ```bash
 # Clear Next.js cache
 rm -rf .next
@@ -504,6 +553,7 @@ npm run validate-config
 ```
 
 #### Database Issues
+
 ```bash
 # Reset Convex database
 npx convex dev --reset
@@ -516,6 +566,7 @@ npx convex logs
 ```
 
 #### Mobile Build Issues
+
 ```bash
 # Clean Capacitor
 npm run cap:sync -- --clean
@@ -530,12 +581,14 @@ npx cap doctor
 ### Debug Tools
 
 #### Development Tools
+
 - **React DevTools**: Component inspection
 - **Next.js DevTools**: Server-side debugging
 - **Convex Dashboard**: Database inspection
 - **Browser DevTools**: Network and performance analysis
 
 #### Logging
+
 ```javascript
 // Client-side logging
 console.log('Debug info:', data);
@@ -550,12 +603,14 @@ console.log('Database operation:', operation);
 ## Contributing
 
 ### Development Guidelines
+
 1. **Branch Strategy**: Feature branches from main
 2. **Code Reviews**: Required for all changes
 3. **Testing**: All changes must include tests
 4. **Documentation**: Update docs for API changes
 
 ### Commit Conventions
+
 ```bash
 # Feature commits
 feat: add camera monitoring feature
@@ -571,6 +626,7 @@ docs: add deployment guide
 ```
 
 ### Pull Request Process
+
 1. Create feature branch
 2. Implement changes with tests
 3. Run full test suite
@@ -581,6 +637,7 @@ docs: add deployment guide
 ## Future Enhancements
 
 ### Planned Features
+
 - **AI-powered Analytics**: Machine learning insights
 - **Advanced Camera Features**: Motion detection, facial recognition
 - **Mobile App Enhancements**: Offline functionality, push notifications
@@ -588,6 +645,7 @@ docs: add deployment guide
 - **Advanced Reporting**: Custom dashboard and reports
 
 ### Scalability Considerations
+
 - **Microservices Architecture**: Service decomposition
 - **Database Sharding**: Horizontal scaling
 - **CDN Integration**: Global content delivery

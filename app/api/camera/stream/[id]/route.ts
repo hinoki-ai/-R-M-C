@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { ConvexHttpClient } from 'convex/browser'
+import { NextRequest, NextResponse } from 'next/server'
+
 import { api } from '@/convex/_generated/api'
 
 export async function GET(

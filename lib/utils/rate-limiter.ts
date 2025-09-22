@@ -7,6 +7,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
+// Extend globalThis to include our custom properties
+declare global {
+  var rateLimitStore: Map<string, { count: number; resetTime: number }> | undefined;
+}
+
 // Rate limit configurations
 export const RATE_LIMITS = {
   // General API endpoints
@@ -136,7 +141,7 @@ export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS
   return function rateLimitMiddleware(request: NextRequest) {
     // For Next.js middleware, we'll use a simple in-memory store
     // In production, consider using Redis or another distributed store
-    const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+    const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
     const key = `${endpointType}:${clientIP}`;
     const now = Date.now();
 
@@ -193,7 +198,13 @@ export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS
 export class ConvexRateLimiter {
   private store = new Map<string, { count: number; resetTime: number }>();
 
-  constructor(private config: typeof RATE_LIMITS.general) {}
+  constructor(private config: {
+    windowMs: number;
+    max: number;
+    message: { error: string; message: string; retryAfter: string };
+    standardHeaders: boolean;
+    legacyHeaders: boolean;
+  }) {}
 
   checkLimit(identifier: string): { allowed: boolean; resetTime?: number; remaining?: number } {
     const key = identifier;

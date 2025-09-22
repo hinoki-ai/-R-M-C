@@ -1,6 +1,6 @@
 'use client'
 
-import { IconEye, IconChevronLeft, IconPlus } from '@tabler/icons-react'
+import { IconChevronLeft, IconEye, IconPlus } from '@tabler/icons-react'
 import { useMutation } from 'convex/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

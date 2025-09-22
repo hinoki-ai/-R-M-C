@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">JuntaDeVecinos</string>
-    <string name="title_activity_main">JuntaDeVecinos</string>
+    <string name="app_name">PintoPellines</string>
+    <string name="title_activity_main">PintoPellines</string>
     <string name="package_name">com.juntadevecinos.app</string>
     <string name="custom_url_scheme">com.juntadevecinos.app</string>
 </resources>

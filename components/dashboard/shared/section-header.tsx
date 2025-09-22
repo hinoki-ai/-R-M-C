@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion'
 
 import { Badge } from '@/components/ui/badge'
-import { SectionHeaderProps } from '@/types/dashboard'
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
+import { SectionHeaderProps } from '@/types/dashboard'
 
 export function SectionHeader({
   title,

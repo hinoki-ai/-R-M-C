@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Coffee, CreditCard, DollarSign, Github, Heart } from 'lucide-react'
+import { Coffee, CreditCard, Github, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -50,9 +50,9 @@ export default function DonatePage() {
       // For now, we'll show a success message
       alert(`Donation of $${amount} processed successfully! Payment ID: ${data.paymentIntentId}`)
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Donation error:', error)
-      alert(`Failed to process donation: ${error.message}`)
+      alert(`Failed to process donation: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 

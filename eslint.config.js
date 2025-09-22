@@ -11,8 +11,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...compat.extends('next/core-web-vitals', 'next/typescript', 'plugin:jsx-a11y/recommended'),
   {
+    plugins: ['jsx-a11y'],
     rules: {
       'import/order': [
         'error',
@@ -45,7 +46,13 @@ const eslintConfig = [
         }
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn'
+      '@typescript-eslint/no-unused-vars': 'warn',
+      // Accessibility rules
+      'jsx-a11y/alt-text': 'error',
+      'jsx-a11y/anchor-has-content': 'error',
+      'jsx-a11y/aria-role': 'error',
+      'jsx-a11y/img-redundant-alt': 'error',
+      'jsx-a11y/no-redundant-roles': 'warn'
     }
   }
 ];

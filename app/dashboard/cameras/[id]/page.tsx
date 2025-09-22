@@ -1,19 +1,20 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { useParams } from 'next/navigation'
+import { IconChevronLeft } from '@tabler/icons-react'
 import { useQuery } from 'convex/react'
+import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
-import { api } from '@/convex/_generated/api'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { IconChevronLeft } from '@tabler/icons-react'
-import Link from 'next/link'
+import { Skeleton } from '@/components/ui/skeleton'
+import { api } from '@/convex/_generated/api'
+
 
 const CameraViewer = dynamic(() => import('@/components/camera/camera-viewer').then(mod => ({ default: mod.CameraViewer })), {
   ssr: false,
-  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">Loading camera...</div>
+  loading: () => <div className='h-64 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center'>Loading camera...</div>
 })
 
 export default function CameraViewPage() {

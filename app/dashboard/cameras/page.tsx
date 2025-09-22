@@ -5,21 +5,27 @@ export const dynamic = 'force-dynamic'
 
 import { useUser } from '@clerk/nextjs'
 import {
-  IconEye,
   IconCircleCheckFilled,
+  IconEye,
   IconHelp,
   IconPlus,
+  IconRefresh,
   IconSearch,
-  IconSettings
+  IconSettings,
+  IconWifi,
+  IconWifiOff
 } from '@tabler/icons-react'
-import { useQuery } from 'convex/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import * as React from 'react'
 
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { DashboardErrorBoundary } from '@/components/dashboard/dashboard-error-boundary'
+import { useConvexQueryWithError } from '@/hooks/use-convex-error-handler'
 import { api } from '@/convex/_generated/api'
 
 
@@ -40,17 +46,107 @@ interface Camera {
   updatedAt: number
 }
 
-export default function CamerasPage() {
+// Error component for cameras page
+function CamerasError({ error, onRetry, canRetry, isOnline }: {
+  error: string
+  onRetry: () => void
+  canRetry: boolean
+  isOnline: boolean
+}) {
+  return (
+    <div className='space-y-8'>
+      <div className='flex items-center justify-between mb-8'>
+        <div>
+          <h1 className='text-3xl font-bold flex items-center gap-3'>
+            <IconEye className='h-8 w-8' />
+            Security Cameras
+          </h1>
+          <p className='text-gray-600 dark:text-gray-400 mt-2'>
+            Manage and monitor your security camera network
+          </p>
+        </div>
+      </div>
+
+      <div className='text-center py-12'>
+        <div className='text-4xl mb-4'>
+          {!isOnline ? '📶' : '⚠️'}
+        </div>
+        <h3 className='text-xl font-semibold mb-2'>
+          {!isOnline ? 'Sin Conexión' : 'Error al Cargar Cámaras'}
+        </h3>
+        <p className='text-gray-600 dark:text-gray-400 mb-6'>
+          {!isOnline
+            ? 'No hay conexión a internet. Las cámaras se cargarán cuando recuperes la conexión.'
+            : 'No se pudieron cargar las cámaras de seguridad'
+          }
+        </p>
+
+        <Alert className='mb-6'>
+          {!isOnline ? (
+            <IconWifiOff className='h-4 w-4' />
+          ) : (
+            <IconHelp className='h-4 w-4' />
+          )}
+          <AlertDescription>
+            {error}
+          </AlertDescription>
+        </Alert>
+
+        {canRetry && isOnline && (
+          <Button onClick={onRetry} className='flex items-center gap-2'>
+            <IconRefresh className='h-4 w-4' />
+            Intentar de Nuevo
+          </Button>
+        )}
+
+        {!isOnline && (
+          <Alert>
+            <IconWifi className='h-4 w-4' />
+            <AlertDescription>
+              Las cámaras se cargarán automáticamente cuando recuperes la conexión a internet.
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Main content component
+function CamerasPageContent() {
   const { user } = useUser()
   const [cameras, setCameras] = useState<Camera[]>([])
-  const [loading, setLoading] = useState(true)
 
-  const camerasData = useQuery(api.cameras.getCameras)
+  const { data: camerasData, error, isLoading, canRetry, retry, isError } = useConvexQueryWithError(
+    api.cameras.getCameras,
+    {
+      maxRetries: 3,
+      retryDelay: 1000,
+      onError: (error) => {
+        console.error('Cameras page error:', error)
+      }
+    }
+  )
+
+  // Network status for offline handling
+  const [isOnline, setIsOnline] = React.useState(navigator.onLine)
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   useEffect(() => {
     if (camerasData) {
       setCameras(camerasData)
-      setLoading(false)
     }
   }, [camerasData])
 
@@ -91,6 +187,18 @@ export default function CamerasPage() {
     )
   }
 
+  // Handle error state
+  if (isError && error) {
+    return (
+      <CamerasError
+        error={error.message}
+        onRetry={retry}
+        canRetry={canRetry}
+        isOnline={isOnline}
+      />
+    )
+  }
+
   return (
     <div className='container mx-auto px-4 py-8'>
       <div className='flex items-center justify-between mb-8'>
@@ -118,7 +226,7 @@ export default function CamerasPage() {
             <div className='flex items-center justify-between'>
               <div>
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Total Cameras</p>
-                <p className='text-2xl font-bold'>{loading ? '...' : cameras.length}</p>
+                <p className='text-2xl font-bold'>{isLoading ? '...' : cameras.length}</p>
               </div>
               <IconEye className='h-8 w-8 text-blue-500' />
             </div>
@@ -131,7 +239,7 @@ export default function CamerasPage() {
               <div>
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Online</p>
                 <p className='text-2xl font-bold text-green-600'>
-                  {loading ? '...' : cameras.filter(c => c.isOnline && c.isActive).length}
+                  {isLoading ? '...' : cameras.filter(c => c.isOnline && c.isActive).length}
                 </p>
               </div>
               <IconCircleCheckFilled className='h-8 w-8 text-green-500' />
@@ -145,7 +253,7 @@ export default function CamerasPage() {
               <div>
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Offline</p>
                 <p className='text-2xl font-bold text-red-600'>
-                  {loading ? '...' : cameras.filter(c => !c.isOnline && c.isActive).length}
+                  {isLoading ? '...' : cameras.filter(c => !c.isOnline && c.isActive).length}
                 </p>
               </div>
               <IconHelp className='h-8 w-8 text-red-500' />
@@ -159,7 +267,7 @@ export default function CamerasPage() {
               <div>
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Inactive</p>
                 <p className='text-2xl font-bold text-gray-600'>
-                  {loading ? '...' : cameras.filter(c => !c.isActive).length}
+                  {isLoading ? '...' : cameras.filter(c => !c.isActive).length}
                 </p>
               </div>
               <IconSettings className='h-8 w-8 text-gray-500' />
@@ -169,7 +277,7 @@ export default function CamerasPage() {
       </div>
 
       {/* Cameras Grid */}
-      {loading ? (
+      {isLoading ? (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {[...Array(6)].map((_, i) => (
             <Card key={i}>
@@ -276,4 +384,9 @@ export default function CamerasPage() {
       )}
     </div>
   )
+}
+
+// Main component
+export default function CamerasPage() {
+  return <CamerasPageContent />
 }

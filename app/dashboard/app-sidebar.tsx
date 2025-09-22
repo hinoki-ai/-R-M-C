@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   IconActivity,
@@ -32,6 +32,7 @@ import {
   IconMail,
   IconMapPin,
   IconMessageCircle,
+  IconRadio,
   IconReceipt,
   IconReport,
   IconSearch,
@@ -40,16 +41,18 @@ import {
   IconSparkles,
   IconStar,
   IconTool,
-  IconTrophy,
   IconTrendingUp,
+  IconTrophy,
   IconUser,
   IconUsers,
   IconUsersGroup,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { NavMain } from "@/app/dashboard/nav-main";
-import { NavSecondary } from "@/app/dashboard/nav-secondary";
-import { NavUser } from "@/app/dashboard/nav-user";
+import { NavMain } from '@/app/dashboard/nav-main';
+import { NavSecondary } from '@/app/dashboard/nav-secondary';
+import { NavUser } from '@/app/dashboard/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -59,9 +62,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+} from '@/components/ui/sidebar';
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -73,115 +74,218 @@ export function AppSidebar(props: SidebarProps) {
   const data = {
     navMain: [
       {
-        title: "Dashboard",
-        url: "/dashboard",
+        title: 'Dashboard Overview',
+        url: '/dashboard',
         icon: IconDashboard,
         items: [
           {
-            title: "Overview",
-            url: "/dashboard",
+            title: 'Overview',
+            url: '/dashboard',
             icon: IconHome,
           },
           {
-            title: "Announcements",
-            url: "/dashboard/announcements",
-            icon: IconFileText,
+            title: 'Analytics',
+            url: '/dashboard/revenue/analytics',
+            icon: IconChartBar,
           },
           {
-            title: "Maintenance",
-            url: "/dashboard/maintenance",
-            icon: IconTool,
-          },
-          {
-            title: "Events",
-            url: "/dashboard/events",
-            icon: IconCalendar,
-          },
-          {
-            title: "Emergencies",
-            url: "/dashboard/emergencies",
-            icon: IconAlertTriangle,
-          },
-          {
-            title: "Settings",
-            url: "/dashboard/settings",
-            icon: IconSettings,
+            title: 'Charts',
+            url: '/dashboard/revenue',
+            icon: IconChartLine,
           },
         ],
       },
       {
-        title: "Admin",
-        url: "#",
+        title: 'Security & Safety',
+        url: '#',
+        icon: IconShield,
+        items: [
+          {
+            title: 'Cameras',
+            url: '/dashboard/cameras',
+            icon: IconCamera,
+          },
+          {
+            title: 'Camera Events',
+            url: '/dashboard/cameras/events',
+            icon: IconEye,
+          },
+          {
+            title: 'LS Vision Monitor',
+            url: '/dashboard/cameras/lsvision',
+            icon: IconActivity,
+          },
+          {
+            title: 'Emergencies',
+            url: '/dashboard/emergencies',
+            icon: IconAlertTriangle,
+          },
+          {
+            title: 'Maintenance',
+            url: '/dashboard/maintenance',
+            icon: IconTool,
+          },
+        ],
+      },
+      {
+        title: 'Community Hub',
+        url: '#',
+        icon: IconUsers,
+        items: [
+          {
+            title: 'Announcements',
+            url: '/dashboard/announcements',
+            icon: IconFileText,
+          },
+          {
+            title: 'Community',
+            url: '/dashboard/community',
+            icon: IconUsersGroup,
+          },
+          {
+            title: 'Events',
+            url: '/dashboard/events',
+            icon: IconCalendarEvent,
+          },
+          {
+            title: 'Calendar',
+            url: '/dashboard/calendar',
+            icon: IconCalendar,
+          },
+        ],
+      },
+      {
+        title: 'Communication',
+        url: '#',
+        icon: IconMessageCircle,
+        items: [
+          {
+            title: 'Radio',
+            url: '/dashboard/radio',
+            icon: IconRadio,
+          },
+          {
+            title: 'Notifications',
+            url: '/dashboard/notifications',
+            icon: IconMail,
+          },
+        ],
+      },
+      {
+        title: 'Financial Management',
+        url: '#',
+        icon: IconCreditCard,
+        items: [
+          {
+            title: 'Payments',
+            url: '/dashboard/payments',
+            icon: IconReceipt,
+          },
+          {
+            title: 'Revenue',
+            url: '/dashboard/revenue',
+            icon: IconTrendingUp,
+          },
+          {
+            title: 'Payment Methods',
+            url: '/dashboard/revenue/payment-methods',
+            icon: IconCreditCard,
+          },
+          {
+            title: 'Contributions',
+            url: '/dashboard/payment-gated',
+            icon: IconSparkles,
+          },
+          {
+            title: 'Ranking',
+            url: '/dashboard/ranking',
+            icon: IconTrophy,
+          },
+        ],
+      },
+      {
+        title: 'Resources & Information',
+        url: '#',
+        icon: IconFileText,
+        items: [
+          {
+            title: 'Weather',
+            url: '/dashboard/weather',
+            icon: IconCloud,
+          },
+          {
+            title: 'Documents',
+            url: '/dashboard/documents',
+            icon: IconFileTypography,
+          },
+          {
+            title: 'Search',
+            url: '/dashboard/search',
+            icon: IconSearch,
+          },
+        ],
+      },
+      {
+        title: 'Administration',
+        url: '#',
         icon: IconShield,
         isActive: pathname?.startsWith('/dashboard/admin'),
         items: [
           {
-            title: "Comunicados",
-            url: "/dashboard/admin/announcements",
-            icon: IconFileText,
-          },
-        ],
-      },
-      {
-        title: "Quick Access",
-        url: "#",
-        icon: IconBolt,
-        items: [
-          {
-            title: "Weather",
-            url: "/dashboard/weather",
-            icon: IconCloud,
+            title: 'Admin Dashboard',
+            url: '/dashboard/admin',
+            icon: IconShield,
           },
           {
-            title: "Cameras",
-            url: "/dashboard/cameras",
-            icon: IconCamera,
-          },
-          {
-            title: "Announcements",
-            url: "/dashboard/announcements",
+            title: 'Comunicados',
+            url: '/dashboard/admin/announcements',
             icon: IconFileText,
           },
           {
-            title: "Maintenance",
-            url: "/dashboard/maintenance",
-            icon: IconTool,
+            title: 'Customers',
+            url: '/dashboard/customers',
+            icon: IconUser,
+          },
+          {
+            title: 'Settings',
+            url: '/dashboard/settings',
+            icon: IconSettings,
           },
         ],
-      },
-      {
-        title: "Ranking",
-        url: "/dashboard/ranking",
-        icon: IconTrophy,
       },
     ],
     navSecondary: [
       {
-        title: "Help & Support",
-        url: "/dashboard/help",
+        title: 'Help & Support',
+        url: '/dashboard/help',
         icon: IconHelp,
       },
       {
-        title: "Feedback",
-        url: "/dashboard/help",
+        title: 'Feedback',
+        url: '/dashboard/help',
         icon: IconMessageCircle,
+      },
+      {
+        title: 'Add Camera',
+        url: '/dashboard/cameras/add',
+        icon: IconCamera,
       },
     ],
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible='icon'>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <IconDashboard className="size-4" />
+            <SidebarMenuButton size='lg' asChild>
+              <Link href='/dashboard'>
+                <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+                  <IconDashboard className='size-4' />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Pellines</span>
-                  <span className="truncate text-xs">Dashboard</span>
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-semibold'>Pellines</span>
+                  <span className='truncate text-xs'>Dashboard</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -193,7 +297,7 @@ export function AppSidebar(props: SidebarProps) {
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={data.navSecondary} className='mt-auto' />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

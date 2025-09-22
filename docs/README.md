@@ -1,9 +1,9 @@
-# JuntaDeVecinos Documentation
+# PintoPellines Documentation
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](../LICENSE)
 
-> Complete documentation for JuntaDeVecinos - Pinto Los Pellines community management platform
+> Complete documentation for PintoPellines - Pinto Los Pellines community management platform
 
 ## 🌟 Quick Start
 

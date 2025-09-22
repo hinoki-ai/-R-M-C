@@ -6,8 +6,8 @@ import { LoadingState } from '@/components/dashboard/shared/loading-state'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { QuickAction } from '@/types/dashboard'
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
+import { QuickAction } from '@/types/dashboard'
 
 interface QuickActionsProps {
   actions: QuickAction[]

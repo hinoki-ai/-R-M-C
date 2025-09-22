@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react'
 import * as React from 'react'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'

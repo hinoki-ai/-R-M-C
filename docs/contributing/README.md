@@ -1,11 +1,11 @@
-# Contributing to JuntaDeVecinos
+# Contributing to PintoPellines
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-> Guidelines for contributing to JuntaDeVecinos - Pinto Los Pellines community platform
+> Guidelines for contributing to PintoPellines - Pinto Los Pellines community platform
 
-Thanks for helping build and maintain JuntaDeVecinos! This guide outlines our development process and contribution standards.
+Thanks for helping build and maintain PintoPellines! This guide outlines our development process and contribution standards.
 
 ## 🚀 Quick Start
 

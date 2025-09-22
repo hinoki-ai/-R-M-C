@@ -249,9 +249,9 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   const error = null // Could be enhanced with proper error handling
 
   return {
-    weatherData: weatherData || null,
-    forecast: forecast || null,
-    alerts: alerts || null,
+    weatherData: weatherData ? { ...weatherData, id: weatherData._id } : null,
+    forecast: forecast ? forecast.map(f => ({ ...f, id: f._id })) : null,
+    alerts: alerts ? alerts.map(a => ({ ...a, id: a._id })) : null,
     loading,
     error: null,
     stats: calculatedStats,

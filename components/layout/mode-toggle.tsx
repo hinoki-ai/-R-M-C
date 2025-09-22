@@ -29,15 +29,22 @@ export function ModeToggle() {
     setMounted(true)
   }, [])
 
-  // Handle keyboard shortcut events
+  // Handle keyboard shortcuts
   React.useEffect(() => {
-    const handleThemeChange = (event: CustomEvent) => {
-      setTheme(event.detail.theme)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Ctrl/Cmd + Shift + T for theme toggle
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'T') {
+        event.preventDefault()
+
+        // Cycle through themes: light -> dark -> system -> light
+        const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
+        setTheme(nextTheme)
+      }
     }
 
-    window.addEventListener('themeChange', handleThemeChange as EventListener)
-    return () => window.removeEventListener('themeChange', handleThemeChange as EventListener)
-  }, [setTheme])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [theme, setTheme])
 
   // Theme export functionality
   const exportTheme = () => {

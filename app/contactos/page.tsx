@@ -1,13 +1,13 @@
 'use client'
 
+import { useQuery } from 'convex/react'
 import { motion } from 'framer-motion'
 import { Clock, Mail, MapPin, Phone, User } from 'lucide-react'
-import { useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { api } from '@/convex/_generated/api'
 
 const getContactTypeColor = (type: string) => {
   switch (type) {

@@ -89,40 +89,8 @@ export function ThemeProvider({
     return () => mediaQuery.removeEventListener('change', updateHighContrast)
   }, [enableHighContrast])
 
-  // Keyboard shortcuts
-  React.useEffect(() => {
-    if (!enableKeyboardShortcuts) return
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Ctrl/Cmd + Shift + T for theme toggle
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'T') {
-        event.preventDefault()
-
-        // Get current theme and cycle through options
-        const currentTheme = localStorage.getItem('theme') || 'light'
-        const nextTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'system' : 'light'
-
-        // Update analytics
-        if (enableAnalytics) {
-          setThemeAnalytics(prev => ({
-            ...prev,
-            switches: prev.switches + 1,
-            preference: nextTheme,
-            lastChanged: new Date()
-          }))
-        }
-
-        // Trigger theme change (this will be handled by next-themes)
-        const themeChangeEvent = new CustomEvent('themeChange', {
-          detail: { theme: nextTheme }
-        })
-        window.dispatchEvent(themeChangeEvent)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [enableKeyboardShortcuts, enableAnalytics])
+  // Keyboard shortcuts - will be handled by the component that uses useTheme
+  // This logic is moved to the ModeToggle component
 
   // Apply theme transition duration
   React.useEffect(() => {
@@ -142,29 +110,36 @@ export function ThemeProvider({
     }
   }, [highContrast])
 
-  // Mobile theme integration
+  // Initialize UnifiedTheme on mount
   React.useEffect(() => {
-    const currentTheme = localStorage.getItem('theme') || 'light'
-    UnifiedTheme.setTheme(currentTheme as 'light' | 'dark' | 'system')
+    // Set initial theme from next-themes default
+    UnifiedTheme.setTheme('light')
   }, [])
 
-  React.useEffect(() => {
-    const handleUnifiedThemeSync = (event: Event) => {
-      const detail = (event as CustomEvent<{ theme?: string }>).detail
-      const nextTheme = detail?.theme || localStorage.getItem('theme') || 'light'
-      UnifiedTheme.setTheme(nextTheme as 'light' | 'dark' | 'system')
+  // Handle theme changes and sync with UnifiedTheme
+  const handleThemeChange = React.useCallback((theme: string | undefined) => {
+    if (theme) {
+      UnifiedTheme.setTheme(theme as 'light' | 'dark' | 'system')
+
+      // Update analytics
+      if (enableAnalytics) {
+        setThemeAnalytics(prev => ({
+          ...prev,
+          switches: prev.switches + 1,
+          preference: theme as 'light' | 'dark' | 'system',
+          lastChanged: new Date()
+        }))
+      }
     }
-
-    window.addEventListener('themeChange', handleUnifiedThemeSync as EventListener)
-    return () => window.removeEventListener('themeChange', handleUnifiedThemeSync as EventListener)
-  }, [])
+  }, [enableAnalytics])
 
   return (
     <NextThemesProvider
-      attribute="class"
-      defaultTheme="light"
+      attribute='class'
+      defaultTheme='light'
       enableSystem
       disableTransitionOnChange={reducedMotion}
+      onThemeChange={handleThemeChange}
       {...props}
     >
       {/* Theme Context for advanced features */}

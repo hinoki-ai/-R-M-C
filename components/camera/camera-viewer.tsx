@@ -3,12 +3,10 @@
 import {
   IconAlertCircle,
   IconCamera,
-  IconCircleCheckFilled,
   IconLoader,
   IconMaximize as IconMaximize,
   IconMinus as IconPlayerPause,
   IconPlus as IconPlayerPlay,
-  IconSettings,
   IconVolume2,
   IconVolumeOff,
   IconWifi,
@@ -58,7 +56,6 @@ export function CameraViewer({
   const [isMuted, setIsMuted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [lastFrameTime, setLastFrameTime] = useState<number>(Date.now())
 
   // Handle camera feed connection
   useEffect(() => {
@@ -127,16 +124,6 @@ export function CameraViewer({
     }
   }, [camera, isPlaying, onEvent])
 
-  // Simulate frame updates
-  useEffect(() => {
-    if (!isPlaying || !camera.isOnline) return
-
-    const frameInterval = setInterval(() => {
-      setLastFrameTime(Date.now())
-    }, 1000) // Update every second
-
-    return () => clearInterval(frameInterval)
-  }, [isPlaying, camera.isOnline])
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying)

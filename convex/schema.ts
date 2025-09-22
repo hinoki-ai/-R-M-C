@@ -455,4 +455,112 @@ export default defineSchema({
     .index('byActive', ['isActive'])
     .index('byCreatedBy', ['createdBy']),
 
+    // Emergency Protocols Tables
+    emergencyProtocols: defineTable({
+      title: v.string(),
+      description: v.string(),
+      category: v.union(v.literal('fire'), v.literal('medical'), v.literal('police'), v.literal('natural_disaster'), v.literal('security'), v.literal('evacuation'), v.literal('general')),
+      priority: v.union(v.literal('critical'), v.literal('high'), v.literal('medium'), v.literal('low')),
+      pdfUrl: v.string(), // Convex file storage URL
+      thumbnailUrl: v.optional(v.string()),
+      emergencyContacts: v.array(v.object({
+        name: v.string(),
+        phone: v.string(),
+        role: v.string(),
+      })),
+      steps: v.array(v.string()), // Step-by-step instructions
+      isActive: v.boolean(),
+      offlineAvailable: v.boolean(),
+      downloadCount: v.number(),
+      lastDownloaded: v.optional(v.number()),
+      createdBy: v.id('users'),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+    .index('byCategory', ['category'])
+    .index('byPriority', ['priority'])
+    .index('byActive', ['isActive'])
+    .index('byCreatedBy', ['createdBy']),
+
+    // Radio Streaming Tables
+    radioStations: defineTable({
+      name: v.string(),
+      description: v.optional(v.string()),
+      streamUrl: v.string(),
+      logoUrl: v.optional(v.string()),
+      frequency: v.optional(v.string()), // e.g., "96.7 FM"
+      category: v.union(v.literal('news'), v.literal('music'), v.literal('sports'), v.literal('cultural'), v.literal('emergency'), v.literal('community')),
+      region: v.string(), // e.g., "Ñuble", "Pinto", "Recinto"
+      isActive: v.boolean(),
+      isOnline: v.boolean(),
+      lastChecked: v.optional(v.number()),
+      quality: v.union(v.literal('low'), v.literal('medium'), v.literal('high')),
+      backupStreamUrl: v.optional(v.string()),
+      createdBy: v.id('users'),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+    .index('byCategory', ['category'])
+    .index('byRegion', ['region'])
+    .index('byActive', ['isActive'])
+    .index('byOnline', ['isOnline'])
+    .index('byCreatedBy', ['createdBy']),
+
+    radioPlaylists: defineTable({
+      userId: v.id('users'),
+      stationId: v.id('radioStations'),
+      isFavorite: v.boolean(),
+      lastPlayed: v.optional(v.number()),
+      playCount: v.number(),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+    .index('byUser', ['userId'])
+    .index('byStation', ['stationId'])
+    .index('byFavorite', ['isFavorite']),
+
+    // RSS News Integration Tables
+    rssFeeds: defineTable({
+      name: v.string(),
+      url: v.string(),
+      description: v.optional(v.string()),
+      category: v.union(v.literal('news'), v.literal('sports'), v.literal('local'), v.literal('politics'), v.literal('emergency')),
+      region: v.string(), // e.g., "Ñuble", "Biobío", "Nacional"
+      isActive: v.boolean(),
+      lastFetched: v.optional(v.number()),
+      fetchInterval: v.number(), // minutes between fetches
+      logoUrl: v.optional(v.string()),
+      createdBy: v.id('users'),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+    .index('byCategory', ['category'])
+    .index('byRegion', ['region'])
+    .index('byActive', ['isActive'])
+    .index('byLastFetched', ['lastFetched']),
+
+    rssArticles: defineTable({
+      feedId: v.id('rssFeeds'),
+      title: v.string(),
+      description: v.optional(v.string()),
+      content: v.optional(v.string()),
+      url: v.string(),
+      author: v.optional(v.string()),
+      publishedAt: v.number(),
+      imageUrl: v.optional(v.string()),
+      category: v.string(),
+      region: v.string(),
+      isRead: v.boolean(),
+      isArchived: v.boolean(),
+      tags: v.array(v.string()),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+    .index('byFeed', ['feedId'])
+    .index('byCategory', ['category'])
+    .index('byRegion', ['region'])
+    .index('byPublishedAt', ['publishedAt'])
+    .index('byRead', ['isRead'])
+    .index('byArchived', ['isArchived']),
+
   });

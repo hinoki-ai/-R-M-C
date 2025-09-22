@@ -1,8 +1,9 @@
 'use client';
-import { cn } from '@/lib/utils';
-import { useMotionValue, animate, motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { animate, motion, useMotionValue } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import useMeasure from 'react-use-measure';
+
+import { cn } from '@/lib/utils';
 
 export type InfiniteSliderProps = {
   children: React.ReactNode;

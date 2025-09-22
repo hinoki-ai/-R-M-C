@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+
 import { WeatherService } from '@/lib/weather-service'
 
 export async function GET(request: NextRequest) {

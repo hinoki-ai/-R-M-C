@@ -5,9 +5,9 @@
 [![Android](https://img.shields.io/badge/android-google--play-green.svg)](#mobile-deployment)
 [![iOS](https://img.shields.io/badge/iOS-app--store-blue.svg)](#mobile-deployment)
 
-> Complete deployment guide for JuntaDeVecinos - web and mobile platforms
+> Complete deployment guide for PintoPellines - web and mobile platforms
 
-This guide covers the deployment process for both web and mobile platforms of the JuntaDeVecinos application.
+This guide covers the deployment process for both web and mobile platforms of the PintoPellines application.
 
 ## 📋 Table of Contents
 

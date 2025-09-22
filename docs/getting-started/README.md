@@ -1,6 +1,6 @@
 # Getting Started
 
-Welcome to JuntaDeVecinos! This guide will help you get the project up and running on your local development environment.
+Welcome to PintoPellines! This guide will help you get the project up and running on your local development environment.
 
 ## Prerequisites
 
