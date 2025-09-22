@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
   // Enable experimental features for better mobile support
   experimental: {
     optimizePackageImports: ['@capacitor/core', '@capacitor/android', '@capacitor/ios'],
+    serverComponentsExternalPackages: process.env.MOBILE_BUILD === 'true' ? [] : undefined,
   },
   serverExternalPackages: [],
 
