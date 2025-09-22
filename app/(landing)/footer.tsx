@@ -90,7 +90,6 @@ export default function FooterSection() {
             <div className='relative inline-flex h-2 w-2 overflow-hidden rounded-full bg-input'>
               <div className='absolute inset-0 rounded-full bg-green-500' />
             </div>
-            <span className='text-muted-foreground'>All systems operational</span>
           </div>
         </div>
 
@@ -153,7 +152,7 @@ function MagneticIcon({ href, ariaLabel, children }: MagneticIconProps) {
 
 function IconSet({ ariaHidden = false }: { ariaHidden?: boolean }) {
   return (
-    <div className='flex items-center gap-8' aria-hidden={ariaHidden ? 'true' : undefined}>
+    <div className='flex items-center gap-8' {...(ariaHidden && { 'aria-hidden': 'true' })}>
       <Link href='/' aria-label='Home' className='block'>
         <Logo className='size-6' />
       </Link>

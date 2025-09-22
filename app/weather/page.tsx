@@ -188,7 +188,7 @@ export default function WeatherPage() {
                     {/* Main Weather */}
                     <div className='text-center lg:col-span-1'>
                       <div className='text-4xl sm:text-6xl mb-2'>
-                        {getWeatherIcon(currentWeather.icon, 12)}
+                        {getWeatherIcon(currentWeather.icon || '', 12)}
                       </div>
                       <div className='text-3xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-1'>
                         {currentWeather.temperature}°C
@@ -423,7 +423,7 @@ export default function WeatherPage() {
                               </p>
                             </div>
                             <div className='text-3xl'>
-                              {getWeatherIcon(day.icon, 8)}
+                              {getWeatherIcon(day.icon || '', 8)}
                             </div>
                           </div>
 

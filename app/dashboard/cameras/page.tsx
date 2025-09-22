@@ -364,19 +364,12 @@ function CamerasPageContent() {
                   )}
                 </div>
 
-                <div className='flex gap-2'>
-                  <Button variant='outline' size='sm' asChild className='flex-1'>
-                    <Link href={`/dashboard/cameras/${camera._id}`}>
-                      <IconSearch className='h-4 w-4 mr-2' />
-                      View
-                    </Link>
-                  </Button>
-                  <Button variant='outline' size='sm' asChild>
-                    <Link href={`/dashboard/cameras/${camera._id}/settings`}>
-                      <IconSettings className='h-4 w-4' />
-                    </Link>
-                  </Button>
-                </div>
+                <Button variant='outline' size='sm' asChild className='w-full'>
+                  <Link href={`/dashboard/cameras/${camera._id}`}>
+                    <IconSearch className='h-4 w-4 mr-2' />
+                    View
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ))}

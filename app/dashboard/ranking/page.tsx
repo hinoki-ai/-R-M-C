@@ -169,7 +169,7 @@ const RankingPageContent = memo(function RankingPageContent() {
   )
 
   // Type assertion for rankingsQuery
-  const typedRankingsQuery = rankingsQuery as MemberRanking[] | null
+  const typedRankingsQuery = rankingsQuery as MemberRanking[] | undefined
 
   // Memoized calculations
   const stats = useMemo(() => {

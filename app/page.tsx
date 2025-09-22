@@ -167,7 +167,7 @@ export default function Home() {
             preset='scale'
             className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'
           >
-            <Link href='/dashboard/emergencias' >
+            <Link href='/dashboard/emergencies' >
               <Card className='group relative overflow-hidden bg-gradient-to-br from-red-900/20 to-red-800/10 border-red-500/30 hover:border-red-400/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25 dark:from-red-900/30 dark:to-red-800/20' >
                 <div className='absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
                 <CardHeader className='pb-3 relative z-10' >
@@ -753,7 +753,7 @@ export default function Home() {
       </section>
 
       {/* SUPREME EMERGENCY SECTION */}
-      <section className='relative py-20 bg-black/30' >
+      <section className='relative py-20' >
         <div className='container mx-auto px-4 text-center relative z-10' >
           <TextEffect
             preset='fade-in-blur'
@@ -774,13 +774,13 @@ export default function Home() {
             los 7 días de la semana con nuestro sistema de emergencias inteligente.
           </TextEffect>
           
-          <AnimatedGroup preset='bounce' >
+          <AnimatedGroup preset='bounce' className='flex justify-center' >
             <PulsatingButton
               pulseColor='#ef4444'
               duration='1.5s'
               className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-foreground font-bold px-12 py-6 rounded-3xl shadow-2xl hover:shadow-red-500/50 transition-all duration-300 hover:-translate-y-2 text-2xl'
             >
-              <Link href='/dashboard/emergencias' className='flex items-center gap-4' >
+              <Link href='/dashboard/emergencies' className='flex items-center gap-4' >
                 <AlertTriangle className='w-8 h-8' />
                 <span>Botón de Emergencia</span>
                 <Zap className='w-6 h-6' />

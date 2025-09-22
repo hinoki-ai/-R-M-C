@@ -42,7 +42,7 @@ import { NavMain } from '@/app/dashboard/nav-main'
 import { NavSecondary } from '@/app/dashboard/nav-secondary'
 import { NavUser } from '@/app/dashboard/nav-user'
 import { NavDocuments } from '@/components/dashboard/shared/nav-documents'
-import { ChatMaxingIconColoured } from '@/components/layout/logo'
+import { ChatMaxingIconColoured } from '@/components/logo'
 import { Badge } from '@/components/ui/badge'
 import {
   Sidebar,

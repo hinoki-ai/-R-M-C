@@ -28,19 +28,6 @@ export function DashboardLayout({
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-green-50 dark:from-gray-900 dark:via-blue-950 dark:to-green-950'>
-      {/* Chilean Cultural Background Pattern */}
-      <div className='absolute inset-0 opacity-5 pointer-events-none overflow-hidden'>
-        <div className='absolute top-20 left-10 text-6xl animate-pulse'>🏔️</div>
-        <div className='absolute top-32 left-16 text-4xl animate-pulse delay-1000'>🚜</div>
-        <div className='absolute top-60 right-16 text-5xl animate-pulse delay-2000'>🇨🇱</div>
-        <div className='absolute top-80 left-8 text-3xl animate-pulse delay-3000'>🌻</div>
-        <div className='absolute bottom-32 left-20 text-4xl animate-pulse delay-500'>🏞️</div>
-        <div className='absolute bottom-40 right-12 text-3xl animate-pulse delay-1500'>🌽</div>
-        <div className='absolute bottom-60 left-32 text-3xl animate-pulse delay-2500'>🐑</div>
-        <div className='absolute bottom-20 right-24 text-4xl animate-pulse delay-3500'>🏘️</div>
-        <div className='absolute top-40 right-8 text-3xl animate-pulse delay-4500'>🌾</div>
-        <div className='absolute bottom-80 right-40 text-2xl animate-pulse delay-5500'>🇨🇱</div>
-      </div>
 
       <div className='relative z-10'>
         {/* Header Section */}

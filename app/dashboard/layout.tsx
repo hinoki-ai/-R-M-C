@@ -2,10 +2,6 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-
 import { AppSidebar } from '@/app/dashboard/app-sidebar';
 import { LoadingBar } from '@/app/dashboard/loading-bar';
 import { SiteHeader } from '@/app/dashboard/site-header';
@@ -38,28 +34,8 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoaded, isSignedIn } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.push('/sign-in');
-    }
-  }, [isLoaded, isSignedIn, router]);
-
-  // Show loading state while auth is loading
-  if (!isLoaded) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900'></div>
-      </div>
-    );
-  }
-
-  // Don't render anything if not signed in (will redirect)
-  if (!isSignedIn) {
-    return null;
-  }
+  // Since middleware protects /dashboard routes, we can assume user is authenticated
+  // No need for additional client-side auth checks that could cause conflicts
 
   return (
     <SidebarProvider

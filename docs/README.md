@@ -35,6 +35,7 @@
 | [Development Standards](development/README.md) | Complete coding conventions and practices |
 | [TypeScript Configuration](development/README.md#typescript-configuration) | TypeScript setup and best practices |
 | [Testing Strategy](development/README.md#testing-standards) | Testing patterns and quality assurance |
+| [Manual Testing Guide](manual-testing-guide.md) | Comprehensive manual testing procedures |
 | [Theme System](development/theme-system.md) | Design system and theming |
 
 ### 🚀 Deployment

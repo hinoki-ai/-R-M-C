@@ -129,19 +129,6 @@ const getCategoryColor = (category: string) => {
 export default function FotosPage() {
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50 dark:from-pink-950 dark:via-rose-950 dark:to-orange-950'>
-      {/* Chilean Cultural Background Pattern */}
-      <div className='absolute inset-0 opacity-5 pointer-events-none'>
-        <div className='absolute top-20 left-12 text-6xl'>🏔️</div>
-        <div className='absolute top-32 left-16 text-4xl'>🌽</div>
-        <div className='absolute top-60 right-16 text-5xl'>🇨🇱</div>
-        <div className='absolute top-80 left-8 text-3xl'>🌻</div>
-        <div className='absolute bottom-32 left-20 text-4xl'>🏞️</div>
-        <div className='absolute bottom-40 right-12 text-3xl'>🌽</div>
-        <div className='absolute bottom-60 left-32 text-3xl'>🐑</div>
-        <div className='absolute bottom-20 right-24 text-4xl'>🏘️</div>
-        <div className='absolute top-40 right-8 text-3xl'>🌾</div>
-        <div className='absolute bottom-80 right-40 text-2xl'>🇨🇱</div>
-      </div>
 
       <div className='relative container mx-auto px-6 py-12'>
         {/* Header */}

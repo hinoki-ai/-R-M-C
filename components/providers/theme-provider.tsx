@@ -2,10 +2,11 @@
 
 /**
  * Theme System Overview:
- * - Light: Pastel gradient theme with soft colors (purple→blue→cyan→green)
- * - Dark: Midnight starry moonlight theme with deep blues and subtle star effects
+ * - Light: Clean light theme (no background blur)
+ * - Dark: Clean dark theme (no background blur)
  * - System: Follows OS preference (light/dark)
- * - Custom: Vineyard, Ocean, Mountain, Patagonia themes (Chilean countryside inspired)
+ * - UI Components: Use .pastel-* classes for pastel gradients, .starry-* classes for starry effects
+ * - Custom: Vineyard, Ocean, Mountain, Patagonia themes (Chilean countryside inspired - full page)
  */
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
@@ -172,7 +173,6 @@ export function ThemeProvider({
       defaultTheme='light'
       enableSystem
       disableTransitionOnChange={reducedMotion}
-      onThemeChange={handleThemeChange}
       {...props}
     >
       {/* Theme Context for advanced features */}

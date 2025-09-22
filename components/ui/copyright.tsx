@@ -39,7 +39,7 @@ export function AramacCopyright({ className }: { className?: string }) {
       className={className}
       brand='ΛRΛMΛC®'
       showPoweredBy={true}
-      format='modern'
+      format='standard'
     />
   )
 }

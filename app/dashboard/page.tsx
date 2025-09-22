@@ -25,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing';
 
 

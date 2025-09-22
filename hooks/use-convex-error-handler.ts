@@ -167,8 +167,25 @@ function categorizeConvexError(error: any): ConvexError {
 // Custom hook for Convex queries with enhanced error handling
 export function useConvexQueryWithError<T>(
   query: any,
-  options: UseConvexErrorHandlerOptions = {}
+  queryArgsOrOptions?: any,
+  options?: UseConvexErrorHandlerOptions
 ): ConvexQueryState<T> & { retry: () => void } {
+  // Handle different call signatures
+  let queryArgs: any = {}
+  let finalOptions: UseConvexErrorHandlerOptions = {}
+
+  if (options !== undefined) {
+    // Called as useConvexQueryWithError(query, queryArgs, options)
+    queryArgs = queryArgsOrOptions || {}
+    finalOptions = options
+  } else if (queryArgsOrOptions && typeof queryArgsOrOptions === 'object' && !Array.isArray(queryArgsOrOptions)) {
+    // Check if it's options or queryArgs
+    if ('maxRetries' in queryArgsOrOptions || 'onError' in queryArgsOrOptions) {
+      finalOptions = queryArgsOrOptions
+    } else {
+      queryArgs = queryArgsOrOptions
+    }
+  }
   const {
     maxRetries = 3,
     retryDelay = 1000,
@@ -176,14 +193,21 @@ export function useConvexQueryWithError<T>(
     onError,
     onRetry,
     onSuccess
-  } = options
+  } = finalOptions
 
   const [retryCount, setRetryCount] = useState(0)
   const [manualRetryTrigger, setManualRetryTrigger] = useState(0)
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
 
-  // Use Convex's useQuery with a key that changes on manual retry
-  const convexData = useQuery(query, manualRetryTrigger)
+  // Handle both query functions and query results
+  let convexData: any
+  if (typeof query === 'function') {
+    // query is a Convex query function
+    convexData = useQuery(query, { ...queryArgs, _retryTrigger: manualRetryTrigger })
+  } else {
+    // query is already the result of useQuery
+    convexData = query
+  }
 
   // Clear timeout on unmount or when data changes
   useEffect(() => {
@@ -296,7 +320,7 @@ export function useConvexQueriesWithError<T extends Record<string, any>>(
   const queryResults = Object.entries(queries).reduce((acc, [key, query]) => {
     const result = useConvexQueryWithError(query, {
       ...options,
-      onError: (error) => {
+      onError: (error: ConvexError) => {
         console.error(`Error in query ${key}:`, error)
         options.onError?.(error)
       }
@@ -402,7 +426,7 @@ export function useOfflineFallback<T>(
   }, [storageKey, maxAge])
 
   // Use Convex query when online
-  const onlineResult = useConvexQueryWithError(onlineQuery)
+  const onlineResult = useConvexQueryWithError(onlineQuery, {})
 
   // Cache successful data
   useEffect(() => {
