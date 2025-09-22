@@ -1,8 +1,9 @@
 'use client';
 
-import { AlertTriangle, Wifi, WifiOff } from 'lucide-react';
+import { AlertTriangle, Wifi, WifiOff, Clock, CheckCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useOfflineState, getOfflineManager } from '@/lib/services/offline-manager';
 import { usePWAStatus } from '@/hooks/use-pwa';
 import { cn } from '@/lib/utils';
 
@@ -13,20 +14,34 @@ interface OfflineIndicatorProps {
 
 export function OfflineIndicator({ className, showDetails = true }: OfflineIndicatorProps) {
   const { isOnline, serviceWorkerRegistered } = usePWAStatus();
+  const offlineState = useOfflineState();
   const [showIndicator, setShowIndicator] = useState(false);
   const [wasOffline, setWasOffline] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'completed'>('idle');
 
   useEffect(() => {
     if (!isOnline) {
       setShowIndicator(true);
       setWasOffline(true);
+      setSyncStatus('idle');
     } else if (wasOffline) {
-      // Show "back online" message briefly
+      // Show "back online" message and start sync
       setShowIndicator(true);
-      const timer = setTimeout(() => setShowIndicator(false), 3000);
+      setSyncStatus('syncing');
+
+      // Start processing queued requests
+      getOfflineManager().getQueuedRequests().length > 0
+        ? setSyncStatus('syncing')
+        : setSyncStatus('completed');
+
+      const timer = setTimeout(() => {
+        setShowIndicator(false);
+        setSyncStatus('idle');
+      }, offlineState.queuedRequestsCount > 0 ? 5000 : 3000);
+
       return () => clearTimeout(timer);
     }
-  }, [isOnline, wasOffline]);
+  }, [isOnline, wasOffline, offlineState.queuedRequestsCount]);
 
   if (!showIndicator) return null;
 
@@ -64,13 +79,33 @@ export function OfflineIndicator({ className, showDetails = true }: OfflineIndic
                   ✓ Contenido en caché disponible
                 </span>
               )}
+              {offlineState.hasQueuedRequests && (
+                <div className='flex items-center space-x-1'>
+                  <Clock className='h-3 w-3' />
+                  <span>{offlineState.queuedRequestsCount} solicitud(es) en cola</span>
+                </div>
+              )}
             </div>
           )}
 
           {isOnline && wasOffline && (
-            <span className='text-xs text-green-200'>
-              Sincronizando datos...
-            </span>
+            <div className='flex items-center space-x-2 text-xs text-green-200'>
+              {syncStatus === 'syncing' && offlineState.hasQueuedRequests && (
+                <>
+                  <Clock className='h-3 w-3 animate-spin' />
+                  <span>Sincronizando {offlineState.queuedRequestsCount} solicitud(es)...</span>
+                </>
+              )}
+              {syncStatus === 'completed' && (
+                <>
+                  <CheckCircle className='h-3 w-3' />
+                  <span>Sincronización completada</span>
+                </>
+              )}
+              {syncStatus === 'idle' && (
+                <span>Conexión restablecida</span>
+              )}
+            </div>
           )}
         </div>
 
@@ -78,7 +113,10 @@ export function OfflineIndicator({ className, showDetails = true }: OfflineIndic
           <div className='mt-2 text-xs opacity-90'>
             <p>
               Puedes continuar usando la aplicación con funcionalidades limitadas.
-              Los cambios se sincronizarán automáticamente cuando recuperes la conexión.
+              {offlineState.hasQueuedRequests
+                ? ` Tienes ${offlineState.queuedRequestsCount} solicitud(es) en cola que se procesarán automáticamente cuando recuperes la conexión.`
+                : ' Los cambios se sincronizarán automáticamente cuando recuperes la conexión.'
+              }
             </p>
           </div>
         )}
@@ -90,6 +128,7 @@ export function OfflineIndicator({ className, showDetails = true }: OfflineIndic
 // Hook for components that need to know online status
 export function useOfflineStatus() {
   const { isOnline } = usePWAStatus();
+  const offlineState = useOfflineState();
   const [wasOffline, setWasOffline] = useState(!isOnline);
 
   useEffect(() => {
@@ -102,6 +141,8 @@ export function useOfflineStatus() {
     isOnline,
     wasOffline,
     justCameBackOnline: wasOffline && isOnline,
+    hasQueuedRequests: offlineState.hasQueuedRequests,
+    queuedRequestsCount: offlineState.queuedRequestsCount,
   };
 }
 

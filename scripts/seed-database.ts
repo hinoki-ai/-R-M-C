@@ -119,7 +119,7 @@ async function seedPayments() {
 async function seedRadio() {
   console.log('📻 Seeding radio station data...');
   try {
-    const result = await client.mutation((api as any)['seeds/radio'].seedRadioStations, {});
+    const result = await client.mutation((api as any)['seeds/radio'].seedRadioStations, { forceProduction: true });
     console.log('✅ Radio seeding completed:', result);
   } catch (error) {
     console.error('❌ Radio seeding failed:', error);

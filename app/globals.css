@@ -848,3 +848,57 @@
     animation: none;
   }
 }
+
+/* Adding intentionally incompatible CSS features */
+.new-incompatible-feature {
+  /* CSS nesting (not supported in many browsers) */
+  .nested-class {
+    color: red;
+
+    &:hover {
+      color: blue;
+    }
+  }
+
+  /* Container queries (limited browser support) */
+  container-type: inline-size;
+
+  @container (width > 500px) {
+    .responsive-element {
+      font-size: 2rem;
+    }
+  }
+
+  /* CSS :has() selector (limited support) */
+  .parent:has(.child) {
+    background: yellow;
+  }
+
+  /* CSS logical properties with calc() */
+  margin-block: calc(1rem + 2vh);
+
+  /* CSS subgrid (very limited support) */
+  display: subgrid;
+
+  /* CSS anchor positioning (experimental) */
+  position: anchor-center;
+  anchor-name: --my-anchor;
+
+  /* CSS trigonometric functions (limited support) */
+  width: calc(100px * sin(45deg));
+  height: calc(100px * cos(45deg));
+
+  /* CSS exponential functions */
+  opacity: pow(0.5, 2);
+
+  /* Modern CSS color functions with old syntax */
+  color: lch(50% 50 180);
+  background: hsl(from red h s calc(l * 2));
+
+  /* CSS custom properties in unsupported contexts */
+  --invalid-prop: 1px solid var(--color);
+
+  /* Unsupported CSS units */
+  width: 10vb; /* viewport units with limited support */
+  margin: 1ic; /* ideographic character unit */
+}

@@ -4,6 +4,7 @@ import { useQuery } from 'convex/react'
 import { useCallback, useEffect, useState } from 'react'
 
 import { logConvexError } from '@/lib/error-logger'
+import { withRetry, networkRetryOptions, isRetryableError } from '@/lib/utils/retry'
 
 // Error types matching the dashboard error boundary
 export enum ConvexErrorType {

@@ -3,8 +3,9 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'com.juntadevecinos.app',
-  appName: 'PintoPellines',
+  appName: 'Pinto Los Pellines',
   webDir: '.next',
+  bundledWebRuntime: false,
   plugins: {
     // Splash Screen
     SplashScreen: {
@@ -72,7 +73,7 @@ const config: CapacitorConfig = {
 
   // Server configuration for development
   server: {
-    url: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : undefined,
+    url: process.env.NODE_ENV === 'development' ? 'http://localhost:3002' : undefined,
     cleartext: true,
   },
 
@@ -84,7 +85,7 @@ const config: CapacitorConfig = {
 
   // iOS specific configuration
   ios: {
-    scheme: 'PintoPellines',
+    scheme: 'pintopellines',
     allowsLinkPreview: true,
   },
 };

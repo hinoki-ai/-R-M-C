@@ -10,6 +10,8 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { OfflineIndicator } from '@/components/shared/offline-indicator';
 import { PWA } from '@/components/shared/pwa';
 
+import { RootErrorBoundary } from '@/components/shared/root-error-boundary';
+
 // Font configuration
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -102,16 +104,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
       >
-        <ThemeProvider>
-          <OfflineIndicator />
-          <ClerkProvider>
-            <ConvexClientProvider>
-              <MobileInitializer />
-              {children}
-              <PWA />
-            </ConvexClientProvider>
-          </ClerkProvider>
-        </ThemeProvider>
+        <RootErrorBoundary>
+          <ThemeProvider>
+            <OfflineIndicator />
+            <ClerkProvider>
+              <ConvexClientProvider>
+                <MobileInitializer />
+                {children}
+                <PWA />
+              </ConvexClientProvider>
+            </ClerkProvider>
+          </ThemeProvider>
+        </RootErrorBoundary>
       </body>
     </html>
   );

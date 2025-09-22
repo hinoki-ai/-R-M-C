@@ -1,15 +1,17 @@
 {
-  "name": "PintoPellines - Pinto Los Pellines",
+  "name": "Pinto Los Pellines - Gestión Comunitaria",
   "short_name": "PintoPellines",
-  "description": "Plataforma de gestión comunitaria para Pinto Los Pellines",
+  "description": "Plataforma avanzada de gestión comunitaria con cámaras de seguridad, pagos integrados y herramientas completas para Pinto Los Pellines",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#0f172a",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "business"],
-  "lang": "es",
+  "categories": ["productivity", "business", "utilities", "social"],
+  "lang": "es-CL",
   "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/favicon-192x192.png",

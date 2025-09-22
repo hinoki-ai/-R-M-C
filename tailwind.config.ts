@@ -84,11 +84,21 @@ const config: Config = {
             boxShadow: '0 0 0 8px var(--pulse-color)',
           },
         },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         pulse: 'pulse var(--duration, 1.5s) ease-out infinite',
+        shimmer: 'shimmer 2s ease-in-out infinite',
+        float: 'float 3s ease-in-out infinite',
       },
       boxShadow: {
         '2xs': 'var(--shadow-2xs)',

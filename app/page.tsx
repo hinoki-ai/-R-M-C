@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { ModeToggle } from '@/components/layout/mode-toggle'
 import { PublicLayout } from '@/components/layout/public-layout'
 import { PulsatingButton } from '@/components/magicui/pulsating-button'
+import { MobileAppDownload } from '@/components/mobile-app-download'
 import { InfiniteSlider } from '@/components/motion-primitives/infinite-slider'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Badge } from '@/components/ui/badge'
@@ -789,6 +790,9 @@ export default function Home() {
           </AnimatedGroup>
         </div>
       </section>
+
+      {/* MOBILE APP DOWNLOAD SECTION */}
+      <MobileAppDownload />
 
     </main>
     </PublicLayout>

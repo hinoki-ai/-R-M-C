@@ -14,16 +14,44 @@ export interface ErrorLogEntry {
   resolved?: boolean
   resolvedAt?: number
   retryCount?: number
+  reported?: boolean
+  reportId?: string
+}
+
+export interface ErrorReportingConfig {
+  enabled: boolean
+  endpoint?: string
+  apiKey?: string
+  reportThreshold: 'all' | 'critical' | 'unresolved'
+  batchSize: number
+  batchInterval: number
+  retryAttempts: number
+}
+
+const defaultReportingConfig: ErrorReportingConfig = {
+  enabled: process.env.NODE_ENV === 'production',
+  endpoint: process.env.NEXT_PUBLIC_ERROR_REPORTING_ENDPOINT,
+  apiKey: process.env.NEXT_PUBLIC_ERROR_REPORTING_API_KEY,
+  reportThreshold: 'critical',
+  batchSize: 10,
+  batchInterval: 30000, // 30 seconds
+  retryAttempts: 3
 }
 
 class ErrorLogger {
   private logs: ErrorLogEntry[] = []
   private maxLogs = 100
   private storageKey = 'error-logs'
+  private reportingConfig: ErrorReportingConfig
+  private reportQueue: ErrorLogEntry[] = []
+  private reportBatchTimer: NodeJS.Timeout | null = null
+  private isReporting = false
 
-  constructor() {
+  constructor(config: Partial<ErrorReportingConfig> = {}) {
+    this.reportingConfig = { ...defaultReportingConfig, ...config }
     this.loadLogs()
     this.setupGlobalErrorHandler()
+    this.setupReporting()
   }
 
   private loadLogs() {
@@ -219,6 +247,160 @@ class ErrorLogger {
       }
     })
   }
+
+  // Error reporting functionality
+  private setupReporting() {
+    if (!this.reportingConfig.enabled || typeof window === 'undefined') return
+
+    // Set up periodic batch reporting
+    this.reportBatchTimer = setInterval(() => {
+      this.processReportBatch()
+    }, this.reportingConfig.batchInterval)
+
+    // Process any pending reports on page unload
+    window.addEventListener('beforeunload', () => {
+      this.processReportBatch(true)
+    })
+  }
+
+  private shouldReportError(error: ErrorLogEntry): boolean {
+    if (!this.reportingConfig.enabled) return false
+
+    switch (this.reportingConfig.reportThreshold) {
+      case 'all':
+        return true
+      case 'critical':
+        return this.isCriticalError(error)
+      case 'unresolved':
+        return !error.resolved
+      default:
+        return false
+    }
+  }
+
+  private isCriticalError(error: ErrorLogEntry): boolean {
+    const criticalTypes = ['server', 'database', 'auth']
+    const criticalMessages = [
+      'network',
+      'connection',
+      'timeout',
+      'internal server',
+      'unauthorized',
+      'forbidden'
+    ]
+
+    return (
+      criticalTypes.includes(error.type) ||
+      criticalMessages.some(msg => error.message.toLowerCase().includes(msg)) ||
+      (error.additionalData?.critical === true)
+    )
+  }
+
+  private async reportErrors(errors: ErrorLogEntry[]): Promise<void> {
+    if (!this.reportingConfig.endpoint || errors.length === 0) return
+
+    const payload = {
+      errors: errors.map(error => ({
+        ...error,
+        // Add client information
+        clientInfo: {
+          userAgent: navigator.userAgent,
+          url: window.location.href,
+          timestamp: new Date().toISOString(),
+          sessionId: this.getSessionId()
+        }
+      })),
+      apiKey: this.reportingConfig.apiKey
+    }
+
+    try {
+      const response = await fetch(this.reportingConfig.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        // Mark errors as reported
+        errors.forEach((error, index) => {
+          const logIndex = this.logs.findIndex(log => log.id === error.id)
+          if (logIndex > -1) {
+            this.logs[logIndex].reported = true
+            this.logs[logIndex].reportId = result.reportIds?.[index]
+          }
+        })
+        this.saveLogs()
+      } else {
+        console.warn('Error reporting failed:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.warn('Error reporting request failed:', error)
+    }
+  }
+
+  private async processReportBatch(force = false): Promise<void> {
+    if (this.isReporting && !force) return
+
+    const errorsToReport = this.logs.filter(
+      error => !error.reported && this.shouldReportError(error)
+    )
+
+    if (errorsToReport.length === 0) return
+
+    const batchSize = force ? errorsToReport.length : this.reportingConfig.batchSize
+    const batch = errorsToReport.slice(0, batchSize)
+
+    this.isReporting = true
+    try {
+      await this.reportErrors(batch)
+    } finally {
+      this.isReporting = false
+    }
+  }
+
+  private getSessionId(): string {
+    let sessionId = sessionStorage.getItem('error-session-id')
+    if (!sessionId) {
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      sessionStorage.setItem('error-session-id', sessionId)
+    }
+    return sessionId
+  }
+
+  // Public methods for error reporting
+  async reportErrorNow(errorId: string): Promise<boolean> {
+    const error = this.logs.find(log => log.id === errorId)
+    if (!error || error.reported) return false
+
+    try {
+      await this.reportErrors([error])
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  getUnreportedErrors(): ErrorLogEntry[] {
+    return this.logs.filter(error => !error.reported && this.shouldReportError(error))
+  }
+
+  updateReportingConfig(config: Partial<ErrorReportingConfig>): void {
+    this.reportingConfig = { ...this.reportingConfig, ...config }
+
+    if (this.reportingConfig.enabled && !this.reportBatchTimer) {
+      this.setupReporting()
+    } else if (!this.reportingConfig.enabled && this.reportBatchTimer) {
+      clearInterval(this.reportBatchTimer)
+      this.reportBatchTimer = null
+    }
+  }
+
+  getReportingConfig(): ErrorReportingConfig {
+    return { ...this.reportingConfig }
+  }
 }
 
 // Create singleton instance
@@ -247,6 +429,11 @@ export function useErrorLogger() {
     getLogsByType: errorLogger.getLogsByType.bind(errorLogger),
     getStats: errorLogger.getStats.bind(errorLogger),
     clearLogs: errorLogger.clearLogs.bind(errorLogger),
-    markResolved: errorLogger.markResolved.bind(errorLogger)
+    markResolved: errorLogger.markResolved.bind(errorLogger),
+    // Reporting methods
+    reportErrorNow: errorLogger.reportErrorNow.bind(errorLogger),
+    getUnreportedErrors: errorLogger.getUnreportedErrors.bind(errorLogger),
+    updateReportingConfig: errorLogger.updateReportingConfig.bind(errorLogger),
+    getReportingConfig: errorLogger.getReportingConfig.bind(errorLogger)
   }
 }

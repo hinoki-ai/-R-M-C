@@ -3,6 +3,7 @@
 import { useUser } from '@clerk/nextjs';
 import { useMutation, useQuery } from 'convex/react';
 import { Heart, Pause, Play, Radio, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -35,7 +36,11 @@ interface RadioStation {
 
 const RadioPlayer: React.FC = () => {
   const { user } = useUser();
+  const pathname = usePathname();
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Check if we're on the favorites page
+  const isFavoritesPage = pathname?.includes('/radio/favorites');
 
   // State management
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
@@ -43,7 +48,7 @@ const RadioPlayer: React.FC = () => {
   const [volume, setVolume] = useState(80);
   const [isLoading, setIsLoading] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState(isFavoritesPage ? 'favorites' : 'all');
 
   // Convex queries and mutations
   const allStations = useQuery(api.radio.getRadioStations) || [];
@@ -287,107 +292,178 @@ const RadioPlayer: React.FC = () => {
       {/* Stations Browser */}
       <Card>
         <CardHeader>
-          <CardTitle>Estaciones de Radio</CardTitle>
+          <CardTitle>
+            {isFavoritesPage ? 'Estaciones Favoritas' : 'Estaciones de Radio'}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className='grid w-full grid-cols-6'>
-              {categories.map((category) => (
-                <TabsTrigger key={category.id} value={category.id} className='text-xs'>
-                  <category.icon className='h-4 w-4 mr-1' />
-                  {category.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {categories.map((category) => (
-              <TabsContent key={category.id} value={category.id} className='mt-4'>
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  {getStationsByCategory(category.id).map((station) => (
-                    <Card
-                      key={station._id}
-                      className={`cursor-pointer transition-all hover:shadow-md ${
-                        currentStation?._id === station._id ? 'ring-2 ring-primary' : ''
-                      }`}
-                      onClick={() => playStation(station)}
-                    >
-                      <CardContent className='p-4'>
-                        <div className='flex items-start justify-between'>
-                          <div className='flex items-center space-x-3 flex-1'>
-                            {station.logoUrl ? (
-                              <img
-                                src={station.logoUrl}
-                                alt={station.name}
-                                className='w-10 h-10 rounded-full object-cover'
-                              />
-                            ) : (
-                              <div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
-                                <Radio className='h-5 w-5 text-primary' />
-                              </div>
-                            )}
-                            <div className='flex-1 min-w-0'>
-                              <h4 className='font-medium truncate'>{station.name}</h4>
-                              <p className='text-sm text-muted-foreground truncate'>
-                                {station.frequency} • {station.region}
-                              </p>
-                              <div className='flex items-center space-x-2 mt-1'>
-                                <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
-                                  {(station as any).quality || 'Desconocida'}
-                                </Badge>
-                                <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
-                                  {station.category}
-                                </Badge>
-                              </div>
-                            </div>
+          {isFavoritesPage ? (
+            // Favorites page - show only favorites
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              {userFavorites.map((station) => (
+                <Card
+                  key={station._id}
+                  className={`cursor-pointer transition-all hover:shadow-md ${
+                    currentStation?._id === station._id ? 'ring-2 ring-primary' : ''
+                  }`}
+                  onClick={() => playStation(station)}
+                >
+                  <CardContent className='p-4'>
+                    <div className='flex items-start justify-between'>
+                      <div className='flex items-center space-x-3 flex-1'>
+                        {station.logoUrl ? (
+                          <img
+                            src={station.logoUrl}
+                            alt={station.name}
+                            className='w-10 h-10 rounded-full object-cover'
+                          />
+                        ) : (
+                          <div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
+                            <Radio className='h-5 w-5 text-primary' />
                           </div>
-
-                          <div className='flex items-center space-x-1'>
-                            {category.id === 'favorites' && (
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleFavoriteToggle(station);
-                                }}
-                                className='h-8 w-8 p-0'
-                              >
-                                <Heart className='h-4 w-4 fill-red-500 text-red-500' />
-                              </Button>
-                            )}
-                            {category.id !== 'favorites' && (
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleFavoriteToggle(station);
-                                }}
-                                className='h-8 w-8 p-0'
-                              >
-                                <Heart
-                                  className={`h-4 w-4 ${
-                                    (station as any).isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
-                                  }`}
-                                />
-                              </Button>
-                            )}
+                        )}
+                        <div className='flex-1 min-w-0'>
+                          <h4 className='font-medium truncate'>{station.name}</h4>
+                          <p className='text-sm text-muted-foreground truncate'>
+                            {station.frequency} • {station.region}
+                          </p>
+                          <div className='flex items-center space-x-2 mt-1'>
+                            <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
+                              {(station as any).quality || 'Desconocida'}
+                            </Badge>
+                            <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
+                              {station.category}
+                            </Badge>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                      </div>
 
-                {getStationsByCategory(category.id).length === 0 && (
-                  <div className='text-center py-8 text-muted-foreground'>
-                    <Radio className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                    <p>No hay estaciones disponibles en esta categoría</p>
+                      <div className='flex items-center space-x-1'>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFavoriteToggle(station);
+                          }}
+                          className='h-8 w-8 p-0'
+                        >
+                          <Heart className='h-4 w-4 fill-red-500 text-red-500' />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {userFavorites.length === 0 && (
+                <div className='text-center py-8 text-muted-foreground col-span-full'>
+                  <Heart className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                  <p>No tienes estaciones favoritas aún</p>
+                  <p className='text-sm'>Haz clic en el corazón de cualquier estación para agregarla a favoritos</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            // Regular radio page with tabs
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className='grid w-full grid-cols-6'>
+                {categories.map((category) => (
+                  <TabsTrigger key={category.id} value={category.id} className='text-xs'>
+                    <category.icon className='h-4 w-4 mr-1' />
+                    {category.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {categories.map((category) => (
+                <TabsContent key={category.id} value={category.id} className='mt-4'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    {getStationsByCategory(category.id).map((station) => (
+                      <Card
+                        key={station._id}
+                        className={`cursor-pointer transition-all hover:shadow-md ${
+                          currentStation?._id === station._id ? 'ring-2 ring-primary' : ''
+                        }`}
+                        onClick={() => playStation(station)}
+                      >
+                        <CardContent className='p-4'>
+                          <div className='flex items-start justify-between'>
+                            <div className='flex items-center space-x-3 flex-1'>
+                              {station.logoUrl ? (
+                                <img
+                                  src={station.logoUrl}
+                                  alt={station.name}
+                                  className='w-10 h-10 rounded-full object-cover'
+                                />
+                              ) : (
+                                <div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
+                                  <Radio className='h-5 w-5 text-primary' />
+                                </div>
+                              )}
+                              <div className='flex-1 min-w-0'>
+                                <h4 className='font-medium truncate'>{station.name}</h4>
+                                <p className='text-sm text-muted-foreground truncate'>
+                                  {station.frequency} • {station.region}
+                                </p>
+                                <div className='flex items-center space-x-2 mt-1'>
+                                  <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
+                                    {(station as any).quality || 'Desconocida'}
+                                  </Badge>
+                                  <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
+                                    {station.category}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className='flex items-center space-x-1'>
+                              {category.id === 'favorites' && (
+                                <Button
+                                  variant='ghost'
+                                  size='sm'
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleFavoriteToggle(station);
+                                  }}
+                                  className='h-8 w-8 p-0'
+                                >
+                                  <Heart className='h-4 w-4 fill-red-500 text-red-500' />
+                                </Button>
+                              )}
+                              {category.id !== 'favorites' && (
+                                <Button
+                                  variant='ghost'
+                                  size='sm'
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleFavoriteToggle(station);
+                                  }}
+                                  className='h-8 w-8 p-0'
+                                >
+                                  <Heart
+                                    className={`h-4 w-4 ${
+                                      (station as any).isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
+                                    }`}
+                                  />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                )}
-              </TabsContent>
-            ))}
-          </Tabs>
+
+                  {getStationsByCategory(category.id).length === 0 && (
+                    <div className='text-center py-8 text-muted-foreground'>
+                      <Radio className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                      <p>No hay estaciones disponibles en esta categoría</p>
+                    </div>
+                  )}
+                </TabsContent>
+              ))}
+            </Tabs>
+          )}
         </CardContent>
       </Card>
     </div>

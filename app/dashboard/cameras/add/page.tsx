@@ -1,11 +1,12 @@
 'use client'
 
 import { IconChevronLeft, IconEye, IconPlus } from '@tabler/icons-react'
-import { useMutation } from 'convex/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { FormErrorBoundary } from '@/components/forms/form-error-boundary'
+import { useFormErrorHandler } from '@/components/forms/form-error-boundary'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,12 +14,21 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/convex/_generated/api'
+import { useConvexErrorHandler } from '@/hooks/use-convex-error-handler'
 import { useToast } from '@/hooks/use-toast'
 
 export default function AddCameraPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const addCamera = useMutation(api.cameras.addCamera)
+
+  // Use comprehensive error handling for Convex mutations
+  const addCameraMutation = useConvexErrorHandler(api.cameras.addCamera, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to add camera:', error)
+  })
+
+  // Use form error handler for validation and error management
+  const { handleFormError, handleValidationError, resetError } = useFormErrorHandler('camera')
 
   const [formData, setFormData] = useState({
     name: '',
@@ -31,30 +41,75 @@ export default function AddCameraPage() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }))
+
+    // Clear field error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }))
+    }
+
+    // Reset form error
+    resetError()
   }
 
-  const validateForm = () => {
-    if (!formData.name || !formData.ipAddress || !formData.streamUrl) {
-      return false
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {}
+
+    // Required field validation
+    if (!formData.name.trim()) {
+      errors.name = 'El nombre de la cámara es obligatorio'
+    } else if (formData.name.length < 2) {
+      errors.name = 'El nombre debe tener al menos 2 caracteres'
+    } else if (formData.name.length > 100) {
+      errors.name = 'El nombre no puede exceder 100 caracteres'
     }
-    return true
+
+    if (!formData.ipAddress.trim()) {
+      errors.ipAddress = 'La dirección IP es obligatoria'
+    } else {
+      // Basic IP address validation
+      const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+      if (!ipRegex.test(formData.ipAddress)) {
+        errors.ipAddress = 'Formato de dirección IP inválido'
+      }
+    }
+
+    if (!formData.streamUrl.trim()) {
+      errors.streamUrl = 'La URL del stream es obligatoria'
+    } else if (!formData.streamUrl.startsWith('rtsp://') && !formData.streamUrl.startsWith('http://') && !formData.streamUrl.startsWith('https://')) {
+      errors.streamUrl = 'La URL debe comenzar con rtsp://, http:// o https://'
+    }
+
+    if (formData.location && formData.location.length > 200) {
+      errors.location = 'La ubicación no puede exceder 200 caracteres'
+    }
+
+    if (formData.description && formData.description.length > 500) {
+      errors.description = 'La descripción no puede exceder 500 caracteres'
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Reset previous errors
+    resetError()
+    setFieldErrors({})
+
     if (!validateForm()) {
-      toast({
-        title: 'Validation Error',
-        description: 'Please fix the validation errors before submitting.',
-        variant: 'destructive',
-      })
+      handleValidationError('form', 'Por favor corrige los errores de validación antes de enviar.')
       return
     }
 
@@ -62,28 +117,28 @@ export default function AddCameraPage() {
 
     try {
       const cameraData = {
-        name: formData.name,
-        description: formData.description || undefined,
-        location: formData.location || undefined,
-        streamUrl: formData.streamUrl || `rtsp://${formData.ipAddress}/stream`,
+        name: formData.name.trim(),
+        description: formData.description.trim() || undefined,
+        location: formData.location.trim() || undefined,
+        streamUrl: formData.streamUrl.trim() || `rtsp://${formData.ipAddress}/stream`,
         resolution: undefined,
         frameRate: undefined,
         hasAudio: false,
       }
 
-      const cameraId = await addCamera(cameraData)
+      const cameraId = await addCameraMutation.mutateAsync(cameraData)
 
       toast({
-        title: 'Camera Added Successfully',
-        description: `${formData.name} has been added to your security network.`,
+        title: 'Cámara Agregada Exitosamente',
+        description: `${formData.name} ha sido agregada a tu red de seguridad.`,
       })
 
       router.push(`/dashboard/cameras/${cameraId}`)
     } catch (error) {
-      console.error('Error adding camera:', error)
+      handleFormError(error)
       toast({
-        title: 'Error Adding Camera',
-        description: 'Failed to add camera. Please check your connection and try again.',
+        title: 'Error al Agregar Cámara',
+        description: 'No se pudo agregar la cámara. Por favor verifica tu conexión e inténtalo nuevamente.',
         variant: 'destructive',
       })
     } finally {
@@ -92,50 +147,54 @@ export default function AddCameraPage() {
   }
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <div className='flex items-center gap-4 mb-8'>
-        <Button variant='outline' size='sm' asChild>
-          <Link href='/dashboard/cameras'>
-            <IconChevronLeft className='h-4 w-4 mr-2' />
-            Back to Cameras
-          </Link>
-        </Button>
-        <div>
-          <h1 className='text-3xl font-bold flex items-center gap-3'>
-            <IconPlus className='h-8 w-8' />
-            Add IP Camera
-          </h1>
-          <p className='text-gray-600 dark:text-gray-400 mt-2'>
-            Configure a new IP camera for your security network
-          </p>
-        </div>
-      </div>
-
-      <div className='max-w-4xl'>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <IconEye className='h-5 w-5' />
-              IP Camera Configuration
-            </CardTitle>
-            <p className='text-sm text-gray-600 dark:text-gray-400'>
-              Basic camera configuration - complex features have been removed for simplicity
+    <FormErrorBoundary formName='cámara' showDetailedErrors={true}>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='flex items-center gap-4 mb-8'>
+          <Button variant='outline' size='sm' asChild>
+            <Link href='/dashboard/cameras'>
+              <IconChevronLeft className='h-4 w-4 mr-2' />
+              Volver a Cámaras
+            </Link>
+          </Button>
+          <div>
+            <h1 className='text-3xl font-bold flex items-center gap-3'>
+              <IconPlus className='h-8 w-8' />
+              Agregar Cámara IP
+            </h1>
+            <p className='text-gray-600 dark:text-gray-400 mt-2'>
+              Configura una nueva cámara IP para tu red de seguridad
             </p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className='space-y-6'>
+          </div>
+        </div>
+
+        <div className='max-w-4xl'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <IconEye className='h-5 w-5' />
+                Configuración de Cámara IP
+              </CardTitle>
+              <p className='text-sm text-gray-600 dark:text-gray-400'>
+                Configuración básica de cámara - características complejas han sido removidas por simplicidad
+              </p>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className='space-y-6'>
               {/* Basic Information */}
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div className='space-y-2'>
-                  <Label htmlFor='name'>Camera Name *</Label>
+                  <Label htmlFor='name'>Nombre de la Cámara *</Label>
                   <Input
                     id='name'
-                    placeholder='Camera name'
+                    placeholder='Nombre de la cámara'
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={fieldErrors.name ? 'border-destructive' : ''}
                     required
                   />
+                  {fieldErrors.name && (
+                    <p className='text-sm text-destructive'>{fieldErrors.name}</p>
+                  )}
                 </div>
 
                 <div className='space-y-2'>
@@ -191,36 +250,44 @@ export default function AddCameraPage() {
                 <h3 className='text-lg font-semibold'>Network Configuration</h3>
                 <div className='space-y-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='ipAddress'>IP Address *</Label>
+                    <Label htmlFor='ipAddress'>Dirección IP *</Label>
                     <Input
                       id='ipAddress'
-                      placeholder='IP address'
+                      placeholder='192.168.1.100'
                       value={formData.ipAddress}
                       onChange={(e) => handleInputChange('ipAddress', e.target.value)}
+                      className={fieldErrors.ipAddress ? 'border-destructive' : ''}
                       required
                     />
+                    {fieldErrors.ipAddress && (
+                      <p className='text-sm text-destructive'>{fieldErrors.ipAddress}</p>
+                    )}
                   </div>
 
                   <div className='space-y-2'>
-                    <Label htmlFor='streamUrl'>Stream URL *</Label>
+                    <Label htmlFor='streamUrl'>URL del Stream *</Label>
                     <Input
                       id='streamUrl'
-                      placeholder='rtsp://ip-address/stream'
+                      placeholder='rtsp://192.168.1.100/stream'
                       value={formData.streamUrl}
                       onChange={(e) => handleInputChange('streamUrl', e.target.value)}
+                      className={fieldErrors.streamUrl ? 'border-destructive' : ''}
                       required
                     />
-                    <p className='text-xs text-gray-500'>RTSP or HTTP stream URL for the camera feed</p>
+                    <p className='text-xs text-gray-500'>URL RTSP o HTTP para el feed de la cámara</p>
+                    {fieldErrors.streamUrl && (
+                      <p className='text-sm text-destructive'>{fieldErrors.streamUrl}</p>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className='flex gap-4 pt-6'>
-                <Button type='submit' disabled={loading} className='flex-1'>
-                  {loading ? 'Adding Camera...' : 'Add Camera'}
+                <Button type='submit' disabled={loading || addCameraMutation.isLoading} className='flex-1'>
+                  {loading || addCameraMutation.isLoading ? 'Agregando Cámara...' : 'Agregar Cámara'}
                 </Button>
                 <Button type='button' variant='outline' asChild>
-                  <Link href='/dashboard/cameras'>Cancel</Link>
+                  <Link href='/dashboard/cameras'>Cancelar</Link>
                 </Button>
               </div>
             </form>
@@ -228,5 +295,6 @@ export default function AddCameraPage() {
         </Card>
       </div>
     </div>
+    </FormErrorBoundary>
   )
 }

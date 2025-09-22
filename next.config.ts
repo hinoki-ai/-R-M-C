@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
         },
         {
           key: 'Content-Security-Policy',
-          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: wss:;",
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https: wss:; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;",
         },
       ],
     },
@@ -88,6 +88,23 @@ const nextConfig: NextConfig = {
         {
           key: 'Content-Type',
           value: 'application/manifest+json',
+        },
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=3600',
+        },
+      ],
+    },
+    {
+      source: '/api/(.*)',
+      headers: [
+        {
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
+        },
+        {
+          key: 'Cache-Control',
+          value: 'private, no-cache',
         },
       ],
     },

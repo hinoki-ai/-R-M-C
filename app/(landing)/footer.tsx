@@ -152,7 +152,7 @@ function MagneticIcon({ href, ariaLabel, children }: MagneticIconProps) {
 
 function IconSet({ ariaHidden = false }: { ariaHidden?: boolean }) {
   return (
-    <div className='flex items-center gap-8' {...(ariaHidden && { 'aria-hidden': 'true' })}>
+    <div className='flex items-center gap-8' aria-hidden={ariaHidden ? 'true' : undefined}>
       <Link href='/' aria-label='Home' className='block'>
         <Logo className='size-6' />
       </Link>

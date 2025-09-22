@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/convex/_generated/api'
 import { WeatherService } from '@/lib/services/weather-service'
 import { WeatherAlert, WeatherData, WeatherForecast } from '@/types/dashboard'
+import { useConvexErrorHandler } from './use-convex-error-handler'
 
 interface WeatherStats {
   total: number
@@ -85,33 +86,88 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
   const [realForecast, setRealForecast] = useState<WeatherForecast[] | null>(null)
   const [isLoadingRealData, setIsLoadingRealData] = useState(false)
 
-  // Queries for stored data
-  const storedWeatherData = useQuery(api.weather.getCurrentWeather, { location })
-  const storedForecast = useQuery(api.weather.getWeatherForecasts, {
-    location,
-    days: 7
-  })
-  const alerts = useQuery(api.weather.getWeatherAlerts, {
-    activeOnly: true,
-    limit: 10
-  })
-  const stats = useQuery(api.weather.getWeatherStats, {
-    location,
-    days: 30
+  // Use comprehensive error handling for all Convex operations
+  const weatherDataQuery = useConvexErrorHandler(api.weather.getCurrentWeather, {
+    args: { location },
+    maxRetries: 3,
+    retryDelay: 1000
   })
 
-  // Mutations
-  const addWeatherDataMutation = useMutation(api.weather.addWeatherData)
-  const updateWeatherDataMutation = useMutation(api.weather.updateWeatherData)
-  const deleteWeatherDataMutation = useMutation(api.weather.deleteWeatherData)
+  const forecastQuery = useConvexErrorHandler(api.weather.getWeatherForecasts, {
+    args: { location, days: 7 },
+    maxRetries: 3,
+    retryDelay: 1000
+  })
 
-  const createAlertMutation = useMutation(api.weather.createWeatherAlert)
-  const updateAlertMutation = useMutation(api.weather.updateWeatherAlert)
-  const deleteAlertMutation = useMutation(api.weather.deleteWeatherAlert)
+  const alertsQuery = useConvexErrorHandler(api.weather.getWeatherAlerts, {
+    args: { activeOnly: true, limit: 10 },
+    maxRetries: 3,
+    retryDelay: 1000
+  })
 
-  const addForecastMutation = useMutation(api.weather.addWeatherForecast)
-  const updateForecastMutation = useMutation(api.weather.updateWeatherForecast)
-  const deleteForecastMutation = useMutation(api.weather.deleteWeatherForecast)
+  const statsQuery = useConvexErrorHandler(api.weather.getWeatherStats, {
+    args: { location, days: 30 },
+    maxRetries: 3,
+    retryDelay: 1000
+  })
+
+  // Extract data and errors from queries
+  const storedWeatherData = weatherDataQuery.data
+  const storedForecast = forecastQuery.data
+  const alerts = alertsQuery.data
+  const stats = statsQuery.data
+
+  // Combine errors from all queries
+  const hasQueryErrors = weatherDataQuery.isError || forecastQuery.isError ||
+                         alertsQuery.isError || statsQuery.isError
+  const queryError = weatherDataQuery.error || forecastQuery.error ||
+                    alertsQuery.error || statsQuery.error
+
+  // Mutations with error handling
+  const addWeatherDataMutation = useConvexErrorHandler(api.weather.addWeatherData, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to add weather data:', error)
+  })
+
+  const updateWeatherDataMutation = useConvexErrorHandler(api.weather.updateWeatherData, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to update weather data:', error)
+  })
+
+  const deleteWeatherDataMutation = useConvexErrorHandler(api.weather.deleteWeatherData, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to delete weather data:', error)
+  })
+
+  const createAlertMutation = useConvexErrorHandler(api.weather.createWeatherAlert, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to create weather alert:', error)
+  })
+
+  const updateAlertMutation = useConvexErrorHandler(api.weather.updateWeatherAlert, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to update weather alert:', error)
+  })
+
+  const deleteAlertMutation = useConvexErrorHandler(api.weather.deleteWeatherAlert, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to delete weather alert:', error)
+  })
+
+  const addForecastMutation = useConvexErrorHandler(api.weather.addWeatherForecast, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to add forecast:', error)
+  })
+
+  const updateForecastMutation = useConvexErrorHandler(api.weather.updateWeatherForecast, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to update forecast:', error)
+  })
+
+  const deleteForecastMutation = useConvexErrorHandler(api.weather.deleteWeatherForecast, {
+    maxRetries: 2,
+    onError: (error) => console.error('Failed to delete forecast:', error)
+  })
 
   // Use real data if available, otherwise fallback to stored data
   const weatherData = realWeatherData || storedWeatherData
@@ -227,6 +283,8 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
         }
       } catch (error) {
         console.error('Error fetching real weather data:', error)
+        // Could set an error state here if needed
+        // setWeatherError('Failed to fetch real-time weather data')
       } finally {
         setIsLoadingRealData(false)
       }
@@ -237,46 +295,92 @@ export function useWeatherData(location = 'Pinto Los Pellines, Ñuble'): UseWeat
     // Refresh data every 30 minutes
     const interval = setInterval(fetchRealWeatherData, 30 * 60 * 1000)
     return () => clearInterval(interval)
-  }, [location, addWeatherDataMutation, addForecastMutation])
+  }, [location])
 
-  // Loading states
+  // Loading states - include query loading states
+  const queryLoading = weatherDataQuery.isLoading || forecastQuery.isLoading ||
+                      alertsQuery.isLoading || statsQuery.isLoading
+
   const loading = (!weatherData && !storedWeatherData) ||
                   (!forecast && !storedForecast) ||
                   !alerts ||
                   !stats ||
-                  isLoadingRealData
+                  isLoadingRealData ||
+                  queryLoading
 
-  // Error handling
-  const error = null // Could be enhanced with proper error handling
+  // Combine all errors
+  const error = hasQueryErrors ? queryError?.message || 'Error loading weather data' : null
 
   return { // Type assertions to handle Convex query result types
     weatherData: weatherData ? { ...weatherData, id: (weatherData as any)._id?.toString(), timestamp: new Date((weatherData as any).timestamp || (weatherData as any).createdAt).toISOString() } : null,
     forecast: forecast ? forecast.map(f => ({ ...f, id: (f as any)._id, updatedAt: new Date((f as any).updatedAt || (f as any).createdAt).toISOString() })) : null,
     alerts: alerts ? alerts.map(a => ({ ...a, id: (a as any)._id, startTime: new Date((a as any).startTime || (a as any).createdAt).toISOString(), endTime: new Date((a as any).endTime || (a as any).createdAt).toISOString(), createdAt: new Date((a as any).createdAt).toISOString() })) : null,
     loading,
-    error: null,
+    error,
     stats: calculatedStats,
-    // Mutations with proper typing
-    addWeatherData: addWeatherDataMutation,
+    // Mutations with proper error handling
+    addWeatherData: async (data: WeatherMutationData) => {
+      try {
+        return await addWeatherDataMutation.mutateAsync(data)
+      } catch (error) {
+        throw new Error(`Failed to add weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    },
     updateWeatherData: async (id: string, updates: Partial<WeatherMutationData>) => {
-      await updateWeatherDataMutation({ id: id as any, updates })
+      try {
+        await updateWeatherDataMutation.mutateAsync({ id: id as any, updates })
+      } catch (error) {
+        throw new Error(`Failed to update weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
     deleteWeatherData: async (id: string) => {
-      await deleteWeatherDataMutation({ id: id as any })
+      try {
+        await deleteWeatherDataMutation.mutateAsync({ id: id as any })
+      } catch (error) {
+        throw new Error(`Failed to delete weather data: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
-    createAlert: createAlertMutation,
+    createAlert: async (alert: WeatherAlertData) => {
+      try {
+        return await createAlertMutation.mutateAsync(alert)
+      } catch (error) {
+        throw new Error(`Failed to create alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    },
     updateAlert: async (id: string, updates: Partial<WeatherAlertData>) => {
-      await updateAlertMutation({ id: id as any, updates })
+      try {
+        await updateAlertMutation.mutateAsync({ id: id as any, updates })
+      } catch (error) {
+        throw new Error(`Failed to update alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
     deleteAlert: async (id: string) => {
-      await deleteAlertMutation({ id: id as any })
+      try {
+        await deleteAlertMutation.mutateAsync({ id: id as any })
+      } catch (error) {
+        throw new Error(`Failed to delete alert: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
-    addForecast: addForecastMutation,
+    addForecast: async (forecast: WeatherForecastData) => {
+      try {
+        return await addForecastMutation.mutateAsync(forecast)
+      } catch (error) {
+        throw new Error(`Failed to add forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    },
     updateForecast: async (id: string, updates: Partial<WeatherForecastData>) => {
-      await updateForecastMutation({ id: id as any, updates })
+      try {
+        await updateForecastMutation.mutateAsync({ id: id as any, updates })
+      } catch (error) {
+        throw new Error(`Failed to update forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
     deleteForecast: async (id: string) => {
-      await deleteForecastMutation({ id: id as any })
+      try {
+        await deleteForecastMutation.mutateAsync({ id: id as any })
+      } catch (error) {
+        throw new Error(`Failed to delete forecast: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
     },
   }
 }

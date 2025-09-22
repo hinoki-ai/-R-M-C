@@ -22,6 +22,7 @@ import {
 import { Suspense, useState } from 'react'
 
 import { DocumentDashboardLayout } from '@/components/dashboard/layout/dashboard-layout'
+import { CardSkeleton, DataState, ErrorState, LoadingState } from '@/components/shared/loading-error-states'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -32,7 +33,7 @@ import { useWeatherData } from '@/hooks/use-weather-data'
 function WeatherContent() {
   const { user } = useUser()
   const [activeTab, setActiveTab] = useState('overview')
-  const { weatherData, alerts, forecast } = useWeatherData()
+  const { weatherData, alerts, forecast, loading, error } = useWeatherData()
 
   // Use real data only - no mock data fallbacks
   const currentWeather = weatherData || null
@@ -547,7 +548,6 @@ function WeatherContent() {
             </TabsContent>
           </Tabs>
         </motion.div>
-      </div>
     </DocumentDashboardLayout>
   )
 }

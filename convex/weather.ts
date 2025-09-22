@@ -2,6 +2,18 @@ import { v } from 'convex/values'
 
 import { Doc, Id } from './_generated/dataModel'
 import { mutation, query } from './_generated/server'
+import {
+  requireUser,
+  validateRequired,
+  validateStringLength,
+  validateNumberRange,
+  validateEnum,
+  safeDbInsert,
+  safeDbPatch,
+  safeDbGet,
+  withErrorHandling,
+  createValidationError
+} from './utils/error-handler'
 
 // Weather Data Management
 export const getWeatherData = query({
@@ -11,8 +23,29 @@ export const getWeatherData = query({
     startDate: v.optional(v.number()),
     endDate: v.optional(v.number()),
   },
-  handler: async (ctx, args) => {
+  handler: withErrorHandling(async (ctx, args) => {
     const { location, limit = 100, startDate, endDate } = args
+
+    // Validate inputs
+    if (location) {
+      validateStringLength(location, 'location', 1, 100)
+    }
+
+    if (limit) {
+      validateNumberRange(limit, 'limit', 1, 1000)
+    }
+
+    if (startDate) {
+      validateNumberRange(startDate, 'startDate', 0, Date.now() + 365 * 24 * 60 * 60 * 1000) // Up to 1 year in future
+    }
+
+    if (endDate) {
+      validateNumberRange(endDate, 'endDate', 0, Date.now() + 365 * 24 * 60 * 60 * 1000)
+    }
+
+    if (startDate && endDate && startDate >= endDate) {
+      throw createValidationError('startDate must be before endDate')
+    }
 
     let query = ctx.db.query('weatherData')
 
@@ -31,7 +64,7 @@ export const getWeatherData = query({
     return await query
       .order('desc')
       .take(limit)
-  },
+  }, 'getWeatherData'),
 })
 
 export const addWeatherData = mutation({
@@ -54,26 +87,58 @@ export const addWeatherData = mutation({
     source: v.union(v.literal('api'), v.literal('manual'), v.literal('sensor')),
     isHistorical: v.optional(v.boolean()),
   },
-  handler: async (ctx, args) => {
-    const user = await ctx.auth.getUserIdentity()
-    if (!user) throw new Error('Unauthorized')
+  handler: withErrorHandling(async (ctx, args) => {
+    const userDoc = await requireUser(ctx)
 
-    const userDoc = await ctx.db
-      .query('users')
-      .withIndex('byExternalId', (q) => q.eq('externalId', user.subject))
-      .first()
+    // Validate required fields
+    validateRequired(args.timestamp, 'timestamp')
+    validateRequired(args.temperature, 'temperature')
+    validateRequired(args.humidity, 'humidity')
+    validateRequired(args.pressure, 'pressure')
+    validateRequired(args.windSpeed, 'windSpeed')
+    validateRequired(args.windDirection, 'windDirection')
+    validateRequired(args.precipitation, 'precipitation')
+    validateRequired(args.uvIndex, 'uvIndex')
+    validateRequired(args.visibility, 'visibility')
+    validateRequired(args.description, 'description')
+    validateRequired(args.icon, 'icon')
+    validateRequired(args.feelsLike, 'feelsLike')
+    validateRequired(args.dewPoint, 'dewPoint')
+    validateRequired(args.cloudCover, 'cloudCover')
+    validateRequired(args.location, 'location')
+    validateRequired(args.source, 'source')
 
-    if (!userDoc) throw new Error('User not found')
+    // Validate data ranges
+    validateNumberRange(args.timestamp, 'timestamp', 0, Date.now() + 24 * 60 * 60 * 1000) // Up to 24 hours in future
+    validateNumberRange(args.temperature, 'temperature', -100, 100)
+    validateNumberRange(args.humidity, 'humidity', 0, 100)
+    validateNumberRange(args.pressure, 'pressure', 800, 1200)
+    validateNumberRange(args.windSpeed, 'windSpeed', 0, 200)
+    validateNumberRange(args.windDirection, 'windDirection', 0, 360)
+    validateNumberRange(args.precipitation, 'precipitation', 0, 500)
+    validateNumberRange(args.uvIndex, 'uvIndex', 0, 20)
+    validateNumberRange(args.visibility, 'visibility', 0, 100)
+    validateNumberRange(args.feelsLike, 'feelsLike', -100, 100)
+    validateNumberRange(args.dewPoint, 'dewPoint', -100, 100)
+    validateNumberRange(args.cloudCover, 'cloudCover', 0, 100)
+
+    // Validate string lengths
+    validateStringLength(args.description, 'description', 1, 500)
+    validateStringLength(args.icon, 'icon', 1, 100)
+    validateStringLength(args.location, 'location', 1, 100)
+
+    // Validate enums
+    validateEnum(args.source, ['api', 'manual', 'sensor'], 'source')
 
     const now = Date.now()
 
-    return await ctx.db.insert('weatherData', {
+    return await safeDbInsert(ctx, 'weatherData', {
       ...args,
       createdBy: userDoc._id,
       createdAt: now,
       updatedAt: now,
     })
-  },
+  }, 'addWeatherData'),
 })
 
 export const updateWeatherData = mutation({

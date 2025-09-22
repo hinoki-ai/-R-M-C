@@ -6,11 +6,13 @@ import { AppSidebar } from '@/app/dashboard/app-sidebar';
 import { LoadingBar } from '@/app/dashboard/loading-bar';
 import { SiteHeader } from '@/app/dashboard/site-header';
 import { DashboardErrorBoundary } from '@/components/dashboard/dashboard-error-boundary';
+import { ScrollProgress } from '@/components/ui/scroll-progress';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 function SidebarContent({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <ScrollProgress />
       <AppSidebar />
       <SidebarInset>
         <LoadingBar />
