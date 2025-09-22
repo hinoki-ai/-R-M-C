@@ -548,6 +548,7 @@ function WeatherContent() {
             </TabsContent>
           </Tabs>
         </motion.div>
+      </div>
     </DocumentDashboardLayout>
   )
 }
