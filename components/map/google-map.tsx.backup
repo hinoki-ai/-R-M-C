@@ -1,0 +1,822 @@
+'use client';
+
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import React, { useRef, useEffect, useState, ReactElement } from 'react';
+import { AlertTriangle, Building, MapPin, ShoppingCart, Layers, Satellite, Map, Route, Eye, PenTool, Square, Circle, Minus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+
+interface Location {
+  id: string;
+  name: string;
+  type: 'residence' | 'business' | 'service' | 'emergency';
+  coordinates: [number, number]; // [lat, lng]
+  address: string;
+  phone?: string;
+  description: string;
+  category?: string;
+  rating?: number;
+}
+
+interface GoogleMapProps {
+  locations: Location[];
+  selectedLocation: Location | null;
+  onLocationSelect: (location: Location) => void;
+  className?: string;
+}
+
+const getTypeIcon = (type: string) => {
+  switch (type) {
+    case 'emergency': return AlertTriangle;
+    case 'business': return ShoppingCart;
+    case 'service': return Building;
+    default: return MapPin;
+  }
+};
+
+const getTypeColor = (type: string) => {
+  switch (type) {
+    case 'emergency': return '#ef4444'; // red-500
+    case 'business': return '#10b981'; // green-500
+    case 'service': return '#3b82f6'; // blue-500
+    default: return '#6b7280'; // gray-500
+  }
+};
+
+// Map Component
+const MapComponent = ({
+  center,
+  zoom,
+  locations,
+  selectedLocation,
+  onLocationSelect
+}: {
+  center: google.maps.LatLngLiteral;
+  zoom: number;
+  locations: Location[];
+  selectedLocation: Location | null;
+  onLocationSelect: (location: Location) => void;
+}): JSX.Element => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [map, setMap] = useState<google.maps.Map>();
+  const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
+  const [trafficLayer, setTrafficLayer] = useState<google.maps.TrafficLayer>();
+  const [transitLayer, setTransitLayer] = useState<google.maps.TransitLayer>();
+  const [bicyclingLayer, setBicyclingLayer] = useState<google.maps.BicyclingLayer>();
+  const [showTraffic, setShowTraffic] = useState(false);
+  const [showTransit, setShowTransit] = useState(false);
+  const [showBicycling, setShowBicycling] = useState(false);
+  const [mapType, setMapType] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.ROADMAP);
+  const [streetViewService, setStreetViewService] = useState<google.maps.StreetViewService>();
+  const [streetViewPanorama, setStreetViewPanorama] = useState<google.maps.StreetViewPanorama>();
+  const [placesService, setPlacesService] = useState<google.maps.places.PlacesService>();
+  const [autocompleteService, setAutocompleteService] = useState<google.maps.places.AutocompleteService>();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchPredictions, setSearchPredictions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [directionsService, setDirectionsService] = useState<google.maps.DirectionsService>();
+  const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer>();
+  const [distanceMatrixService, setDistanceMatrixService] = useState<google.maps.DistanceMatrixService>();
+  const [routeOrigin, setRouteOrigin] = useState<Location | null>(null);
+  const [showDirections, setShowDirections] = useState(false);
+  const [distanceInfo, setDistanceInfo] = useState<{[key: string]: {distance: string, duration: string}}>({});
+  const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager>();
+  const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
+  const [showDrawingTools, setShowDrawingTools] = useState(false);
+
+  useEffect(() => {
+    if (ref.current && !map) {
+      const newMap = new google.maps.Map(ref.current, {
+        center,
+        zoom,
+        mapTypeId: mapType,
+        mapTypeControl: false, // We'll create custom controls
+        streetViewControl: true,
+        fullscreenControl: true,
+        zoomControl: true,
+        styles: [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          }
+        ],
+        gestureHandling: 'cooperative',
+        restriction: {
+          latLngBounds: {
+            north: -17.0, // Northern Chile
+            south: -56.0, // Southern Chile
+            west: -109.0, // Western Chile
+            east: -66.0  // Eastern Chile
+          },
+          strictBounds: false
+        }
+      });
+      setMap(newMap);
+
+      const newInfoWindow = new google.maps.InfoWindow();
+      setInfoWindow(newInfoWindow);
+
+      // Initialize layers
+      const traffic = new google.maps.TrafficLayer();
+      const transit = new google.maps.TransitLayer();
+      const bicycling = new google.maps.BicyclingLayer();
+      const streetViewSvc = new google.maps.StreetViewService();
+
+      // Initialize Places services
+      const placesSvc = new google.maps.places.PlacesService(newMap);
+      const autocompleteSvc = new google.maps.places.AutocompleteService();
+
+      // Initialize Directions services
+      const directionsSvc = new google.maps.DirectionsService();
+      const directionsRdr = new google.maps.DirectionsRenderer({
+        map: newMap,
+        suppressMarkers: true, // We'll show our own markers
+        polylineOptions: {
+          strokeColor: '#2563eb',
+          strokeWeight: 6,
+          strokeOpacity: 0.8
+        }
+      });
+
+      // Initialize Distance Matrix service
+      const distanceMatrixSvc = new google.maps.DistanceMatrixService();
+
+      // Initialize Drawing Manager
+      const drawingMgr = new google.maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: false, // We'll create custom controls
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [
+            google.maps.drawing.OverlayType.MARKER,
+            google.maps.drawing.OverlayType.POLYLINE,
+            google.maps.drawing.OverlayType.POLYGON,
+            google.maps.drawing.OverlayType.CIRCLE,
+            google.maps.drawing.OverlayType.RECTANGLE
+          ]
+        },
+        markerOptions: {
+          draggable: true,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#ff0000',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2
+          }
+        },
+        polylineOptions: {
+          strokeColor: '#ff0000',
+          strokeWeight: 3,
+          strokeOpacity: 0.8
+        },
+        polygonOptions: {
+          fillColor: '#ff0000',
+          fillOpacity: 0.3,
+          strokeColor: '#ff0000',
+          strokeWeight: 2,
+          strokeOpacity: 0.8
+        },
+        circleOptions: {
+          fillColor: '#ff0000',
+          fillOpacity: 0.3,
+          strokeColor: '#ff0000',
+          strokeWeight: 2,
+          strokeOpacity: 0.8
+        },
+        rectangleOptions: {
+          fillColor: '#ff0000',
+          fillOpacity: 0.3,
+          strokeColor: '#ff0000',
+          strokeWeight: 2,
+          strokeOpacity: 0.8
+        }
+      });
+
+      drawingMgr.setMap(newMap);
+
+      setTrafficLayer(traffic);
+      setTransitLayer(transit);
+      setBicyclingLayer(bicycling);
+      setStreetViewService(streetViewSvc);
+      setPlacesService(placesSvc);
+      setAutocompleteService(autocompleteSvc);
+      setDirectionsService(directionsSvc);
+      setDirectionsRenderer(directionsRdr);
+      setDistanceMatrixService(distanceMatrixSvc);
+      setDrawingManager(drawingMgr);
+
+      // Expose global functions for Street View and routing from info windows
+      (window as any).openStreetView = (lat: number, lng: number) => {
+        const streetView = newMap.getStreetView();
+        streetView.setPosition({ lat, lng });
+        streetView.setVisible(true);
+      };
+
+      (window as any).startRoute = (locationId: string) => {
+        const location = locations.find(l => l.id === locationId);
+        if (location) {
+          startRouteFrom(location);
+        }
+      };
+
+      (window as any).calculateRouteFromTo = (originId: string, destinationId: string) => {
+        const origin = locations.find(l => l.id === originId);
+        const destination = locations.find(l => l.id === destinationId);
+        if (origin && destination) {
+          calculateRoute(origin, destination);
+        }
+      };
+
+      (window as any).clearRoute = () => {
+        clearRoute();
+      };
+    }
+  }, [ref, map, center, zoom, mapType]);
+
+  useEffect(() => {
+    if (map && locations.length > 0) {
+      // Clear existing markers
+      markers.forEach(marker => marker.setMap(null));
+
+      const newMarkers = locations.map((location) => {
+        const marker = new google.maps.Marker({
+          position: { lat: location.coordinates[0], lng: location.coordinates[1] },
+          map,
+          title: location.name,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 12,
+            fillColor: getTypeColor(location.type),
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          }
+        });
+
+        marker.addListener('click', () => {
+          if (infoWindow) {
+            // Check for Street View availability
+            let streetViewAvailable = false;
+            if (streetViewService) {
+              const locationLatLng = new google.maps.LatLng(location.coordinates[0], location.coordinates[1]);
+              streetViewService.getPanorama({ location: locationLatLng, radius: 50 }, (data, status) => {
+                streetViewAvailable = status === google.maps.StreetViewStatus.OK;
+                updateInfoWindow();
+              });
+            } else {
+              updateInfoWindow();
+            }
+
+            const updateInfoWindow = () => {
+              const Icon = getTypeIcon(location.type);
+              const distanceDisplay = routeOrigin && distanceInfo[location.id]
+                ? `<div class="mt-1 p-2 bg-blue-50 rounded text-xs">
+                    <div class="text-blue-700 font-medium">Desde ${routeOrigin.name}:</div>
+                    <div class="text-blue-600">📍 ${distanceInfo[location.id].distance}</div>
+                    <div class="text-blue-600">⏱️ ${distanceInfo[location.id].duration}</div>
+                  </div>`
+                : '';
+
+              const routeButtons = routeOrigin && routeOrigin.id !== location.id
+                ? `<div class="mt-2 space-y-1">
+                    <button class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 w-full" onclick="calculateRouteFromTo('${routeOrigin.id}', '${location.id}')">Ver ruta desde ${routeOrigin.name}</button>
+                    <button class="text-xs bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 w-full" onclick="clearRoute()">Limpiar ruta</button>
+                  </div>`
+                : routeOrigin && routeOrigin.id === location.id
+                ? `<div class="mt-2">
+                    <button class="text-xs bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 w-full" onclick="clearRoute()">Cancelar ruta</button>
+                  </div>`
+                : `<div class="mt-2">
+                    <button class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 w-full" onclick="startRoute('${location.id}')">Cómo llegar</button>
+                  </div>`;
+
+              const categoryHtml = location.category ? `<p class="text-sm text-gray-600 mb-1">${location.category}</p>` : '';
+              const phoneHtml = location.phone ? `<p class="text-xs text-gray-500">${location.phone}</p>` : '';
+              const ratingHtml = location.rating ? `<p class="text-xs text-yellow-600">⭐ ${location.rating} estrellas</p>` : '';
+              const streetViewHtml = streetViewAvailable ? `<div class="mt-2"><button class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 w-full" onclick="openStreetView(${location.coordinates[0]}, ${location.coordinates[1]})">Ver Street View</button></div>` : '';
+
+              const content = `
+                <div class="p-3 max-w-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <div class="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                         style="background-color: ${getTypeColor(location.type)}">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">${location.name}</h3>
+                  </div>
+                  ${categoryHtml}
+                  <p class="text-sm text-gray-700 mb-2">${location.description}</p>
+                  <p class="text-xs text-gray-500">${location.address}</p>
+                  ${phoneHtml}
+                  ${ratingHtml}
+                  ${distanceDisplay}
+                  ${streetViewHtml}
+                  ${routeButtons}
+                </div>
+              `;
+
+              infoWindow.setContent(content);
+              infoWindow.open(map, marker);
+              onLocationSelect(location);
+            };
+          }
+        });
+
+        return marker;
+      });
+
+      setMarkers(newMarkers);
+
+      // Fit bounds to show all markers
+      if (newMarkers.length > 1) {
+        const bounds = new google.maps.LatLngBounds();
+        newMarkers.forEach(marker => {
+          bounds.extend(marker.getPosition()!);
+        });
+        map.fitBounds(bounds);
+
+        // Don't zoom in too much for single locations
+        google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+          if (map.getZoom()! > 15) {
+            map.setZoom(15);
+          }
+        });
+      }
+    }
+  }, [map, locations, infoWindow, onLocationSelect]);
+
+  // Handle layer toggles
+  useEffect(() => {
+    if (map && trafficLayer) {
+      if (showTraffic) {
+        trafficLayer.setMap(map);
+      } else {
+        trafficLayer.setMap(null);
+      }
+    }
+  }, [map, trafficLayer, showTraffic]);
+
+  useEffect(() => {
+    if (map && transitLayer) {
+      if (showTransit) {
+        transitLayer.setMap(map);
+      } else {
+        transitLayer.setMap(null);
+      }
+    }
+  }, [map, transitLayer, showTransit]);
+
+  useEffect(() => {
+    if (map && bicyclingLayer) {
+      if (showBicycling) {
+        bicyclingLayer.setMap(map);
+      } else {
+        bicyclingLayer.setMap(null);
+      }
+    }
+  }, [map, bicyclingLayer, showBicycling]);
+
+  // Handle map type changes
+  useEffect(() => {
+    if (map) {
+      map.setMapTypeId(mapType);
+    }
+  }, [map, mapType]);
+
+  // Handle drawing mode changes
+  useEffect(() => {
+    if (drawingManager) {
+      drawingManager.setDrawingMode(drawingMode);
+    }
+  }, [drawingManager, drawingMode]);
+
+  // Drawing functions
+  const toggleDrawingTools = () => {
+    setShowDrawingTools(!showDrawingTools);
+    if (showDrawingTools) {
+      setDrawingMode(null);
+    }
+  };
+
+  const setDrawingModeType = (mode: google.maps.drawing.OverlayType | null) => {
+    setDrawingMode(mode);
+  };
+
+  const clearAllDrawings = () => {
+    if (map) {
+      // Clear all overlays (this is a simplified approach)
+      // In a production app, you'd want to track and manage overlays individually
+      setDrawingMode(null);
+      // Note: This would need more sophisticated overlay management in a real app
+    }
+  };
+
+  // Search functionality
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.length > 2 && autocompleteService) {
+      const request = {
+        input: query,
+        componentRestrictions: { country: 'cl' }, // Restrict to Chile
+        fields: ['place_id', 'description', 'structured_formatting']
+      };
+      autocompleteService.getPlacePredictions(request, (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setSearchPredictions(predictions);
+          setShowSearchResults(true);
+        } else {
+          setSearchPredictions([]);
+          setShowSearchResults(false);
+        }
+      });
+    } else {
+      setSearchPredictions([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  const selectPlace = (placeId: string) => {
+    if (placesService && map) {
+      placesService.getDetails({ placeId, fields: ['geometry', 'name', 'formatted_address'] }, (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && place?.geometry?.location) {
+          map.setCenter(place.geometry.location);
+          map.setZoom(16);
+          setShowSearchResults(false);
+          setSearchQuery(place.name || '');
+        }
+      });
+    }
+  };
+
+  // Directions functionality
+  const calculateRoute = (origin: Location, destination: Location) => {
+    if (directionsService && directionsRenderer) {
+      const request: google.maps.DirectionsRequest = {
+        origin: { lat: origin.coordinates[0], lng: origin.coordinates[1] },
+        destination: { lat: destination.coordinates[0], lng: destination.coordinates[1] },
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false,
+        provideRouteAlternatives: false
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK && result) {
+          directionsRenderer.setDirections(result);
+          setShowDirections(true);
+
+          // Fit map to show the entire route
+          const bounds = new google.maps.LatLngBounds();
+          bounds.extend(result.routes[0].bounds.getNorthEast());
+          bounds.extend(result.routes[0].bounds.getSouthWest());
+          map?.fitBounds(bounds);
+        } else {
+          console.error('Directions request failed:', status);
+        }
+      });
+    }
+  };
+
+  const clearRoute = () => {
+    if (directionsRenderer) {
+      directionsRenderer.setDirections({ routes: [] });
+      setShowDirections(false);
+      setRouteOrigin(null);
+      setDistanceInfo({});
+    }
+  };
+
+  const startRouteFrom = (location: Location) => {
+    setRouteOrigin(location);
+    // Calculate distances to all other locations
+    const otherLocations = locations.filter(l => l.id !== location.id);
+    calculateDistances(location, otherLocations);
+  };
+
+  // Distance Matrix functionality
+  const calculateDistances = (origin: Location, destinations: Location[]) => {
+    if (distanceMatrixService && destinations.length > 0) {
+      const origins = [{ lat: origin.coordinates[0], lng: origin.coordinates[1] }];
+      const destCoords = destinations.map(dest => ({ lat: dest.coordinates[0], lng: dest.coordinates[1] }));
+
+      const request: google.maps.DistanceMatrixRequest = {
+        origins,
+        destinations: destCoords,
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC
+      };
+
+      distanceMatrixService.getDistanceMatrix(request, (response, status) => {
+        if (status === google.maps.DistanceMatrixStatus.OK && response) {
+          const newDistanceInfo: {[key: string]: {distance: string, duration: string}} = {};
+
+          response.rows[0].elements.forEach((element, index) => {
+            if (element.status === google.maps.DistanceMatrixElementStatus.OK) {
+              const destLocation = destinations[index];
+              newDistanceInfo[destLocation.id] = {
+                distance: element.distance.text,
+                duration: element.duration.text
+              };
+            }
+          });
+
+          setDistanceInfo(newDistanceInfo);
+        }
+      });
+    }
+  };
+
+  // Add Street View check to markers
+  const checkStreetView = (location: Location) => {
+    if (streetViewService) {
+      const locationLatLng = new google.maps.LatLng(location.coordinates[0], location.coordinates[1]);
+      streetViewService.getPanorama({ location: locationLatLng, radius: 50 }, (data, status) => {
+        if (status === google.maps.StreetViewStatus.OK) {
+          // Street View is available for this location
+          console.log(`Street View available for ${location.name}`);
+        }
+      });
+    }
+  };
+
+  return (
+    <div>Test</div>
+  );
+};
+
+// Loading Component
+function MapLoadingComponent(): ReactElement {
+              <Input
+                placeholder="Buscar lugares en Pinto Los Pellines..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pr-4"
+              />
+              {showSearchResults && searchPredictions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20">
+                  {searchPredictions.map((prediction) => (
+                    <button
+                      key={prediction.place_id}
+                      onClick={() => selectPlace(prediction.place_id!)}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="text-sm font-medium text-gray-900">
+                        {prediction.structured_formatting?.main_text}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {prediction.structured_formatting?.secondary_text}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Map Type and Layer Controls */}
+        <div className="flex justify-end space-x-2">
+          {/* Map Type Controls */}
+          <Card className="bg-white/95 backdrop-blur-sm">
+            <CardContent className="p-2">
+              <div className="flex gap-1">
+                <Button
+                  size="sm"
+                  variant={mapType === google.maps.MapTypeId.ROADMAP ? "default" : "outline"}
+                  onClick={() => setMapType(google.maps.MapTypeId.ROADMAP)}
+                  className="px-2"
+                  title="Vista de mapa"
+                >
+                  <Map className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant={mapType === google.maps.MapTypeId.SATELLITE ? "default" : "outline"}
+                  onClick={() => setMapType(google.maps.MapTypeId.SATELLITE)}
+                  className="px-2"
+                  title="Vista satelital"
+                >
+                  <Satellite className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant={mapType === google.maps.MapTypeId.TERRAIN ? "default" : "outline"}
+                  onClick={() => setMapType(google.maps.MapTypeId.TERRAIN)}
+                  className="px-2"
+                  title="Vista de terreno"
+                >
+                  <Layers className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+        {/* Layer Controls */}
+        <Card className="bg-white/95 backdrop-blur-sm">
+          <CardContent className="p-2">
+            <div className="space-y-1">
+              <Button
+                size="sm"
+                variant={showTraffic ? "default" : "outline"}
+                onClick={() => setShowTraffic(!showTraffic)}
+                className="w-full justify-start text-xs"
+                title="Mostrar/ocultar tráfico"
+              >
+                <Route className="w-3 h-3 mr-1" />
+                Tráfico
+              </Button>
+              <Button
+                size="sm"
+                variant={showTransit ? "default" : "outline"}
+                onClick={() => setShowTransit(!showTransit)}
+                className="w-full justify-start text-xs"
+                title="Mostrar/ocultar transporte público"
+              >
+                <Building className="w-3 h-3 mr-1" />
+                Transporte
+              </Button>
+              <Button
+                size="sm"
+                variant={showBicycling ? "default" : "outline"}
+                onClick={() => setShowBicycling(!showBicycling)}
+                className="w-full justify-start text-xs"
+                title="Mostrar/ocultar rutas de bicicleta"
+              >
+                <Eye className="w-3 h-3 mr-1" />
+                Bicicleta
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Drawing Tools */}
+        <Card className="bg-white/95 backdrop-blur-sm">
+          <CardContent className="p-2">
+            <div className="space-y-1">
+              <Button
+                size="sm"
+                variant={showDrawingTools ? "default" : "outline"}
+                onClick={toggleDrawingTools}
+                className="w-full justify-start text-xs"
+                title="Herramientas de dibujo"
+              >
+                <PenTool className="w-3 h-3 mr-1" />
+                Dibujar
+              </Button>
+              {showDrawingTools && (
+                <>
+                  <Button
+                    size="sm"
+                    variant={drawingMode === google.maps.drawing.OverlayType.MARKER ? "default" : "outline"}
+                    onClick={() => setDrawingModeType(google.maps.drawing.OverlayType.MARKER)}
+                    className="w-full justify-start text-xs"
+                    title="Dibujar marcador"
+                  >
+                    <MapPin className="w-3 h-3 mr-1" />
+                    Marcador
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={drawingMode === google.maps.drawing.OverlayType.POLYLINE ? "default" : "outline"}
+                    onClick={() => setDrawingModeType(google.maps.drawing.OverlayType.POLYLINE)}
+                    className="w-full justify-start text-xs"
+                    title="Dibujar línea"
+                  >
+                    <Minus className="w-3 h-3 mr-1" />
+                    Línea
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={drawingMode === google.maps.drawing.OverlayType.POLYGON ? "default" : "outline"}
+                    onClick={() => setDrawingModeType(google.maps.drawing.OverlayType.POLYGON)}
+                    className="w-full justify-start text-xs"
+                    title="Dibujar polígono"
+                  >
+                    <PenTool className="w-3 h-3 mr-1" />
+                    Polígono
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={drawingMode === google.maps.drawing.OverlayType.CIRCLE ? "default" : "outline"}
+                    onClick={() => setDrawingModeType(google.maps.drawing.OverlayType.CIRCLE)}
+                    className="w-full justify-start text-xs"
+                    title="Dibujar círculo"
+                  >
+                    <Circle className="w-3 h-3 mr-1" />
+                    Círculo
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={drawingMode === google.maps.drawing.OverlayType.RECTANGLE ? "default" : "outline"}
+                    onClick={() => setDrawingModeType(google.maps.drawing.OverlayType.RECTANGLE)}
+                    className="w-full justify-start text-xs"
+                    title="Dibujar rectángulo"
+                  >
+                    <Square className="w-3 h-3 mr-1" />
+                    Rectángulo
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={clearAllDrawings}
+                    className="w-full justify-start text-xs text-red-600 hover:text-red-700"
+                    title="Limpiar dibujos"
+                  >
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Limpiar
+                  </Button>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+// Loading Component
+function MapLoadingComponent(): ReactElement {
+  return (
+    <div className="flex items-center justify-center w-full h-full bg-gray-100">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+        <p className="text-gray-600">Cargando mapa...</p>
+      </div>
+    </div>
+  );
+}
+
+// Error Component
+function MapErrorComponent(): ReactElement {
+  return (
+    <div className="flex items-center justify-center w-full h-full bg-gray-100">
+      <div className="text-center p-4">
+        <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-2" />
+        <p className="text-gray-600 mb-2">Error al cargar el mapa</p>
+        <p className="text-sm text-gray-500">
+          Verifica que la clave de API de Google Maps esté configurada correctamente.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Main Google Maps Component
+export default function GoogleMap({
+  locations,
+  selectedLocation,
+  onLocationSelect,
+  className = ''
+}: GoogleMapProps) {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+  if (!apiKey) {
+    return <MapErrorComponent />;
+  }
+
+  // Default center for Pinto Los Pellines, Chile
+  const defaultCenter: google.maps.LatLngLiteral = {
+    lat: -36.698,
+    lng: -71.897
+  };
+
+  const render = (status: Status): ReactElement => {
+    switch (status) {
+      case Status.LOADING:
+        return <MapLoadingComponent />;
+      case Status.FAILURE:
+        return <MapErrorComponent />;
+      case Status.SUCCESS:
+        return (
+          <MapComponent
+            center={defaultCenter}
+            zoom={13}
+            locations={locations}
+            selectedLocation={selectedLocation}
+            onLocationSelect={onLocationSelect}
+          />
+        );
+      default:
+        return <MapLoadingComponent />;
+    }
+  };
+
+  return (
+    <div className={`relative ${className}`}>
+      <Wrapper
+        apiKey={apiKey}
+        libraries={['places', 'geometry', 'drawing', 'visualization']}
+        render={render}
+      />
+    </div>
+  );
+}
