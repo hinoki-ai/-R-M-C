@@ -1,5 +1,30 @@
 // Dashboard navigation utilities and spacing constants
-import { IconActivity, IconAlertTriangle, IconBell, IconBuilding, IconCalendar, IconCamera, IconChartBar, IconFileText, IconHome, IconMail, IconMapPin, IconMessage, IconPhone, IconPlus, IconRadio, IconSearch, IconSettings, IconShield, IconTrendingUp, IconUsers } from '@tabler/icons-react';
+import {
+  IconActivity,
+  IconAlertTriangle,
+  IconBell,
+  IconBuilding,
+  IconCalendar,
+  IconCamera,
+  IconChartBar,
+  IconCloud,
+  IconFileText,
+  IconHome,
+  IconMail,
+  IconMap,
+  IconMapPin,
+  IconMessage,
+  IconPhone,
+  IconPlus,
+  IconRadio,
+  IconSearch,
+  IconSettings,
+  IconShield,
+  IconSparkles,
+  IconTrendingUp,
+  IconTrophy,
+  IconUsers,
+} from '@tabler/icons-react';
 
 // Spacing constants for consistent dashboard layout
 export const SPACING = {
@@ -7,7 +32,7 @@ export const SPACING = {
   page: {
     header: 'px-4 lg:px-6',
     container: 'space-y-8',
-    section: 'space-y-6'
+    section: 'space-y-6',
   },
 
   // Grid spacing
@@ -16,8 +41,8 @@ export const SPACING = {
     cols: {
       2: 'grid-cols-1 md:grid-cols-2',
       3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-      4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-    }
+      4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+    },
   },
 
   // Card spacing
@@ -25,22 +50,22 @@ export const SPACING = {
     padding: 'p-6',
     header: 'pb-4',
     content: 'space-y-4',
-    footer: 'pt-4'
+    footer: 'pt-4',
   },
 
   // Element spacing
   element: {
     tight: 'space-y-2',
     normal: 'space-y-3',
-    loose: 'space-y-4'
+    loose: 'space-y-4',
   },
 
   // Component spacing
   component: {
     icon: 'p-3',
     badge: 'gap-2',
-    button: 'gap-2'
-  }
+    button: 'gap-2',
+  },
 } as const;
 
 // Dashboard navigation structure
@@ -55,267 +80,240 @@ export interface DashboardNavItem {
 
 export const dashboardNavigation: DashboardNavItem[] = [
   {
-    title: 'Inicio',
+    title: 'Resumen',
     url: '/dashboard',
     icon: IconHome,
-    description: 'Panel principal y resumen general'
+    description: 'Resumen del panel y analítica',
   },
   {
     title: 'Comunidad',
     url: '/dashboard/community',
     icon: IconUsers,
-    description: 'Gestión de miembros y directorio',
+    description: 'Gestión y comunicación de la comunidad',
     children: [
       {
-        title: 'Directorio',
-        url: '/dashboard/community',
-        icon: IconUsers,
-        description: 'Lista de miembros activos'
-      },
-      {
-        title: 'Nuevos Miembros',
-        url: '/dashboard/community/new',
-        icon: IconPlus,
-        description: 'Registro de nuevos vecinos'
-      }
-    ]
-  },
-  {
-    title: 'Documentos',
-    url: '/dashboard/documents',
-    icon: IconFileText,
-    description: 'Documentos oficiales y archivos',
-    children: [
-      {
-        title: 'Estatutos',
-        url: '/dashboard/documents/statutes',
-        icon: IconFileText,
-        description: 'Estatutos y reglamentos'
-      },
-      {
-        title: 'Actas',
-        url: '/dashboard/documents/meetings',
-        icon: IconFileText,
-        description: 'Actas de reuniones'
-      },
-      {
-        title: 'Proyectos',
-        url: '/dashboard/documents/projects',
-        icon: IconFileText,
-        description: 'Documentos de proyectos'
-      }
-    ]
-  },
-  {
-    title: 'Eventos',
-    url: '/dashboard/events',
-    icon: IconCalendar,
-    description: 'Calendario y eventos comunitarios',
-    children: [
-      {
-        title: 'Calendario',
-        url: '/dashboard/events',
-        icon: IconCalendar,
-        description: 'Vista mensual del calendario'
-      },
-      {
-        title: 'Crear Evento',
-        url: '/dashboard/events/create',
-        icon: IconPlus,
-        description: 'Programar nuevo evento'
-      }
-    ]
-  },
-  {
-    title: 'Anuncios',
-    url: '/dashboard/announcements',
-    icon: IconMessage,
-    description: 'Comunicados y noticias',
-    children: [
-      {
-        title: 'Todos los Anuncios',
+        title: 'Anuncios',
         url: '/dashboard/announcements',
         icon: IconMessage,
-        description: 'Lista completa de anuncios'
+        description: 'Anuncios y noticias de la comunidad',
       },
       {
-        title: 'Nuevo Anuncio',
-        url: '/dashboard/announcements/create',
-        icon: IconPlus,
-        description: 'Crear nuevo comunicado'
-      }
-    ]
-  },
-  {
-    title: 'Radio',
-    url: '/dashboard/radio',
-    icon: IconRadio,
-    description: 'Estaciones de radio comunitarias',
-    children: [
-      {
-        title: 'Reproductor',
-        url: '/dashboard/radio',
-        icon: IconRadio,
-        description: 'Escuchar estaciones de radio'
-      },
-      {
-        title: 'Favoritas',
-        url: '/dashboard/radio/favorites',
-        icon: IconRadio,
-        description: 'Mis estaciones favoritas'
-      }
-    ]
-  },
-  {
-    title: 'Emergencias',
-    url: '/dashboard/emergencies',
-    icon: IconAlertTriangle,
-    description: 'Sistema de emergencias y alertas',
-    children: [
-      {
-        title: 'Alertas Activas',
-        url: '/dashboard/emergencies',
-        icon: IconAlertTriangle,
-        description: 'Emergencias actuales'
-      },
-      {
-        title: 'Contactos',
-        url: '/dashboard/emergencies/contacts',
-        icon: IconPhone,
-        description: 'Números de emergencia'
-      },
-      {
-        title: 'Protocolos',
-        url: '/dashboard/emergencies/protocols',
-        icon: IconShield,
-        description: 'Guías de procedimiento'
-      }
-    ]
-  },
-  {
-    title: 'Cámaras',
-    url: '/dashboard/cameras',
-    icon: IconCamera,
-    description: 'Sistema de videovigilancia',
-    children: [
-      {
-        title: 'Vista General',
-        url: '/dashboard/cameras',
-        icon: IconCamera,
-        description: 'Todas las cámaras activas'
-      },
-      {
-        title: 'Agregar Cámara',
-        url: '/dashboard/cameras/add',
-        icon: IconPlus,
-        description: 'Instalar nueva cámara'
+        title: 'Comunidad',
+        url: '/dashboard/community',
+        icon: IconUsers,
+        description: 'Directorio y gestión de miembros',
       },
       {
         title: 'Eventos',
-        url: '/dashboard/cameras/events',
-        icon: IconActivity,
-        description: 'Registro de movimientos'
-      }
-    ]
+        url: '/dashboard/events',
+        icon: IconCalendar,
+        description: 'Eventos y calendario de la comunidad',
+      },
+      {
+        title: 'Radio',
+        url: '/dashboard/radio',
+        icon: IconRadio,
+        description: 'Emisoras de radio de la comunidad',
+      },
+    ],
   },
   {
-    title: 'Mantenimiento',
-    url: '/dashboard/maintenance',
-    icon: IconBuilding,
-    description: 'Solicitudes y seguimiento',
+    title: 'Servicios',
+    url: '/dashboard/cameras',
+    icon: IconShield,
+    description: 'Servicios y utilidades comunitarias',
     children: [
       {
-        title: 'Solicitudes',
+        title: 'Cámaras',
+        url: '/dashboard/cameras',
+        icon: IconCamera,
+        description: 'Cámaras de seguridad y monitoreo',
+      },
+      {
+        title: 'Emergencias',
+        url: '/dashboard/emergencies',
+        icon: IconAlertTriangle,
+        description: 'Alertas y protocolos de emergencia',
+      },
+      {
+        title: 'Mantenimiento',
         url: '/dashboard/maintenance',
         icon: IconBuilding,
-        description: 'Trabajos pendientes'
+        description: 'Solicitudes de mantenimiento y seguimiento',
       },
       {
-        title: 'Historial',
-        url: '/dashboard/maintenance/history',
-        icon: IconChartBar,
-        description: 'Trabajos completados'
+        title: 'Clima',
+        url: '/dashboard/weather',
+        icon: IconCloud,
+        description: 'Información meteorológica y alertas',
       },
       {
-        title: 'Nueva Solicitud',
-        url: '/dashboard/maintenance/create',
-        icon: IconPlus,
-        description: 'Reportar problema'
-      }
-    ]
+        title: 'Mapas',
+        url: '/dashboard/maps',
+        icon: IconMap,
+        description: 'Mapas y ubicaciones de la comunidad',
+      },
+      {
+        title: 'Documentos',
+        url: '/dashboard/documents',
+        icon: IconFileText,
+        description: 'Documentos y archivos oficiales',
+      },
+    ],
   },
   {
-    title: 'Pagos',
+    title: 'Finanzas',
     url: '/dashboard/payments',
     icon: IconTrendingUp,
-    description: 'Finanzas y contribuciones',
+    description: 'Gestión financiera y pagos',
     children: [
       {
-        title: 'Resumen',
+        title: 'Pagos',
         url: '/dashboard/payments',
         icon: IconTrendingUp,
-        description: 'Estado de pagos'
+        description: 'Resumen e historial de pagos',
       },
       {
-        title: 'Historial',
-        url: '/dashboard/payments/history',
-        icon: IconChartBar,
-        description: 'Pagos realizados'
+        title: 'Ingresos',
+        url: '/dashboard/revenue',
+        icon: IconTrendingUp,
+        description: 'Analítica y seguimiento de ingresos',
       },
       {
-        title: 'Métodos',
-        url: '/dashboard/payments/methods',
-        icon: IconSettings,
-        description: 'Configurar pagos'
-      }
-    ]
+        title: 'Contribuciones',
+        url: '/dashboard/payment-gated',
+        icon: IconSparkles,
+        description: 'Contribuciones de la comunidad',
+      },
+      {
+        title: 'Clasificación',
+        url: '/dashboard/ranking',
+        icon: IconTrophy,
+        description: 'Clasificación de contribuciones',
+      },
+    ],
   },
   {
-    title: 'Configuración',
-    url: '/dashboard/settings',
+    title: 'Administración',
+    url: '/dashboard/admin',
     icon: IconSettings,
-    description: 'Preferencias y configuración',
+    description: 'Funciones y ajustes administrativos',
     children: [
       {
-        title: 'General',
+        title: 'Panel de Administración',
+        url: '/dashboard/admin',
+        icon: IconSettings,
+        description: 'Resumen administrativo',
+      },
+      {
+        title: 'Protocolos de Emergencia',
+        url: '/dashboard/admin/emergency-protocols',
+        icon: IconShield,
+        description: 'Gestionar protocolos de emergencia',
+      },
+      {
+        title: 'Mantenimiento',
+        url: '/dashboard/admin/maintenance',
+        icon: IconBuilding,
+        description: 'Gestionar solicitudes de mantenimiento',
+      },
+      {
+        title: 'Proyectos',
+        url: '/dashboard/admin/projects',
+        icon: IconSparkles,
+        description: 'Proyectos comunitarios',
+      },
+      {
+        title: 'Cámaras',
+        url: '/dashboard/admin/cameras',
+        icon: IconCamera,
+        description: 'Administración de cámaras',
+      },
+      {
+        title: 'Calendario',
+        url: '/dashboard/admin/calendar',
+        icon: IconCalendar,
+        description: 'Gestión de calendario',
+      },
+      {
+        title: 'Contactos',
+        url: '/dashboard/admin/contacts',
+        icon: IconPhone,
+        description: 'Gestión de contactos',
+      },
+      {
+        title: 'Radio',
+        url: '/dashboard/admin/radio',
+        icon: IconRadio,
+        description: 'Gestión de estaciones de radio',
+      },
+      {
+        title: 'Clima',
+        url: '/dashboard/admin/weather',
+        icon: IconCloud,
+        description: 'Administración del clima',
+      },
+      {
+        title: 'Clientes',
+        url: '/dashboard/customers',
+        icon: IconUsers,
+        description: 'Gestión de clientes',
+      },
+      {
+        title: 'Configuración',
         url: '/dashboard/settings',
         icon: IconSettings,
-        description: 'Configuración básica'
+        description: 'Ajustes y preferencias del sistema',
       },
-      {
-        title: 'Notificaciones',
-        url: '/dashboard/settings/notifications',
-        icon: IconBell,
-        description: 'Preferencias de alertas'
-      },
-      {
-        title: 'Privacidad',
-        url: '/dashboard/settings/privacy',
-        icon: IconShield,
-        description: 'Configuración de privacidad'
-      }
-    ]
-  }
+    ],
+  },
 ];
 
 // Utility functions for navigation
-export function getBreadcrumbs(pathname: string = ''): Array<{ label: string; url: string }> {
+export function getBreadcrumbs(
+  pathname: string = ''
+): Array<{ label: string; url: string }> {
   const breadcrumbs: Array<{ label: string; url: string }> = [
-    { label: 'Dashboard', url: '/dashboard' }
+    { label: 'Panel', url: '/dashboard' },
   ];
 
   const pathSegments = pathname.split('/').filter(Boolean);
   let currentPath = '';
 
-  for (const segment of pathSegments) {
+  // Fallback labels for known subsections not present in dashboardNavigation
+  const fallbackLabels: Record<string, string> = {
+    analytics: 'Analítica',
+    'payment-methods': 'Métodos de Pago',
+    add: 'Agregar',
+    events: 'Eventos',
+    lsvision: 'Monitoreo LS Vision',
+    favorites: 'Favoritos',
+  };
+
+  const toTitle = (slug: string) =>
+    slug
+      .split('-')
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join(' ');
+
+  for (let i = 0; i < pathSegments.length; i++) {
+    const segment = pathSegments[i];
     currentPath += `/${segment}`;
     const navItem = findNavItemByUrl(currentPath);
 
     if (navItem) {
       breadcrumbs.push({
         label: navItem.title,
-        url: currentPath
+        url: currentPath,
       });
+    } else {
+      // Add graceful fallbacks only for deeper dashboard paths
+      // e.g. /dashboard/cameras/lsvision -> "Monitoreo LS Vision"
+      const isUnderDashboard = currentPath.startsWith('/dashboard/');
+      if (isUnderDashboard) {
+        const label = fallbackLabels[segment] ?? toTitle(segment);
+        breadcrumbs.push({ label, url: currentPath });
+      }
     }
   }
 
