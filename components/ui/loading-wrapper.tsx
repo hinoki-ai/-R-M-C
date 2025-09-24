@@ -7,7 +7,10 @@ interface DashboardSectionProps {
   children: React.ReactNode;
 }
 
-export function DashboardSection({ isLoading = false, children }: DashboardSectionProps) {
+export function DashboardSection({
+  isLoading = false,
+  children,
+}: DashboardSectionProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">

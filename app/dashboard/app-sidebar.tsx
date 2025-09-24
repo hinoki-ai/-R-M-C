@@ -3,6 +3,7 @@
 import {
   IconActivity,
   IconAlertTriangle,
+  IconBell,
   IconBuilding,
   IconCalendar,
   IconCalendarEvent,
@@ -26,6 +27,7 @@ import {
   IconSearch,
   IconSettings,
   IconShield,
+  IconShoppingCart,
   IconSparkles,
   IconTool,
   IconTrendingUp,
@@ -34,280 +36,441 @@ import {
   IconUsers,
   IconUsersGroup,
 } from '@tabler/icons-react';
+import { useNavigation, useCurrentRoute, ROUTES } from '@/lib/router-context';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useClerk, useUser } from '@clerk/nextjs';
+import { dark } from '@clerk/themes';
+import { useTheme } from 'next-themes';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 
-import { NavMain } from '@/app/dashboard/nav-main';
-import { NavSecondary } from '@/app/dashboard/nav-secondary';
-import { NavUser } from '@/app/dashboard/nav-user';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-} from '@/components/ui/sidebar';
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 export function AppSidebar() {
-  const pathname = usePathname();
+  const { navigate } = useNavigation();
+  const currentRoute = useCurrentRoute();
+  const { openUserProfile } = useClerk();
+  const { theme } = useTheme();
+  const { user: clerkUser } = useUser();
+
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    'Vista General':
+      currentRoute.path === '/dashboard' ||
+      currentRoute.path === '/dashboard/dashboard-charts' ||
+      false,
+    Comunidad:
+      currentRoute.path.startsWith('/dashboard/announcements') ||
+      currentRoute.path.startsWith('/dashboard/community') ||
+      currentRoute.path.startsWith('/dashboard/events') ||
+      currentRoute.path.startsWith('/dashboard/calendar') ||
+      currentRoute.path.startsWith('/dashboard/radio') ||
+      currentRoute.path.startsWith('/dashboard/contacts') ||
+      currentRoute.path.startsWith('/dashboard/businesses') ||
+      false,
+    Servicios:
+      currentRoute.path.startsWith('/dashboard/cameras') ||
+      currentRoute.path.startsWith('/dashboard/emergencies') ||
+      currentRoute.path.startsWith('/dashboard/maintenance') ||
+      currentRoute.path.startsWith('/dashboard/weather') ||
+      currentRoute.path.startsWith('/dashboard/maps') ||
+      currentRoute.path.startsWith('/dashboard/documents') ||
+      currentRoute.path.startsWith('/dashboard/photos') ||
+      currentRoute.path.startsWith('/dashboard/emergency-info') ||
+      false,
+    Finanzas:
+      currentRoute.path.startsWith('/dashboard/payments') ||
+      currentRoute.path.startsWith('/dashboard/revenue') ||
+      currentRoute.path.startsWith('/dashboard/payment-gated') ||
+      currentRoute.path.startsWith('/dashboard/ranking') ||
+      false,
+    Administración:
+      currentRoute.path.startsWith('/dashboard/admin') ||
+      currentRoute.path.startsWith('/dashboard/customers') ||
+      false,
+    Herramientas:
+      currentRoute.path === '/dashboard/search' ||
+      currentRoute.path === '/dashboard/notifications' ||
+      currentRoute.path === '/dashboard/settings' ||
+      currentRoute.path === '/dashboard/help' ||
+      false,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const isItemActive = (url: string) => currentRoute.path === url;
 
   const data = {
     navMain: [
       {
-        title: 'Dashboard Overview',
-        url: '/dashboard',
+        title: 'Vista General',
+        url: ROUTES.DASHBOARD,
         icon: IconDashboard,
         items: [
           {
-            title: 'Overview',
-            url: '/dashboard',
+            title: 'Panel Principal',
+            url: ROUTES.DASHBOARD,
             icon: IconHome,
           },
           {
-            title: 'Analytics',
-            url: '/dashboard/revenue/analytics',
-            icon: IconChartBar,
-          },
-          {
-            title: 'Charts',
-            url: '/dashboard/revenue',
+            title: 'Gráficos del Dashboard',
+            url: ROUTES.DASHBOARD_CHARTS,
             icon: IconChartLine,
           },
         ],
       },
       {
-        title: 'Security & Safety',
-        url: '#',
-        icon: IconShield,
-        items: [
-          {
-            title: 'Cameras',
-            url: '/dashboard/cameras',
-            icon: IconCamera,
-          },
-          {
-            title: 'Camera Events',
-            url: '/dashboard/cameras/events',
-            icon: IconEye,
-          },
-          {
-            title: 'LS Vision Monitor',
-            url: '/dashboard/cameras/lsvision',
-            icon: IconActivity,
-          },
-          {
-            title: 'Emergencies',
-            url: '/dashboard/emergencies',
-            icon: IconAlertTriangle,
-          },
-          {
-            title: 'Maintenance',
-            url: '/dashboard/maintenance',
-            icon: IconTool,
-          },
-        ],
-      },
-      {
-        title: 'Community Hub',
+        title: 'Comunidad',
         url: '#',
         icon: IconUsers,
         items: [
           {
-            title: 'Announcements',
-            url: '/dashboard/announcements',
-            icon: IconFileText,
+            title: 'Anuncios',
+            url: ROUTES.DASHBOARD_ANNOUNCEMENTS,
+            icon: IconMessageCircle,
           },
           {
-            title: 'Community',
-            url: '/dashboard/community',
-            icon: IconUsersGroup,
+            title: 'Calendario',
+            url: ROUTES.DASHBOARD_CALENDAR,
+            icon: IconCalendar,
           },
           {
-            title: 'Events',
-            url: '/dashboard/events',
+            title: 'Eventos',
+            url: ROUTES.DASHBOARD_EVENTS,
             icon: IconCalendarEvent,
           },
           {
-            title: 'Calendar',
-            url: '/dashboard/calendar',
-            icon: IconCalendar,
+            title: 'Contactos',
+            url: ROUTES.DASHBOARD_CONTACTS,
+            icon: IconPhone,
           },
-        ],
-      },
-      {
-        title: 'Communication',
-        url: '#',
-        icon: IconMessageCircle,
-        items: [
           {
-            title: 'Radio',
-            url: '/dashboard/radio',
+            title: 'Radio Comunitaria',
+            url: ROUTES.DASHBOARD_RADIO,
             icon: IconRadio,
           },
           {
-            title: 'Notifications',
-            url: '/dashboard/notifications',
-            icon: IconMail,
+            title: 'Favoritos de Radio',
+            url: ROUTES.DASHBOARD_RADIO_FAVORITES,
+            icon: IconRadio,
+          },
+          {
+            title: 'Comunidad',
+            url: ROUTES.DASHBOARD_COMMUNITY,
+            icon: IconUsersGroup,
+          },
+          {
+            title: 'Negocios Locales',
+            url: ROUTES.DASHBOARD_BUSINESSES,
+            icon: IconBuilding,
           },
         ],
       },
       {
-        title: 'Financial Management',
+        title: 'Servicios',
+        url: '#',
+        icon: IconTool,
+        items: [
+          {
+            title: 'Cámaras de Seguridad',
+            url: ROUTES.DASHBOARD_CAMERAS,
+            icon: IconCamera,
+          },
+          {
+            title: 'Agregar Cámara',
+            url: ROUTES.DASHBOARD_CAMERAS_ADD,
+            icon: IconCamera,
+          },
+          {
+            title: 'Eventos de Cámaras',
+            url: ROUTES.DASHBOARD_CAMERAS_EVENTS,
+            icon: IconEye,
+          },
+          {
+            title: 'Monitoreo LS Vision',
+            url: ROUTES.DASHBOARD_CAMERAS_LSVISION,
+            icon: IconShield,
+          },
+          {
+            title: 'Mantenimiento',
+            url: ROUTES.DASHBOARD_MAINTENANCE,
+            icon: IconTool,
+          },
+          {
+            title: 'Emergencias',
+            url: ROUTES.DASHBOARD_EMERGENCIES,
+            icon: IconAlertTriangle,
+          },
+          {
+            title: 'Información de Emergencia',
+            url: ROUTES.DASHBOARD_EMERGENCY_INFO,
+            icon: IconAlertTriangle,
+          },
+          {
+            title: 'Clima',
+            url: ROUTES.DASHBOARD_WEATHER,
+            icon: IconCloud,
+          },
+          {
+            title: 'Mapas',
+            url: ROUTES.DASHBOARD_MAPS,
+            icon: IconMap,
+          },
+          {
+            title: 'Documentos',
+            url: ROUTES.DASHBOARD_DOCUMENTS,
+            icon: IconFileText,
+          },
+          {
+            title: 'Fotos',
+            url: ROUTES.DASHBOARD_PHOTOS,
+            icon: IconFileTypography,
+          },
+        ],
+      },
+      {
+        title: 'Finanzas',
         url: '#',
         icon: IconCreditCard,
         items: [
           {
-            title: 'Payments',
-            url: '/dashboard/payments',
-            icon: IconReceipt,
-          },
-          {
-            title: 'Revenue',
-            url: '/dashboard/revenue',
+            title: 'Ingresos',
+            url: ROUTES.DASHBOARD_REVENUE,
             icon: IconTrendingUp,
           },
           {
-            title: 'Payment Methods',
-            url: '/dashboard/revenue/payment-methods',
+            title: 'Análisis de Ingresos',
+            url: ROUTES.DASHBOARD_ANALYTICS,
+            icon: IconChartBar,
+          },
+          {
+            title: 'Métodos de Pago',
+            url: ROUTES.DASHBOARD_REVENUE_PAYMENT_METHODS,
             icon: IconCreditCard,
           },
           {
-            title: 'Contributions',
-            url: '/dashboard/payment-gated',
-            icon: IconSparkles,
+            title: 'Pagos',
+            url: ROUTES.DASHBOARD_PAYMENTS,
+            icon: IconReceipt,
+          },
+          {
+            title: 'Contribuciones',
+            url: ROUTES.DASHBOARD_CONTRIBUTIONS,
+            icon: IconShield,
           },
           {
             title: 'Ranking',
-            url: '/dashboard/ranking',
+            url: ROUTES.DASHBOARD_RANKING,
             icon: IconTrophy,
           },
         ],
       },
       {
-        title: 'Resources & Information',
-        url: '#',
-        icon: IconFileText,
+        title: 'Administración',
+        url: ROUTES.DASHBOARD_ADMIN,
+        icon: IconSettings,
         items: [
           {
-            title: 'Weather',
-            url: '/dashboard/weather',
-            icon: IconCloud,
+            title: 'Panel Admin',
+            url: ROUTES.DASHBOARD_ADMIN,
+            icon: IconSettings,
           },
           {
-            title: 'Emergency Info',
-            url: '/dashboard/emergency-info',
-            icon: IconAlertTriangle,
+            title: 'Clientes',
+            url: ROUTES.DASHBOARD_CUSTOMERS,
+            icon: IconUsers,
           },
           {
-            title: 'Documents',
-            url: '/dashboard/documents',
-            icon: IconFileTypography,
+            title: 'Anuncios Admin',
+            url: ROUTES.DASHBOARD_ADMIN_ANNOUNCEMENTS,
+            icon: IconMessageCircle,
           },
           {
-            title: 'Photo Gallery',
-            url: '/dashboard/photos',
+            title: 'Comercios Admin',
+            url: ROUTES.DASHBOARD_ADMIN_BUSINESSES,
+            icon: IconShoppingCart,
+          },
+          {
+            title: 'Calendario Admin',
+            url: ROUTES.DASHBOARD_ADMIN_CALENDAR,
+            icon: IconCalendar,
+          },
+          {
+            title: 'Cámaras Admin',
+            url: ROUTES.DASHBOARD_ADMIN_CAMERAS,
             icon: IconCamera,
           },
           {
-            title: 'Business Directory',
-            url: '/dashboard/businesses',
-            icon: IconBuilding,
-          },
-          {
-            title: 'Contacts',
-            url: '/dashboard/contacts',
+            title: 'Contactos Admin',
+            url: ROUTES.DASHBOARD_ADMIN_CONTACTS,
             icon: IconPhone,
           },
           {
-            title: 'Maps',
-            url: '/dashboard/maps',
-            icon: IconMap,
+            title: 'Protocolos de Emergencia',
+            url: ROUTES.DASHBOARD_ADMIN_EMERGENCY_PROTOCOLS,
+            icon: IconAlertTriangle,
           },
           {
-            title: 'Search',
-            url: '/dashboard/search',
-            icon: IconSearch,
+            title: 'Mantenimiento Admin',
+            url: ROUTES.DASHBOARD_ADMIN_MAINTENANCE,
+            icon: IconTool,
+          },
+          {
+            title: 'Proyectos Admin',
+            url: ROUTES.DASHBOARD_ADMIN_PROJECTS,
+            icon: IconSparkles,
+          },
+          {
+            title: 'Radio Admin',
+            url: ROUTES.DASHBOARD_ADMIN_RADIO,
+            icon: IconRadio,
+          },
+          {
+            title: 'RSS Admin',
+            url: ROUTES.DASHBOARD_ADMIN_RSS,
+            icon: IconActivity,
+          },
+          {
+            title: 'Clima Admin',
+            url: ROUTES.DASHBOARD_ADMIN_WEATHER,
+            icon: IconCloud,
           },
         ],
       },
       {
-        title: 'Administration',
+        title: 'Herramientas',
         url: '#',
-        icon: IconShield,
-        isActive: pathname?.startsWith('/dashboard/admin'),
+        icon: IconHelp,
         items: [
           {
-            title: 'Admin Dashboard',
-            url: '/dashboard/admin',
-            icon: IconShield,
+            title: 'Buscar',
+            url: ROUTES.DASHBOARD_SEARCH,
+            icon: IconSearch,
           },
           {
-            title: 'Comunicados',
-            url: '/dashboard/admin/announcements',
-            icon: IconFileText,
+            title: 'Notificaciones',
+            url: ROUTES.DASHBOARD_NOTIFICATIONS,
+            icon: IconBell,
           },
           {
-            title: 'Customers',
-            url: '/dashboard/customers',
-            icon: IconUser,
-          },
-          {
-            title: 'Settings',
-            url: '/dashboard/settings',
+            title: 'Configuración',
+            url: ROUTES.DASHBOARD_SETTINGS,
             icon: IconSettings,
+          },
+          {
+            title: 'Ayuda',
+            url: ROUTES.DASHBOARD_HELP,
+            icon: IconHelp,
           },
         ],
       },
     ],
-    navSecondary: [
-      {
-        title: 'Help & Support',
-        url: '/dashboard/help',
-        icon: IconHelp,
-      },
-      {
-        title: 'Feedback',
-        url: '/dashboard/help',
-        icon: IconMessageCircle,
-      },
-      {
-        title: 'Add Camera',
-        url: '/dashboard/cameras/add',
-        icon: IconCamera,
-      },
-    ],
+    user: {
+      name: clerkUser?.fullName || 'Usuario',
+      email: clerkUser?.primaryEmailAddress?.emailAddress || '',
+      avatar: clerkUser?.imageUrl || '',
+    },
   };
 
   return (
-    <Sidebar collapsible='icon'>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size='lg' asChild>
-              <Link href='/dashboard'>
-                <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-                  <IconDashboard className='size-4' />
+    <Sidebar>
+      <SidebarBody>
+        <div className="flex flex-col h-full">
+          {/* Logo/Brand */}
+          <div className="p-4 border-b border-border">
+            <Link
+              href={ROUTES.DASHBOARD}
+              className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
+            >
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <IconDashboard className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">Los Pellines</div>
+                <div className="text-xs text-muted-foreground">Panel de Control</div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 p-2 space-y-1">
+            {data.navMain.map(section => (
+              <Collapsible
+                key={section.title}
+                open={openSections[section.title]}
+                onOpenChange={() => toggleSection(section.title)}
+              >
+                <CollapsibleTrigger asChild>
+                  <button className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-accent transition-colors">
+                    <div className="flex items-center gap-3">
+                      <section.icon className="w-5 h-5" />
+                      <span className="font-medium">{section.title}</span>
+                    </div>
+                    <ChevronRight
+                      className={`w-4 h-4 transition-transform ${openSections[section.title] ? 'rotate-90' : ''}`}
+                    />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="ml-4 mt-1 space-y-1">
+                    {section.items?.map(item => (
+                      <Link
+                        key={item.url}
+                        href={item.url}
+                        className={`flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors w-full text-left ${
+                          isItemActive(item.url)
+                            ? 'bg-accent text-accent-foreground'
+                            : ''
+                        }`}
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span className="text-sm">{item.title}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+          </nav>
+
+          {/* User Profile */}
+          <div className="p-4 border-t border-border">
+            <button
+              onClick={() => openUserProfile()}
+              className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-accent transition-colors"
+            >
+              <Avatar className="w-8 h-8">
+                <AvatarImage src={data.user.avatar} alt={data.user.name} />
+                <AvatarFallback>
+                  {data.user.name
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 text-left">
+                <div className="text-sm font-medium truncate">
+                  {data.user.name}
                 </div>
-                <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-semibold'>Pellines</span>
-                  <span className='truncate text-xs'>Dashboard</span>
+                <div className="text-xs text-muted-foreground truncate">
+                  {data.user.email}
                 </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-        <NavSecondary items={data.navSecondary} className='mt-auto' />
-      </SidebarFooter>
-      <SidebarRail />
+              </div>
+            </button>
+          </div>
+        </div>
+      </SidebarBody>
     </Sidebar>
   );
 }

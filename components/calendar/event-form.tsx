@@ -1,51 +1,56 @@
-'use client'
+'use client';
 
-import { useMutation, useQuery } from 'convex/react'
-import { format } from 'date-fns'
-import { Calendar, Clock, MapPin, Plus, Save, Users, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useMutation, useQuery } from 'convex/react';
+import { format } from 'date-fns';
+import { Calendar, Clock, MapPin, Plus, Save, Users, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
-
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 
 interface EventFormProps {
-  eventId?: Id<'calendarEvents'>
-  selectedDate?: Date
-  onSave?: (eventId: Id<'calendarEvents'>) => void
-  onCancel?: () => void
+  eventId?: Id<'calendarEvents'>;
+  selectedDate?: Date;
+  onSave?: (eventId: Id<'calendarEvents'>) => void;
+  onCancel?: () => void;
 }
 
 interface FormData {
-  title: string
-  description: string
-  categoryId: Id<'eventCategories'>
-  startDate: string
-  endDate: string
-  startTime: string
-  endTime: string
-  location: string
-  isAllDay: boolean
-  isRecurring: boolean
+  title: string;
+  description: string;
+  categoryId: Id<'eventCategories'>;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  isAllDay: boolean;
+  isRecurring: boolean;
   recurrenceRule: {
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
-    interval: number
-    endDate?: string
-    daysOfWeek?: number[]
-    count?: number
-  } | null
-  maxAttendees: number
-  isPublic: boolean
-  requiresApproval: boolean
-  inviteUserIds: Id<'users'>[]
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    interval: number;
+    endDate?: string;
+    daysOfWeek?: number[];
+    count?: number;
+  } | null;
+  maxAttendees: number;
+  isPublic: boolean;
+  requiresApproval: boolean;
+  inviteUserIds: Id<'users'>[];
 }
 
 const defaultFormData: FormData = {
@@ -64,34 +69,44 @@ const defaultFormData: FormData = {
   isPublic: true,
   requiresApproval: false,
   inviteUserIds: [],
-}
+};
 
-export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventFormProps) {
-  const [formData, setFormData] = useState<FormData>(defaultFormData)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errors, setErrors] = useState<Record<keyof FormData, string>>({} as Record<keyof FormData, string>)
+export function EventForm({
+  eventId,
+  selectedDate,
+  onSave,
+  onCancel,
+}: EventFormProps) {
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<keyof FormData, string>>(
+    {} as Record<keyof FormData, string>
+  );
 
-  const categories = useQuery(api.calendar.getEventCategories) || []
+  const categories = useQuery(api.calendar.getEventCategories) || [];
 
-  const createEvent = useMutation(api.calendar.createEvent)
-  const updateEvent = useMutation(api.calendar.updateEvent)
+  const createEvent = useMutation(api.calendar.createEvent);
+  const updateEvent = useMutation(api.calendar.updateEvent);
 
   // Always load events data
-  const allEvents = useQuery(api.calendar.getEvents, { userId: undefined }) || []
+  const allEvents =
+    useQuery(api.calendar.getEvents, { userId: undefined }) || [];
 
   // If editing existing event, find its data
-  const existingEvent = eventId ? allEvents.find((event: any) => event._id === eventId) : null
+  const existingEvent = eventId
+    ? allEvents.find((event: any) => event._id === eventId)
+    : null;
 
   useEffect(() => {
     if (selectedDate) {
-      const dateStr = format(selectedDate, 'yyyy-MM-dd')
+      const dateStr = format(selectedDate, 'yyyy-MM-dd');
       setFormData(prev => ({
         ...prev,
         startDate: dateStr,
         endDate: dateStr,
-      }))
+      }));
     }
-  }, [selectedDate])
+  }, [selectedDate]);
 
   useEffect(() => {
     if (existingEvent) {
@@ -111,47 +126,52 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
         isPublic: existingEvent.isPublic,
         requiresApproval: existingEvent.requiresApproval,
         inviteUserIds: [],
-      })
+      });
     }
-  }, [existingEvent])
+  }, [existingEvent]);
 
   const validateForm = (): boolean => {
-    const newErrors: Record<keyof FormData, string> = {} as Record<keyof FormData, string>
+    const newErrors: Record<keyof FormData, string> = {} as Record<
+      keyof FormData,
+      string
+    >;
 
     if (!formData.title.trim()) {
-      newErrors.title = 'El título es requerido'
+      newErrors.title = 'El título es requerido';
     }
 
     if (!formData.categoryId) {
-      newErrors.categoryId = 'La categoría es requerida'
+      newErrors.categoryId = 'La categoría es requerida';
     }
 
     if (!formData.startDate) {
-      newErrors.startDate = 'La fecha de inicio es requerida'
+      newErrors.startDate = 'La fecha de inicio es requerida';
     }
 
     if (!formData.endDate) {
-      newErrors.endDate = 'La fecha de fin es requerida'
+      newErrors.endDate = 'La fecha de fin es requerida';
     }
 
     if (formData.startDate > formData.endDate) {
-      newErrors.endDate = 'La fecha de fin debe ser posterior a la fecha de inicio'
+      newErrors.endDate =
+        'La fecha de fin debe ser posterior a la fecha de inicio';
     }
 
     if (!formData.isAllDay && formData.startTime >= formData.endTime) {
-      newErrors.endTime = 'La hora de fin debe ser posterior a la hora de inicio'
+      newErrors.endTime =
+        'La hora de fin debe ser posterior a la hora de inicio';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       if (eventId) {
@@ -170,8 +190,8 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
           maxAttendees: formData.maxAttendees || undefined,
           isPublic: formData.isPublic,
           requiresApproval: formData.requiresApproval,
-        })
-        onSave?.(eventId)
+        });
+        onSave?.(eventId);
       } else {
         // Create new event
         const newEventId = await createEvent({
@@ -189,72 +209,84 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
           maxAttendees: formData.maxAttendees || undefined,
           isPublic: formData.isPublic,
           requiresApproval: formData.requiresApproval,
-          inviteUserIds: formData.inviteUserIds.length > 0 ? formData.inviteUserIds : undefined,
-        })
-        onSave?.(newEventId)
+          inviteUserIds:
+            formData.inviteUserIds.length > 0
+              ? formData.inviteUserIds
+              : undefined,
+        });
+        onSave?.(newEventId);
       }
     } catch (error) {
-      console.error('Error saving event:', error)
+      console.error('Error saving event:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const updateFormData = (field: keyof FormData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
-  }
+  };
 
-  const selectedCategory = categories.find(cat => cat._id === formData.categoryId)
+  const selectedCategory = categories.find(
+    cat => cat._id === formData.categoryId
+  );
 
   return (
-    <Card className='w-full max-w-2xl mx-auto' >
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className='flex items-center gap-2' >
-          <Calendar className='w-5 h-5' />
+        <CardTitle className="flex items-center gap-2">
+          <Calendar className="w-5 h-5" />
           {eventId ? 'Editar Evento' : 'Crear Nuevo Evento'}
         </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className='space-y-6' >
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
-          <div className='space-y-4' >
+          <div className="space-y-4">
             <div>
-              <Label htmlFor='title' >Título *</Label>
+              <Label htmlFor="title">Título *</Label>
               <Input
-                id='title'
+                id="title"
                 value={formData.title}
-                onChange={(e) => updateFormData('title', e.target.value)}
-                placeholder='Nombre del evento'
+                onChange={e => updateFormData('title', e.target.value)}
+                placeholder="Nombre del evento"
                 className={errors.title ? 'border-red-500' : ''}
               />
-              {errors.title && <p className='text-red-500 text-sm mt-1' >{errors.title}</p>}
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
             </div>
 
             <div>
-              <Label htmlFor='description' >Descripción</Label>
+              <Label htmlFor="description">Descripción</Label>
               <Textarea
-                id='description'
+                id="description"
                 value={formData.description}
-                onChange={(e) => updateFormData('description', e.target.value)}
-                placeholder='Descripción del evento'
+                onChange={e => updateFormData('description', e.target.value)}
+                placeholder="Descripción del evento"
                 rows={3}
               />
             </div>
 
             <div>
-              <Label htmlFor='category' >Categoría *</Label>
-              <Select value={formData.categoryId} onValueChange={(value) => updateFormData('categoryId', value)}>
-                <SelectTrigger className={errors.categoryId ? 'border-red-500' : ''}>
-                  <SelectValue placeholder='Seleccionar categoría' />
+              <Label htmlFor="category">Categoría *</Label>
+              <Select
+                value={formData.categoryId}
+                onValueChange={value => updateFormData('categoryId', value)}
+              >
+                <SelectTrigger
+                  className={errors.categoryId ? 'border-red-500' : ''}
+                >
+                  <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(category => (
                     <SelectItem key={category._id} value={category._id}>
-                      <div className='flex items-center gap-2' >
+                      <div className="flex items-center gap-2">
                         <span>{category.icon}</span>
                         <span>{category.name}</span>
                       </div>
@@ -262,20 +294,22 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
                   ))}
                 </SelectContent>
               </Select>
-              {errors.categoryId && <p className='text-red-500 text-sm mt-1' >{errors.categoryId}</p>}
+              {errors.categoryId && (
+                <p className="text-red-500 text-sm mt-1">{errors.categoryId}</p>
+              )}
             </div>
 
             {selectedCategory && (
-              <div className='flex items-center gap-2' >
+              <div className="flex items-center gap-2">
                 <Badge
                   style={{
                     backgroundColor: selectedCategory.color + '20',
                     color: selectedCategory.color,
-                    borderColor: selectedCategory.color
+                    borderColor: selectedCategory.color,
                   }}
-                  variant='outline'
+                  variant="outline"
                 >
-                  <span className='mr-1' >{selectedCategory.icon}</span>
+                  <span className="mr-1">{selectedCategory.icon}</span>
                   {selectedCategory.name}
                 </Badge>
               </div>
@@ -283,135 +317,160 @@ export function EventForm({ eventId, selectedDate, onSave, onCancel }: EventForm
           </div>
 
           {/* Date and Time */}
-          <div className='space-y-4' >
-            <div className='flex items-center space-x-2' >
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
               <Checkbox
-                id='isAllDay'
+                id="isAllDay"
                 checked={formData.isAllDay}
-                onCheckedChange={(checked) => updateFormData('isAllDay', checked)}
+                onCheckedChange={checked => updateFormData('isAllDay', checked)}
               />
-              <Label htmlFor='isAllDay' >Todo el día</Label>
+              <Label htmlFor="isAllDay">Todo el día</Label>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4' >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor='startDate' >Fecha de inicio *</Label>
+                <Label htmlFor="startDate">Fecha de inicio *</Label>
                 <Input
-                  id='startDate'
-                  type='date'
+                  id="startDate"
+                  type="date"
                   value={formData.startDate}
-                  onChange={(e) => updateFormData('startDate', e.target.value)}
+                  onChange={e => updateFormData('startDate', e.target.value)}
                   className={errors.startDate ? 'border-red-500' : ''}
                 />
-                {errors.startDate && <p className='text-red-500 text-sm mt-1' >{errors.startDate}</p>}
+                {errors.startDate && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.startDate}
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor='endDate' >Fecha de fin *</Label>
+                <Label htmlFor="endDate">Fecha de fin *</Label>
                 <Input
-                  id='endDate'
-                  type='date'
+                  id="endDate"
+                  type="date"
                   value={formData.endDate}
-                  onChange={(e) => updateFormData('endDate', e.target.value)}
+                  onChange={e => updateFormData('endDate', e.target.value)}
                   className={errors.endDate ? 'border-red-500' : ''}
                 />
-                {errors.endDate && <p className='text-red-500 text-sm mt-1' >{errors.endDate}</p>}
+                {errors.endDate && (
+                  <p className="text-red-500 text-sm mt-1">{errors.endDate}</p>
+                )}
               </div>
             </div>
 
             {!formData.isAllDay && (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4' >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor='startTime' >Hora de inicio</Label>
+                  <Label htmlFor="startTime">Hora de inicio</Label>
                   <Input
-                    id='startTime'
-                    type='time'
+                    id="startTime"
+                    type="time"
                     value={formData.startTime}
-                    onChange={(e) => updateFormData('startTime', e.target.value)}
+                    onChange={e => updateFormData('startTime', e.target.value)}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='endTime' >Hora de fin</Label>
+                  <Label htmlFor="endTime">Hora de fin</Label>
                   <Input
-                    id='endTime'
-                    type='time'
+                    id="endTime"
+                    type="time"
                     value={formData.endTime}
-                    onChange={(e) => updateFormData('endTime', e.target.value)}
+                    onChange={e => updateFormData('endTime', e.target.value)}
                     className={errors.endTime ? 'border-red-500' : ''}
                   />
-                  {errors.endTime && <p className='text-red-500 text-sm mt-1' >{errors.endTime}</p>}
+                  {errors.endTime && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.endTime}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
           </div>
 
           {/* Location and Capacity */}
-          <div className='space-y-4' >
+          <div className="space-y-4">
             <div>
-              <Label htmlFor='location' >Ubicación</Label>
-              <div className='relative' >
-                <MapPin className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+              <Label htmlFor="location">Ubicación</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  id='location'
+                  id="location"
                   value={formData.location}
-                  onChange={(e) => updateFormData('location', e.target.value)}
-                  placeholder='Lugar del evento'
-                  className='pl-10'
+                  onChange={e => updateFormData('location', e.target.value)}
+                  placeholder="Lugar del evento"
+                  className="pl-10"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor='maxAttendees' >Capacidad máxima (0 = ilimitada)</Label>
-              <div className='relative' >
-                <Users className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+              <Label htmlFor="maxAttendees">
+                Capacidad máxima (0 = ilimitada)
+              </Label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  id='maxAttendees'
-                  type='number'
-                  min='0'
+                  id="maxAttendees"
+                  type="number"
+                  min="0"
                   value={formData.maxAttendees}
-                  onChange={(e) => updateFormData('maxAttendees', parseInt(e.target.value) || 0)}
-                  className='pl-10'
+                  onChange={e =>
+                    updateFormData(
+                      'maxAttendees',
+                      parseInt(e.target.value) || 0
+                    )
+                  }
+                  className="pl-10"
                 />
               </div>
             </div>
           </div>
 
           {/* Settings */}
-          <div className='space-y-4' >
-            <div className='flex items-center space-x-2' >
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
               <Checkbox
-                id='isPublic'
+                id="isPublic"
                 checked={formData.isPublic}
-                onCheckedChange={(checked) => updateFormData('isPublic', checked)}
+                onCheckedChange={checked => updateFormData('isPublic', checked)}
               />
-              <Label htmlFor='isPublic' >Evento público</Label>
+              <Label htmlFor="isPublic">Evento público</Label>
             </div>
 
-            <div className='flex items-center space-x-2' >
+            <div className="flex items-center space-x-2">
               <Checkbox
-                id='requiresApproval'
+                id="requiresApproval"
                 checked={formData.requiresApproval}
-                onCheckedChange={(checked) => updateFormData('requiresApproval', checked)}
+                onCheckedChange={checked =>
+                  updateFormData('requiresApproval', checked)
+                }
               />
-              <Label htmlFor='requiresApproval' >Requiere aprobación para asistir</Label>
+              <Label htmlFor="requiresApproval">
+                Requiere aprobación para asistir
+              </Label>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className='flex justify-end gap-3 pt-6 border-t' >
-            <Button type='button' variant='outline' onClick={onCancel}>
-              <X className='w-4 h-4 mr-2' />
+          <div className="flex justify-end gap-3 pt-6 border-t">
+            <Button type="button" variant="outline" onClick={onCancel}>
+              <X className="w-4 h-4 mr-2" />
               Cancelar
             </Button>
-            <Button type='submit' disabled={isSubmitting}>
-              <Save className='w-4 h-4 mr-2' />
-              {isSubmitting ? 'Guardando...' : eventId ? 'Actualizar' : 'Crear Evento'}
+            <Button type="submit" disabled={isSubmitting}>
+              <Save className="w-4 h-4 mr-2" />
+              {isSubmitting
+                ? 'Guardando...'
+                : eventId
+                  ? 'Actualizar'
+                  : 'Crear Evento'}
             </Button>
           </div>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

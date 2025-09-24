@@ -1,6 +1,6 @@
 # Development Standards
 
-This document outlines the comprehensive development standards for the JuntaDeVecinos project, covering coding conventions, component patterns, backend practices, and configuration standards.
+This document outlines the comprehensive development standards for the PintoPellines project, covering coding conventions, component patterns, backend practices, and configuration standards.
 
 ## Table of Contents
 
@@ -58,12 +58,7 @@ This document outlines the comprehensive development standards for the JuntaDeVe
     },
     "jsx": "preserve"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
     "node_modules",
     ".next",
@@ -267,19 +262,27 @@ export const userSchema = defineTable({
 
   // Metadata
   role: v.union(v.literal('user'), v.literal('admin'), v.literal('moderator')),
-  status: v.union(v.literal('active'), v.literal('suspended'), v.literal('banned')),
+  status: v.union(
+    v.literal('active'),
+    v.literal('suspended'),
+    v.literal('banned')
+  ),
 
   // Platform-specific data
   platformData: v.object({
-    web: v.optional(v.object({
-      lastLoginAt: v.optional(v.number()),
-      preferences: v.optional(v.any()),
-    })),
-    mobile: v.optional(v.object({
-      deviceId: v.optional(v.string()),
-      pushToken: v.optional(v.string()),
-      lastAppVersion: v.optional(v.string()),
-    })),
+    web: v.optional(
+      v.object({
+        lastLoginAt: v.optional(v.number()),
+        preferences: v.optional(v.any()),
+      })
+    ),
+    mobile: v.optional(
+      v.object({
+        deviceId: v.optional(v.string()),
+        pushToken: v.optional(v.string()),
+        lastAppVersion: v.optional(v.string()),
+      })
+    ),
   }),
 
   // Timestamps
@@ -289,11 +292,11 @@ export const userSchema = defineTable({
   // Soft delete
   deletedAt: v.optional(v.number()),
 })
-.index('byExternalId', ['externalId'])
-.index('byEmail', ['email'])
-.index('byRole', ['role'])
-.index('byStatus', ['status'])
-.index('byCreatedAt', ['createdAt']);
+  .index('byExternalId', ['externalId'])
+  .index('byEmail', ['email'])
+  .index('byRole', ['role'])
+  .index('byStatus', ['status'])
+  .index('byCreatedAt', ['createdAt']);
 ```
 
 ### Function Patterns
@@ -306,13 +309,13 @@ export const userSchema = defineTable({
  */
 export const currentUser = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async ctx => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return null;
 
     const user = await ctx.db
       .query('users')
-      .withIndex('byExternalId', (q) => q.eq('externalId', identity.subject))
+      .withIndex('byExternalId', q => q.eq('externalId', identity.subject))
       .unique();
 
     if (!user) return null;
@@ -321,7 +324,8 @@ export const currentUser = query({
       id: user._id,
       externalId: user.externalId,
       email: user.email,
-      displayName: user.displayName || `${user.firstName} ${user.lastName}`.trim(),
+      displayName:
+        user.displayName || `${user.firstName} ${user.lastName}`.trim(),
       avatarUrl: user.avatarUrl,
       role: user.role,
       status: user.status,
@@ -345,10 +349,12 @@ export const updateUserProfile = mutation({
     displayName: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
     platform: v.union(v.literal('web'), v.literal('mobile')),
-    platformData: v.optional(v.object({
-      web: v.optional(v.any()),
-      mobile: v.optional(v.any()),
-    })),
+    platformData: v.optional(
+      v.object({
+        web: v.optional(v.any()),
+        mobile: v.optional(v.any()),
+      })
+    ),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -356,7 +362,7 @@ export const updateUserProfile = mutation({
 
     const user = await ctx.db
       .query('users')
-      .withIndex('byExternalId', (q) => q.eq('externalId', identity.subject))
+      .withIndex('byExternalId', q => q.eq('externalId', identity.subject))
       .unique();
 
     if (!user) throw new Error('User not found');
@@ -367,7 +373,8 @@ export const updateUserProfile = mutation({
 
     if (args.firstName !== undefined) updateData.firstName = args.firstName;
     if (args.lastName !== undefined) updateData.lastName = args.lastName;
-    if (args.displayName !== undefined) updateData.displayName = args.displayName;
+    if (args.displayName !== undefined)
+      updateData.displayName = args.displayName;
     if (args.avatarUrl !== undefined) updateData.avatarUrl = args.avatarUrl;
 
     // Handle platform-specific data
@@ -423,7 +430,7 @@ module.exports = {
   extends: [
     'next/core-web-vitals',
     '@typescript-eslint/recommended',
-    'prettier'
+    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'prettier'],
@@ -585,7 +592,7 @@ describe('users queries', () => {
 
 ### Component Documentation
 
-```typescript
+````typescript
 /**
  * Button component for user interactions
  *
@@ -601,7 +608,13 @@ interface ButtonProps {
    * The variant style of the button
    * @default 'default'
    */
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
 
   /**
    * The size of the button
@@ -630,11 +643,11 @@ interface ButtonProps {
    */
   children: React.ReactNode;
 }
-```
+````
 
 ### Function Documentation
 
-```typescript
+````typescript
 /**
  * Get current authenticated user with cross-platform data
  *
@@ -663,6 +676,6 @@ export const currentUser = query({
     // Implementation
   },
 });
-```
+````
 
-These development standards ensure consistency, maintainability, and scalability across the entire JuntaDeVecinos codebase.
+These development standards ensure consistency, maintainability, and scalability across the entire PintoPellines codebase.

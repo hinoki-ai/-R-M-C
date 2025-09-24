@@ -37,8 +37,9 @@ async function linkGoogleAdmin(currentExternalId, clerkUserId, newName) {
     console.log(`   Role: ${result.role}`);
     console.log('');
     console.log('🎉 Google account is now linked to admin user!');
-    console.log('   The user can now sign in with Google and have admin access.');
-
+    console.log(
+      '   The user can now sign in with Google and have admin access.'
+    );
   } catch (error) {
     console.error('❌ Error linking Google account:', error.message);
     process.exit(1);
@@ -53,15 +54,25 @@ const newName = process.argv[4];
 if (!currentExternalId || !clerkUserId || !newName) {
   console.log('🔗 Link Google Admin User Script');
   console.log('');
-  console.log('Usage: node link-google-admin.js <currentExternalId> <clerkUserId> <newName>');
+  console.log(
+    'Usage: node link-google-admin.js <currentExternalId> <clerkUserId> <newName>'
+  );
   console.log('');
   console.log('Parameters:');
-  console.log('  currentExternalId: The current external ID in Convex (e.g., "admin_agustinaramac")');
-  console.log('  clerkUserId: The Clerk user ID from Google sign-in (starts with "user_")');
-  console.log('  newName: The name from Google account (e.g., "Il Agostino Gratio")');
+  console.log(
+    '  currentExternalId: The current external ID in Convex (e.g., "admin_agustinaramac")'
+  );
+  console.log(
+    '  clerkUserId: The Clerk user ID from Google sign-in (starts with "user_")'
+  );
+  console.log(
+    '  newName: The name from Google account (e.g., "Il Agostino Gratio")'
+  );
   console.log('');
   console.log('Example:');
-  console.log('  node link-google-admin.js admin_agustinaramac user_2abcd123ef user_2abcd123ef "Il Agostino Gratio"');
+  console.log(
+    '  node link-google-admin.js admin_agustinaramac user_2abcd123ef user_2abcd123ef "Il Agostino Gratio"'
+  );
   console.log('');
   console.log('Steps to get Clerk user ID:');
   console.log('1. Go to https://dashboard.clerk.com');

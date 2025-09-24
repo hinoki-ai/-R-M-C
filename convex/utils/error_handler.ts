@@ -1,4 +1,4 @@
-import { ConvexError } from 'convex/values'
+import { ConvexError } from 'convex/values';
 
 // Error types for Convex functions
 export enum ConvexFunctionErrorType {
@@ -10,23 +10,23 @@ export enum ConvexFunctionErrorType {
   RATE_LIMIT = 'rate_limit',
   SERVER_ERROR = 'server_error',
   NETWORK_ERROR = 'network_error',
-  DATABASE_ERROR = 'database_error'
+  DATABASE_ERROR = 'database_error',
 }
 
 export interface ConvexFunctionError {
-  type: ConvexFunctionErrorType
-  message: string
-  details?: any
-  retryable?: boolean
-  code?: string
+  type: ConvexFunctionErrorType;
+  message: string;
+  details?: any;
+  retryable?: boolean;
+  code?: string;
 }
 
 // Custom error class for Convex functions
 export class ConvexFunctionErrorClass extends Error {
-  public readonly type: ConvexFunctionErrorType
-  public readonly details?: any
-  public readonly retryable?: boolean
-  public readonly code?: string
+  public readonly type: ConvexFunctionErrorType;
+  public readonly details?: any;
+  public readonly retryable?: boolean;
+  public readonly code?: string;
 
   constructor(
     type: ConvexFunctionErrorType,
@@ -35,33 +35,39 @@ export class ConvexFunctionErrorClass extends Error {
     retryable = false,
     code?: string
   ) {
-    super(message)
-    this.name = 'ConvexFunctionError'
-    this.type = type
-    this.details = details
-    this.retryable = retryable
-    this.code = code
+    super(message);
+    this.name = 'ConvexFunctionError';
+    this.type = type;
+    this.details = details;
+    this.retryable = retryable;
+    this.code = code;
   }
 }
 
 // Error factory functions
-export const createAuthError = (message = 'Authentication required', details?: any) =>
+export const createAuthError = (
+  message = 'Authentication required',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.AUTHENTICATION,
     message,
     details,
     false,
     'AUTH_REQUIRED'
-  )
+  );
 
-export const createAuthzError = (message = 'Insufficient permissions', details?: any) =>
+export const createAuthzError = (
+  message = 'Insufficient permissions',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.AUTHORIZATION,
     message,
     details,
     false,
     'INSUFFICIENT_PERMISSIONS'
-  )
+  );
 
 export const createValidationError = (message: string, details?: any) =>
   new ConvexFunctionErrorClass(
@@ -70,7 +76,7 @@ export const createValidationError = (message: string, details?: any) =>
     details,
     false,
     'VALIDATION_FAILED'
-  )
+  );
 
 export const createNotFoundError = (resource: string, details?: any) =>
   new ConvexFunctionErrorClass(
@@ -79,7 +85,7 @@ export const createNotFoundError = (resource: string, details?: any) =>
     details,
     false,
     'RESOURCE_NOT_FOUND'
-  )
+  );
 
 export const createConflictError = (message: string, details?: any) =>
   new ConvexFunctionErrorClass(
@@ -88,80 +94,94 @@ export const createConflictError = (message: string, details?: any) =>
     details,
     false,
     'RESOURCE_CONFLICT'
-  )
+  );
 
-export const createRateLimitError = (message = 'Too many requests', details?: any) =>
+export const createRateLimitError = (
+  message = 'Too many requests',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.RATE_LIMIT,
     message,
     details,
     true,
     'RATE_LIMIT_EXCEEDED'
-  )
+  );
 
-export const createServerError = (message = 'Internal server error', details?: any) =>
+export const createServerError = (
+  message = 'Internal server error',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.SERVER_ERROR,
     message,
     details,
     true,
     'INTERNAL_ERROR'
-  )
+  );
 
-export const createDatabaseError = (message = 'Database operation failed', details?: any) =>
+export const createDatabaseError = (
+  message = 'Database operation failed',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.DATABASE_ERROR,
     message,
     details,
     true,
     'DATABASE_ERROR'
-  )
+  );
 
-export const createNetworkError = (message = 'Network operation failed', details?: any) =>
+export const createNetworkError = (
+  message = 'Network operation failed',
+  details?: any
+) =>
   new ConvexFunctionErrorClass(
     ConvexFunctionErrorType.NETWORK_ERROR,
     message,
     details,
     true,
     'NETWORK_ERROR'
-  )
+  );
 
 // Authentication helper functions
-export async function requireAuth(ctx: any): Promise<any> {
-  const userId = await ctx.auth.getUserIdentity()
-  if (!userId) {
-    throw createAuthError()
+export async function requireAuth(ctx: any): Promise<string> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw createAuthError();
   }
-  return userId
+  return identity.subject;
 }
 
 export async function requireUser(ctx: any): Promise<any> {
-  const userId = await requireAuth(ctx)
+  const userId = await requireAuth(ctx);
 
   const user = await ctx.db
     .query('users')
-    .withIndex('byExternalId', (q: any) => q.eq('externalId', userId.subject))
-    .first()
+    .withIndex('byExternalId', (q: any) => q.eq('externalId', userId))
+    .first();
 
   if (!user) {
-    throw createNotFoundError('User')
+    throw createNotFoundError('User');
   }
 
-  return user
+  return user;
+}
+
+export async function getCurrentUserOrThrow(ctx: any): Promise<any> {
+  return await requireUser(ctx);
 }
 
 export async function requireAdmin(user: any): Promise<void> {
-  // TODO: Implement admin role checking based on your schema
-  // This is a placeholder - you'll need to implement actual admin checking
-  if (!user.isAdmin) {
-    throw createAuthzError('Admin privileges required')
+  if (!user || user.role !== 'admin') {
+    throw createAuthzError('Admin privileges required');
   }
 }
 
 // Validation helpers
 export function validateRequired(value: any, fieldName: string): void {
   if (value === null || value === undefined || value === '') {
-    throw createValidationError(`${fieldName} is required`)
+    throw createValidationError(`${fieldName} is required`);
   }
 }
 
@@ -172,15 +192,19 @@ export function validateStringLength(
   maxLength?: number
 ): void {
   if (typeof value !== 'string') {
-    throw createValidationError(`${fieldName} must be a string`)
+    throw createValidationError(`${fieldName} must be a string`);
   }
 
   if (minLength !== undefined && value.length < minLength) {
-    throw createValidationError(`${fieldName} must be at least ${minLength} characters long`)
+    throw createValidationError(
+      `${fieldName} must be at least ${minLength} characters long`
+    );
   }
 
   if (maxLength !== undefined && value.length > maxLength) {
-    throw createValidationError(`${fieldName} must not exceed ${maxLength} characters`)
+    throw createValidationError(
+      `${fieldName} must not exceed ${maxLength} characters`
+    );
   }
 }
 
@@ -191,15 +215,15 @@ export function validateNumberRange(
   max?: number
 ): void {
   if (typeof value !== 'number' || isNaN(value)) {
-    throw createValidationError(`${fieldName} must be a valid number`)
+    throw createValidationError(`${fieldName} must be a valid number`);
   }
 
   if (min !== undefined && value < min) {
-    throw createValidationError(`${fieldName} must be at least ${min}`)
+    throw createValidationError(`${fieldName} must be at least ${min}`);
   }
 
   if (max !== undefined && value > max) {
-    throw createValidationError(`${fieldName} must not exceed ${max}`)
+    throw createValidationError(`${fieldName} must not exceed ${max}`);
   }
 }
 
@@ -211,68 +235,98 @@ export function validateEnum<T>(
   if (!allowedValues.includes(value)) {
     throw createValidationError(
       `${fieldName} must be one of: ${allowedValues.join(', ')}`
-    )
+    );
   }
 }
 
 export function validateId(id: any, tableName: string): void {
   if (!id) {
-    throw createValidationError(`${tableName} ID is required`)
+    throw createValidationError(`${tableName} ID is required`);
   }
   // Additional ID validation can be added here if needed
 }
 
 // Database operation helpers with error handling
-export async function safeDbGet(ctx: any, id: any, tableName: string): Promise<any> {
+export async function safeDbGet(
+  ctx: any,
+  id: any,
+  tableName: string
+): Promise<any> {
   try {
-    const result = await ctx.db.get(id)
+    const result = await ctx.db.get(id);
     if (!result) {
-      throw createNotFoundError(tableName)
+      throw createNotFoundError(tableName);
     }
-    return result
+    return result;
   } catch (error) {
     if (error instanceof ConvexFunctionErrorClass) {
-      throw error
+      throw error;
     }
-    throw createDatabaseError(`Failed to retrieve ${tableName}`, { originalError: error })
+    throw createDatabaseError(`Failed to retrieve ${tableName}`, {
+      originalError: error,
+    });
   }
 }
 
-export async function safeDbInsert(ctx: any, tableName: string, data: any): Promise<any> {
+export async function safeDbInsert(
+  ctx: any,
+  tableName: string,
+  data: any
+): Promise<any> {
   try {
-    return await ctx.db.insert(tableName, data)
+    return await ctx.db.insert(tableName, data);
   } catch (error) {
-    throw createDatabaseError(`Failed to create ${tableName}`, { originalError: error })
+    throw createDatabaseError(`Failed to create ${tableName}`, {
+      originalError: error,
+    });
   }
 }
 
-export async function safeDbPatch(ctx: any, id: any, data: any, tableName: string): Promise<void> {
+export async function safeDbPatch(
+  ctx: any,
+  id: any,
+  data: any,
+  tableName: string
+): Promise<void> {
   try {
-    await ctx.db.patch(id, data)
+    await ctx.db.patch(id, data);
   } catch (error) {
-    throw createDatabaseError(`Failed to update ${tableName}`, { originalError: error })
+    throw createDatabaseError(`Failed to update ${tableName}`, {
+      originalError: error,
+    });
   }
 }
 
-export async function safeDbDelete(ctx: any, id: any, tableName: string): Promise<void> {
+export async function safeDbDelete(
+  ctx: any,
+  id: any,
+  tableName: string
+): Promise<void> {
   try {
-    await ctx.db.delete(id)
+    await ctx.db.delete(id);
   } catch (error) {
-    throw createDatabaseError(`Failed to delete ${tableName}`, { originalError: error })
+    throw createDatabaseError(`Failed to delete ${tableName}`, {
+      originalError: error,
+    });
   }
 }
 
 // Query helpers with error handling
 export async function safeDbQuery(ctx: any, tableName: string): Promise<any[]> {
   try {
-    return await ctx.db.query(tableName).collect()
+    return await ctx.db.query(tableName).collect();
   } catch (error) {
-    throw createDatabaseError(`Failed to query ${tableName}`, { originalError: error })
+    throw createDatabaseError(`Failed to query ${tableName}`, {
+      originalError: error,
+    });
   }
 }
 
 // Logging helper
-export function logConvexError(error: ConvexFunctionErrorClass, context?: any): void {
+export function logConvexError(
+  error: ConvexFunctionErrorClass,
+  context?: any
+): void {
   console.error('Convex Function Error:', {
     type: error.type,
     message: error.message,
@@ -280,8 +334,8 @@ export function logConvexError(error: ConvexFunctionErrorClass, context?: any): 
     retryable: error.retryable,
     details: error.details,
     context,
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 }
 
 // Wrapper for Convex function handlers with automatic error handling
@@ -291,46 +345,46 @@ export function withErrorHandling<TArgs, TResult>(
 ) {
   return async (ctx: any, args: TArgs): Promise<TResult> => {
     try {
-      return await handler(ctx, args)
+      return await handler(ctx, args);
     } catch (error) {
       if (error instanceof ConvexFunctionErrorClass) {
-        logConvexError(error, { contextName, args })
+        logConvexError(error, { contextName, args });
         throw new ConvexError({
           type: error.type,
           message: error.message,
           details: error.details,
           retryable: error.retryable,
-          code: error.code
-        })
+          code: error.code,
+        });
       } else if (error instanceof Error) {
         // Handle standard Error objects
         const unexpectedError = createServerError(
           error.message || 'An unexpected error occurred',
           { originalError: error }
-        )
-        logConvexError(unexpectedError, { contextName, args })
+        );
+        logConvexError(unexpectedError, { contextName, args });
         throw new ConvexError({
           type: unexpectedError.type,
           message: unexpectedError.message,
           details: unexpectedError.details,
           retryable: unexpectedError.retryable,
-          code: unexpectedError.code
-        })
+          code: unexpectedError.code,
+        });
       } else {
         // Handle unknown error types
         const unexpectedError = createServerError(
           'An unexpected error occurred',
           { originalError: error }
-        )
-        logConvexError(unexpectedError, { contextName, args })
+        );
+        logConvexError(unexpectedError, { contextName, args });
         throw new ConvexError({
           type: unexpectedError.type,
           message: unexpectedError.message,
           details: unexpectedError.details,
           retryable: unexpectedError.retryable,
-          code: unexpectedError.code
-        })
+          code: unexpectedError.code,
+        });
       }
     }
-  }
+  };
 }

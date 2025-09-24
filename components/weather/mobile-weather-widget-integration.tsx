@@ -1,30 +1,31 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import { MobileHomeWeatherWidget } from './mobile-home-weather-widget'
-import { useWeatherData } from '@/hooks/use-weather-data'
+import { useRouter } from 'next/navigation';
+import { MobileHomeWeatherWidget } from './mobile-home-weather-widget';
+import { useWeatherData } from '@/hooks/use-weather-data';
 
 interface MobileWeatherWidgetIntegrationProps {
-  compact?: boolean
-  location?: string
+  compact?: boolean;
+  location?: string;
 }
 
 export function MobileWeatherWidgetIntegration({
   compact = false,
-  location = 'Pinto Los Pellines, Ñuble'
+  location = 'Pinto Los Pellines, Ñuble',
 }: MobileWeatherWidgetIntegrationProps) {
-  const router = useRouter()
-  const { weatherData, forecast, loading, error, addWeatherData } = useWeatherData(location)
+  const router = useRouter();
+  const { weatherData, forecast, alerts, loading, error, addWeatherData } =
+    useWeatherData(location);
 
   const handleRefresh = async () => {
     // Force refresh by clearing cache or triggering re-fetch
     // This will be handled by the useWeatherData hook's internal refresh logic
-    window.location.reload()
-  }
+    window.location.reload();
+  };
 
   const handleOpenFullWeather = () => {
-    router.push('/weather')
-  }
+    router.push('/dashboard/weather');
+  };
 
   if (loading && !weatherData) {
     return (
@@ -44,7 +45,7 @@ export function MobileWeatherWidgetIntegration({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error && !weatherData) {
@@ -65,16 +66,17 @@ export function MobileWeatherWidgetIntegration({
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <MobileHomeWeatherWidget
       weatherData={weatherData}
       forecastData={forecast}
+      alerts={alerts}
       onRefresh={handleRefresh}
       onOpenFullWeather={handleOpenFullWeather}
       compact={compact}
     />
-  )
+  );
 }

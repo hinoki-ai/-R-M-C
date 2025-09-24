@@ -2,7 +2,16 @@
 
 import { useUser } from '@clerk/nextjs';
 import { useMutation, useQuery } from 'convex/react';
-import { Heart, Pause, Play, Radio, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
+import {
+  Heart,
+  Pause,
+  Play,
+  Radio,
+  Volume2,
+  VolumeX,
+  Wifi,
+  WifiOff,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -14,12 +23,12 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/convex/_generated/api';
 
-
 interface RadioStation {
   _id: string;
   name: string;
   description?: string;
   streamUrl: string;
+  backupStreamUrl?: string;
   logoUrl?: string;
   frequency?: string;
   category: string;
@@ -43,16 +52,21 @@ const RadioPlayer: React.FC = () => {
   const isFavoritesPage = pathname?.includes('/radio/favorites');
 
   // State management
-  const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
+  const [currentStation, setCurrentStation] = useState<RadioStation | null>(
+    null
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isLoading, setIsLoading] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [activeTab, setActiveTab] = useState(isFavoritesPage ? 'favorites' : 'all');
+  const [activeTab, setActiveTab] = useState(
+    isFavoritesPage ? 'favorites' : 'all'
+  );
 
   // Convex queries and mutations
   const allStations = useQuery(api.radio.getRadioStations) || [];
-  const userFavorites = useQuery(api.radio.getUserFavorites, { userId: user?.id as any }) || [];
+  const userFavorites =
+    useQuery(api.radio.getUserFavorites, { userId: user?.id as any }) || [];
   const toggleFavorite = useMutation(api.radio.toggleFavorite);
   const recordPlay = useMutation(api.radio.recordPlay);
 
@@ -67,33 +81,95 @@ const RadioPlayer: React.FC = () => {
     { id: 'all', label: 'Todas', icon: Radio },
     { id: 'news', label: 'Noticias', icon: Radio },
     { id: 'music', label: 'Música', icon: Radio },
+    { id: 'sports', label: 'Deportes', icon: Radio },
     { id: 'cultural', label: 'Cultural', icon: Radio },
     { id: 'emergency', label: 'Emergencia', icon: Radio },
+    { id: 'community', label: 'Comunitaria', icon: Radio },
     { id: 'favorites', label: 'Favoritas', icon: Heart },
   ];
 
-  // Audio controls
-  const playStation = async (station: RadioStation) => {
-    if (!audioRef.current || !user?.id) return;
+  // Audio controls with backup/fallback and better recovery
+  const playStation = async (
+    station: RadioStation,
+    retryCount = 0,
+    useBackup = false
+  ) => {
+    if (!audioRef.current) return;
+
+    const maxRetries = 3;
+    const sourceUrl =
+      useBackup && station.backupStreamUrl
+        ? station.backupStreamUrl
+        : station.streamUrl;
+    const sourceLabel = useBackup ? 'backup' : 'principal';
 
     try {
       setIsLoading(true);
 
-      if (currentStation?._id !== station._id) {
-        audioRef.current.src = station.streamUrl;
+      if (currentStation?._id !== station._id || useBackup) {
+        // Stop current playback and reset
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+
+        // Set CORS attribute BEFORE setting src
+        audioRef.current.crossOrigin = 'anonymous';
+
+        // Set new source
+        audioRef.current.src = sourceUrl;
         setCurrentStation(station);
-        // Record play event
-        await recordPlay({ userId: user.id as any, stationId: station._id as any });
+
+        // Record play event if available
+        if (user?.id) {
+          try {
+            await recordPlay({
+              userId: user.id as any,
+              stationId: station._id as any,
+            });
+          } catch (e) {
+            // Non-blocking
+            console.warn('recordPlay failed (non-blocking):', e);
+          }
+        }
       }
 
+      // Load and play with proper error handling
       await audioRef.current.play();
       setIsPlaying(true);
       setIsLoading(false);
-      toast.success(`Reproduciendo: ${station.name}`);
+      toast.success(
+        `Reproduciendo: ${station.name}${useBackup ? ' (transmisión alternativa)' : ''}`
+      );
     } catch (error) {
-      console.error('Error playing radio:', error);
+      console.error(
+        `Error reproduciendo (${sourceLabel}) intento ${retryCount + 1}:`,
+        error
+      );
       setIsLoading(false);
-      toast.error('Error al reproducir la estación');
+      setIsPlaying(false);
+
+      // Try backup stream first if primary failed and backup exists
+      if (
+        !useBackup &&
+        station.backupStreamUrl &&
+        retryCount < maxRetries - 1
+      ) {
+        toast.info('Probando transmisión alternativa...');
+        setTimeout(() => playStation(station, retryCount + 1, true), 1000);
+        return;
+      }
+
+      // Retry same source a couple of times
+      if (retryCount < maxRetries - 1) {
+        toast.info(
+          `Reintentando conexión... (${retryCount + 2}/${maxRetries})`
+        );
+        setTimeout(() => playStation(station, retryCount + 1, useBackup), 3000);
+        return;
+      }
+
+      toast.error(
+        `Error al reproducir ${station.name}. Verifica la conexión o intenta otra estación.`
+      );
     }
   };
 
@@ -142,7 +218,9 @@ const RadioPlayer: React.FC = () => {
         stationId: station._id as any,
       });
 
-      toast.success(result.isFavorite ? 'Agregado a favoritos' : 'Removido de favoritos');
+      toast.success(
+        result.isFavorite ? 'Agregado a favoritos' : 'Removido de favoritos'
+      );
     } catch (error) {
       toast.error('Error al actualizar favoritos');
     }
@@ -155,23 +233,45 @@ const RadioPlayer: React.FC = () => {
 
     const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
-    const handleError = () => {
+    const handleError = (e: Event) => {
+      console.error('Audio error:', e);
       setIsLoading(false);
       setIsPlaying(false);
-      toast.error('Error de conexión con la radio');
+      // Don't show toast here as it's handled in playStation
     };
     const handleEnded = () => setIsPlaying(false);
+    const handleStalled = () => {
+      console.warn('Audio stalled');
+      // Try to recover from stall
+      if (audio.readyState === 0) {
+        audio.load();
+      }
+    };
+    const handleWaiting = () => {
+      console.log('Audio buffering...');
+      setIsLoading(true);
+    };
+    const handlePlaying = () => {
+      setIsLoading(false);
+      setIsPlaying(true);
+    };
 
     audio.addEventListener('loadstart', handleLoadStart);
     audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('error', handleError);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('stalled', handleStalled);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('playing', handlePlaying);
 
     return () => {
       audio.removeEventListener('loadstart', handleLoadStart);
       audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('error', handleError);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('stalled', handleStalled);
+      audio.removeEventListener('waiting', handleWaiting);
+      audio.removeEventListener('playing', handlePlaying);
     };
   }, []);
 
@@ -204,83 +304,89 @@ const RadioPlayer: React.FC = () => {
   };
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Hidden Audio Element */}
-      <audio ref={audioRef} preload='none' />
+      <audio
+        ref={audioRef}
+        preload="none"
+        crossOrigin="anonymous"
+        controls={false}
+        playsInline
+      />
 
       {/* Now Playing Card */}
       {currentStation && (
-        <Card className='border-2 border-primary/20'>
-          <CardHeader className='pb-3'>
-            <CardTitle className='flex items-center justify-between'>
-              <span className='flex items-center gap-2'>
-                <Radio className='h-5 w-5' />
+        <Card className="border-2 border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Radio className="h-5 w-5" />
                 Reproduciendo Ahora
               </span>
               {currentStation.isOnline ? (
-                <Wifi className='h-4 w-4 text-green-500' />
+                <Wifi className="h-4 w-4 text-green-500" />
               ) : (
-                <WifiOff className='h-4 w-4 text-red-500' />
+                <WifiOff className="h-4 w-4 text-red-500" />
               )}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center space-x-3'>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
                 {currentStation.logoUrl ? (
                   <img
                     src={currentStation.logoUrl}
                     alt={currentStation.name}
-                    className='w-12 h-12 rounded-full object-cover'
+                    className="w-12 h-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center'>
-                    <Radio className='h-6 w-6 text-primary' />
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Radio className="h-6 w-6 text-primary" />
                   </div>
                 )}
                 <div>
-                  <h3 className='font-semibold'>{currentStation.name}</h3>
-                  <p className='text-sm text-muted-foreground'>
+                  <h3 className="font-semibold">{currentStation.name}</h3>
+                  <p className="text-sm text-muted-foreground">
                     {currentStation.frequency} • {currentStation.region}
                   </p>
                 </div>
               </div>
 
-              <div className='flex items-center space-x-2'>
+              <div className="flex items-center space-x-2">
                 <Button
-                  variant='outline'
-                  size='sm'
+                  variant="outline"
+                  size="sm"
                   onClick={toggleMute}
-                  className='h-8 w-8 p-0'
+                  className="h-8 w-8 p-0"
                 >
                   {isMuted || volume === 0 ? (
-                    <VolumeX className='h-4 w-4' />
+                    <VolumeX className="h-4 w-4" />
                   ) : (
-                    <Volume2 className='h-4 w-4' />
+                    <Volume2 className="h-4 w-4" />
                   )}
                 </Button>
 
-                <div className='w-20'>
+                <div className="w-20">
                   <Slider
                     value={[isMuted ? 0 : volume]}
                     onValueChange={handleVolumeChange}
                     max={100}
                     step={1}
-                    className='w-full'
+                    className="w-full"
                   />
                 </div>
 
                 <Button
                   onClick={togglePlayPause}
                   disabled={isLoading}
-                  className='h-10 w-10 rounded-full'
+                  className="h-10 w-10 rounded-full"
                 >
                   {isLoading ? (
-                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : isPlaying ? (
-                    <Pause className='h-5 w-5' />
+                    <Pause className="h-5 w-5" />
                   ) : (
-                    <Play className='h-5 w-5 ml-0.5' />
+                    <Play className="h-5 w-5 ml-0.5" />
                   )}
                 </Button>
               </div>
@@ -299,56 +405,68 @@ const RadioPlayer: React.FC = () => {
         <CardContent>
           {isFavoritesPage ? (
             // Favorites page - show only favorites
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-              {userFavorites.map((station) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userFavorites.map(station => (
                 <Card
                   key={station._id}
                   className={`cursor-pointer transition-all hover:shadow-md ${
-                    currentStation?._id === station._id ? 'ring-2 ring-primary' : ''
+                    currentStation?._id === station._id
+                      ? 'ring-2 ring-primary'
+                      : ''
                   }`}
                   onClick={() => playStation(station)}
                 >
-                  <CardContent className='p-4'>
-                    <div className='flex items-start justify-between'>
-                      <div className='flex items-center space-x-3 flex-1'>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-3 flex-1">
                         {station.logoUrl ? (
                           <img
                             src={station.logoUrl}
                             alt={station.name}
-                            className='w-10 h-10 rounded-full object-cover'
+                            className="w-10 h-10 rounded-full object-cover"
                           />
                         ) : (
-                          <div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
-                            <Radio className='h-5 w-5 text-primary' />
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Radio className="h-5 w-5 text-primary" />
                           </div>
                         )}
-                        <div className='flex-1 min-w-0'>
-                          <h4 className='font-medium truncate'>{station.name}</h4>
-                          <p className='text-sm text-muted-foreground truncate'>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium truncate">
+                            {station.name}
+                          </h4>
+                          <p className="text-sm text-muted-foreground truncate">
                             {station.frequency} • {station.region}
                           </p>
-                          <div className='flex items-center space-x-2 mt-1'>
-                            <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <Badge
+                              variant={getQualityBadge(
+                                (station as any).quality || 'unknown'
+                              )}
+                              className="text-xs"
+                            >
                               {(station as any).quality || 'Desconocida'}
                             </Badge>
-                            <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
+                            <Badge
+                              variant="outline"
+                              className={`text-xs ${getCategoryColor(station.category)} text-white`}
+                            >
                               {station.category}
                             </Badge>
                           </div>
                         </div>
                       </div>
 
-                      <div className='flex items-center space-x-1'>
+                      <div className="flex items-center space-x-1">
                         <Button
-                          variant='ghost'
-                          size='sm'
-                          onClick={(e) => {
+                          variant="ghost"
+                          size="sm"
+                          onClick={e => {
                             e.stopPropagation();
                             handleFavoriteToggle(station);
                           }}
-                          className='h-8 w-8 p-0'
+                          className="h-8 w-8 p-0"
                         >
-                          <Heart className='h-4 w-4 fill-red-500 text-red-500' />
+                          <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                         </Button>
                       </div>
                     </div>
@@ -356,93 +474,120 @@ const RadioPlayer: React.FC = () => {
                 </Card>
               ))}
               {userFavorites.length === 0 && (
-                <div className='text-center py-8 text-muted-foreground col-span-full'>
-                  <Heart className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                <div className="text-center py-8 text-muted-foreground col-span-full">
+                  <Heart className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No tienes estaciones favoritas aún</p>
-                  <p className='text-sm'>Haz clic en el corazón de cualquier estación para agregarla a favoritos</p>
+                  <p className="text-sm">
+                    Haz clic en el corazón de cualquier estación para agregarla
+                    a favoritos
+                  </p>
                 </div>
               )}
             </div>
           ) : (
             // Regular radio page with tabs
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className='grid w-full grid-cols-6'>
-                {categories.map((category) => (
-                  <TabsTrigger key={category.id} value={category.id} className='text-xs'>
-                    <category.icon className='h-4 w-4 mr-1' />
+              <TabsList className="grid w-full grid-cols-6">
+                {categories.map(category => (
+                  <TabsTrigger
+                    key={category.id}
+                    value={category.id}
+                    className="text-xs"
+                  >
+                    <category.icon className="h-4 w-4 mr-1" />
                     {category.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
 
-              {categories.map((category) => (
-                <TabsContent key={category.id} value={category.id} className='mt-4'>
-                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                    {getStationsByCategory(category.id).map((station) => (
+              {categories.map(category => (
+                <TabsContent
+                  key={category.id}
+                  value={category.id}
+                  className="mt-4"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {getStationsByCategory(category.id).map(station => (
                       <Card
                         key={station._id}
                         className={`cursor-pointer transition-all hover:shadow-md ${
-                          currentStation?._id === station._id ? 'ring-2 ring-primary' : ''
+                          currentStation?._id === station._id
+                            ? 'ring-2 ring-primary'
+                            : ''
                         }`}
                         onClick={() => playStation(station)}
                       >
-                        <CardContent className='p-4'>
-                          <div className='flex items-start justify-between'>
-                            <div className='flex items-center space-x-3 flex-1'>
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center space-x-3 flex-1">
                               {station.logoUrl ? (
                                 <img
                                   src={station.logoUrl}
                                   alt={station.name}
-                                  className='w-10 h-10 rounded-full object-cover'
+                                  className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
-                                  <Radio className='h-5 w-5 text-primary' />
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Radio className="h-5 w-5 text-primary" />
                                 </div>
                               )}
-                              <div className='flex-1 min-w-0'>
-                                <h4 className='font-medium truncate'>{station.name}</h4>
-                                <p className='text-sm text-muted-foreground truncate'>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium truncate">
+                                  {station.name}
+                                </h4>
+                                <p className="text-sm text-muted-foreground truncate">
                                   {station.frequency} • {station.region}
                                 </p>
-                                <div className='flex items-center space-x-2 mt-1'>
-                                  <Badge variant={getQualityBadge((station as any).quality || 'unknown')} className='text-xs'>
+                                <div className="flex items-center space-x-2 mt-1">
+                                  <Badge
+                                    variant={getQualityBadge(
+                                      (station as any).quality || 'unknown'
+                                    )}
+                                    className="text-xs"
+                                  >
                                     {(station as any).quality || 'Desconocida'}
                                   </Badge>
-                                  <Badge variant='outline' className={`text-xs ${getCategoryColor(station.category)} text-white`}>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${getCategoryColor(station.category)} text-white`}
+                                  >
                                     {station.category}
                                   </Badge>
                                 </div>
                               </div>
                             </div>
 
-                            <div className='flex items-center space-x-1'>
+                            <div className="flex items-center space-x-1">
                               {category.id === 'favorites' && (
                                 <Button
-                                  variant='ghost'
-                                  size='sm'
-                                  onClick={(e) => {
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={e => {
                                     e.stopPropagation();
                                     handleFavoriteToggle(station);
                                   }}
-                                  className='h-8 w-8 p-0'
+                                  className="h-8 w-8 p-0"
                                 >
-                                  <Heart className='h-4 w-4 fill-red-500 text-red-500' />
+                                  <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                                 </Button>
                               )}
                               {category.id !== 'favorites' && (
                                 <Button
-                                  variant='ghost'
-                                  size='sm'
-                                  onClick={(e) => {
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={e => {
                                     e.stopPropagation();
                                     handleFavoriteToggle(station);
                                   }}
-                                  className='h-8 w-8 p-0'
+                                  className="h-8 w-8 p-0"
                                 >
                                   <Heart
                                     className={`h-4 w-4 ${
-                                      (station as any).isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
+                                      userFavorites?.some(
+                                        fav => fav._id === station._id
+                                      )
+                                        ? 'fill-red-500 text-red-500'
+                                        : 'text-muted-foreground'
                                     }`}
                                   />
                                 </Button>
@@ -455,8 +600,8 @@ const RadioPlayer: React.FC = () => {
                   </div>
 
                   {getStationsByCategory(category.id).length === 0 && (
-                    <div className='text-center py-8 text-muted-foreground'>
-                      <Radio className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Radio className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <p>No hay estaciones disponibles en esta categoría</p>
                     </div>
                   )}

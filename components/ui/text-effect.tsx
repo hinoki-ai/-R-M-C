@@ -1,14 +1,11 @@
 'use client';
-import {
-  AnimatePresence,
-  motion
-} from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import type {
   TargetAndTransition,
   Transition,
   Variant,
   Variants,
-} from 'framer-motion'
+} from 'framer-motion';
 import React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -120,25 +117,25 @@ const AnimationComponent: React.FC<{
 }> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
   const content =
     per === 'line' ? (
-      <motion.span variants={variants} className='block'>
+      <motion.span variants={variants} className="block">
         {segment}
       </motion.span>
     ) : per === 'word' ? (
       <motion.span
-        aria-hidden='true'
+        aria-hidden="true"
         variants={variants}
-        className='inline-block whitespace-pre'
+        className="inline-block whitespace-pre"
       >
         {segment}
       </motion.span>
     ) : (
-      <motion.span className='inline-block whitespace-pre'>
+      <motion.span className="inline-block whitespace-pre">
         {segment.split('').map((char, charIndex) => (
           <motion.span
             key={`char-${charIndex}`}
-            aria-hidden='true'
+            aria-hidden="true"
             variants={variants}
-            className='inline-block whitespace-pre'
+            className="inline-block whitespace-pre"
           >
             {char}
           </motion.span>
@@ -170,9 +167,7 @@ const hasTransition = (
   variant?: Variant
 ): variant is TargetAndTransition & { transition?: Transition } => {
   if (!variant) return false;
-  return (
-    typeof variant === 'object' && 'transition' in variant
-  );
+  return typeof variant === 'object' && 'transition' in variant;
 };
 
 const createVariantsWithTransition = (
@@ -266,19 +261,19 @@ export function TextEffect({
   };
 
   return (
-    <AnimatePresence mode='popLayout'>
+    <AnimatePresence mode="popLayout">
       {trigger && (
         <MotionTag
-          initial='hidden'
-          animate='visible'
-          exit='exit'
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           variants={computedVariants.container}
           className={className}
           onAnimationComplete={onAnimationComplete}
           onAnimationStart={onAnimationStart}
           style={style}
         >
-          {per !== 'line' ? <span className='sr-only'>{children}</span> : null}
+          {per !== 'line' ? <span className="sr-only">{children}</span> : null}
           {segments.map((segment, index) => (
             <AnimationComponent
               key={`${per}-${index}-${segment}`}

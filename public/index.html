@@ -1,21 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JuntaDeVecinos</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Pinto Los Pellines</title>
 
     <!-- Capacitor -->
-    <script type="module" crossorigin src="./assets/index.js"></script>
+    <script type="module">
+      import { App } from '@capacitor/app';
+      import { StatusBar, Style } from '@capacitor/status-bar';
+      import { SplashScreen } from '@capacitor/splash-screen';
+
+      // Initialize Capacitor plugins
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // Configure status bar
+          await StatusBar.setStyle({ style: Style.Default });
+          await StatusBar.setBackgroundColor({ color: '#ffffff' });
+
+          // Hide splash screen after a short delay
+          setTimeout(() => {
+            SplashScreen.hide();
+          }, 2000);
+
+          // Handle app URL opens
+          App.addListener('appUrlOpen', event => {
+            const url = new URL(event.url);
+            // Handle deep links here
+            console.log('App opened with URL:', event.url);
+          });
+
+          // Handle back button
+          App.addListener('backButton', () => {
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              App.exitApp();
+            }
+          });
+        } catch (error) {
+          console.log('Capacitor initialization skipped (web mode)');
+        }
+      });
+    </script>
 
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="manifest" href="./manifest.json" />
 
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Plataforma comunitaria avanzada para Pinto Los Pellines" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="Plataforma comunitaria avanzada para Pinto Los Pellines"
+    />
 
-    <!-- Apple touch icon -->
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <!-- Apple touch icons -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./apple-touch-icon.png"
+    />
+
+    <!-- PWA meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="PintoPellines" />
 
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,48 +74,128 @@
 
     <!-- Capacitor Splash Screen -->
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #ffffff;
+      }
+
       .splash-screen {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: #ffffff;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 9999;
       }
+
       .splash-content {
         text-align: center;
-        color: #1e40af;
+        color: #ffffff;
       }
+
+      .splash-logo {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
       .splash-spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #e0e7ff;
-        border-top: 4px solid #1e40af;
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #ffffff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin: 20px auto;
       }
+
+      .splash-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .splash-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
       @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .app-container {
+        display: none;
+      }
+
+      .app-container.loaded {
+        display: block;
+      }
+
+      .main-app-iframe {
+        width: 100%;
+        height: 100vh;
+        border: none;
       }
     </style>
   </head>
   <body>
+    <!-- Splash Screen -->
     <div id="splash-screen" class="splash-screen">
       <div class="splash-content">
-        <h2>🚀 PintoPellines</h2>
+        <div class="splash-logo">🏠</div>
+        <div class="splash-title">Pinto Los Pellines</div>
         <div class="splash-spinner"></div>
-        <p>Cargando...</p>
+        <div class="splash-subtitle">Cargando aplicación...</div>
       </div>
     </div>
 
-    <div id="root"></div>
+    <!-- Main App Container -->
+    <div id="app-container" class="app-container">
+      <iframe
+        id="main-app"
+        src="https://pellines.vercel.app"
+        class="main-app-iframe"
+        title="Pinto Los Pellines App"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+      ></iframe>
+    </div>
 
-    <!-- Capacitor scripts will be injected here -->
+    <script>
+      // Handle app loading
+      document.addEventListener('DOMContentLoaded', () => {
+        const splashScreen = document.getElementById('splash-screen');
+        const appContainer = document.getElementById('app-container');
+
+        // Show app after splash
+        setTimeout(() => {
+          if (splashScreen) {
+            splashScreen.style.display = 'none';
+          }
+          if (appContainer) {
+            appContainer.classList.add('loaded');
+          }
+        }, 3000);
+
+        // Handle iframe communication
+        window.addEventListener('message', event => {
+          // Handle messages from the embedded app
+          if (event.origin === 'https://pellines.vercel.app') {
+            console.log('Message from app:', event.data);
+          }
+        });
+      });
+    </script>
   </body>
 </html>

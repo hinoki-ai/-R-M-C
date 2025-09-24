@@ -35,7 +35,7 @@ export function BentoGridItem({
   className,
   colSpan = 1,
   rowSpan = 1,
-  hover = true
+  hover = true,
 }: BentoGridItemProps) {
   const gridClasses = {
     'col-span-1': colSpan === 1,
@@ -52,7 +52,8 @@ export function BentoGridItem({
     <div
       className={cn(
         'group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm',
-        hover && 'hover:shadow-md transition-all duration-300 hover:-translate-y-1',
+        hover &&
+          'hover:shadow-md transition-all duration-300 hover:-translate-y-1',
         gridClasses,
         className
       )}

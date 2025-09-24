@@ -22,12 +22,17 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
     wasOffline: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [syncQueue, setSyncQueue] = useState<Array<{ id: string; action: () => Promise<void> }>>([]);
+  const [syncQueue, setSyncQueue] = useState<
+    Array<{ id: string; action: () => Promise<void> }>
+  >([]);
 
   // Network state monitoring
   useEffect(() => {
     const updateNetworkState = () => {
-      const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+      const connection =
+        (navigator as any).connection ||
+        (navigator as any).mozConnection ||
+        (navigator as any).webkitConnection;
 
       setOfflineState(prev => ({
         isOnline: navigator.onLine,
@@ -63,7 +68,7 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
     if ('serviceWorker' in navigator && cacheConfig) {
       navigator.serviceWorker
         .register('/sw.js')
-        .then((registration) => {
+        .then(registration => {
           console.log('Service Worker registered:', registration);
 
           // Pre-cache critical resources
@@ -72,10 +77,10 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
         .then(() => {
           return caches.open(cacheConfig.cacheName);
         })
-        .then((cache) => {
+        .then(cache => {
           return cache.addAll(cacheConfig.urlsToCache);
         })
-        .catch((error) => {
+        .catch(error => {
           console.warn('Service Worker registration failed:', error);
         });
     }
@@ -117,54 +122,60 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
   }, [offlineState.isOnline, syncQueue]);
 
   // Queue action for background sync
-  const queueForSync = useCallback((action: () => Promise<void>) => {
-    const id = Math.random().toString(36);
-    setSyncQueue(prev => [...prev, { id, action }]);
+  const queueForSync = useCallback(
+    (action: () => Promise<void>) => {
+      const id = Math.random().toString(36);
+      setSyncQueue(prev => [...prev, { id, action }]);
 
-    // Try immediate execution if online
-    if (offlineState.isOnline) {
-      action().catch(() => {
-        // Action failed, keep in queue for retry
-      });
-    }
-  }, [offlineState.isOnline]);
+      // Try immediate execution if online
+      if (offlineState.isOnline) {
+        action().catch(() => {
+          // Action failed, keep in queue for retry
+        });
+      }
+    },
+    [offlineState.isOnline]
+  );
 
   // Cache data locally
-  const cacheData = useCallback(async (key: string, data: any, ttl = 3600000) => {
-    try {
-      const cacheKey = `offline_data_${key}`;
-      const cacheData = {
-        data,
-        timestamp: Date.now(),
-        ttl,
-      };
-
-      if ('localStorage' in window) {
-        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-      }
-
-      // Also cache in IndexedDB for larger data
-      if ('indexedDB' in window) {
-        const request = indexedDB.open('offline-cache', 1);
-
-        request.onupgradeneeded = (event) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          if (!db.objectStoreNames.contains('data')) {
-            db.createObjectStore('data');
-          }
+  const cacheData = useCallback(
+    async (key: string, data: any, ttl = 3600000) => {
+      try {
+        const cacheKey = `offline_data_${key}`;
+        const cacheData = {
+          data,
+          timestamp: Date.now(),
+          ttl,
         };
 
-        request.onsuccess = (event) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          const transaction = db.transaction(['data'], 'readwrite');
-          const store = transaction.objectStore('data');
-          store.put(cacheData, cacheKey);
-        };
+        if ('localStorage' in window) {
+          localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+        }
+
+        // Also cache in IndexedDB for larger data
+        if ('indexedDB' in window) {
+          const request = indexedDB.open('offline-cache', 1);
+
+          request.onupgradeneeded = event => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            if (!db.objectStoreNames.contains('data')) {
+              db.createObjectStore('data');
+            }
+          };
+
+          request.onsuccess = event => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            const transaction = db.transaction(['data'], 'readwrite');
+            const store = transaction.objectStore('data');
+            store.put(cacheData, cacheKey);
+          };
+        }
+      } catch (error) {
+        console.warn('Failed to cache data:', error);
       }
-    } catch (error) {
-      console.warn('Failed to cache data:', error);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Retrieve cached data
   const getCachedData = useCallback(async (key: string) => {
@@ -173,10 +184,10 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
 
       // Try IndexedDB first for larger data
       if ('indexedDB' in window) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = indexedDB.open('offline-cache', 1);
 
-          request.onsuccess = (event) => {
+          request.onsuccess = event => {
             const db = (event.target as IDBOpenDBRequest).result;
             const transaction = db.transaction(['data'], 'readonly');
             const store = transaction.objectStore('data');
@@ -217,33 +228,36 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
   }, []);
 
   // Network-aware fetch with caching
-  const offlineFetch = useCallback(async (url: string, options?: RequestInit) => {
-    const cacheKey = `fetch_${btoa(url)}`;
+  const offlineFetch = useCallback(
+    async (url: string, options?: RequestInit) => {
+      const cacheKey = `fetch_${btoa(url)}`;
 
-    // Try cache first
-    const cached = await getCachedData(cacheKey);
-    if (cached && !offlineState.isOnline) {
-      return cached;
-    }
-
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-
-      // Cache successful responses
-      if (response.ok) {
-        await cacheData(cacheKey, data, 300000); // 5 minutes TTL
-      }
-
-      return data;
-    } catch (error) {
-      // Return cached data if network fails
-      if (cached) {
+      // Try cache first
+      const cached = await getCachedData(cacheKey);
+      if (cached && !offlineState.isOnline) {
         return cached;
       }
-      throw error;
-    }
-  }, [getCachedData, cacheData, offlineState.isOnline]);
+
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        // Cache successful responses
+        if (response.ok) {
+          await cacheData(cacheKey, data, 300000); // 5 minutes TTL
+        }
+
+        return data;
+      } catch (error) {
+        // Return cached data if network fails
+        if (cached) {
+          return cached;
+        }
+        throw error;
+      }
+    },
+    [getCachedData, cacheData, offlineState.isOnline]
+  );
 
   return {
     // State
@@ -253,7 +267,9 @@ export function useOfflineFirst(cacheConfig?: CacheConfig) {
 
     // Network utilities
     isOnline: offlineState.isOnline,
-    isSlowConnection: offlineState.effectiveType === 'slow-2g' || offlineState.effectiveType === '2g',
+    isSlowConnection:
+      offlineState.effectiveType === 'slow-2g' ||
+      offlineState.effectiveType === '2g',
     wasOffline: offlineState.wasOffline,
 
     // Data management

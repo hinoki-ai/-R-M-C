@@ -31,6 +31,7 @@ PintoPellines is a comprehensive community management platform designed for Pint
 ## Technology Stack
 
 ### Frontend (Shared)
+
 - **Framework**: React 19 with TypeScript 5.x
 - **Styling**: Tailwind CSS 3.4.x with custom design system
 - **State Management**: Zustand for client state
@@ -38,6 +39,7 @@ PintoPellines is a comprehensive community management platform designed for Pint
 - **UI Components**: Radix UI primitives with custom theming
 
 ### Web Platform
+
 - **Framework**: Next.js 15.3.5 (App Router)
 - **Build Tool**: Turbopack
 - **Deployment**: Vercel
@@ -45,12 +47,14 @@ PintoPellines is a comprehensive community management platform designed for Pint
 - **Charts**: Recharts for data visualization
 
 ### Mobile Platform
+
 - **Framework**: Capacitor 7
 - **Build Tools**: Android Studio (Android), Xcode (iOS)
 - **Native Features**: Camera, GPS, Push Notifications, Biometrics
 - **Deployment**: App Store Connect, Google Play Console
 
 ### Backend
+
 - **Database**: Convex (real-time database)
 - **Authentication**: Clerk (JWT with OAuth providers)
 - **File Storage**: Convex File Storage
@@ -60,23 +64,27 @@ PintoPellines is a comprehensive community management platform designed for Pint
 ## Core Features
 
 ### 1. Community Communication Hub
+
 - **Official Announcements**: Categorized announcements with multi-language support
 - **Community Calendar**: Event coordination with RSVP system and weather integration
 - **Emergency Communications**: Direct communication channels for urgent situations
 
 ### 2. Security & Safety Management
+
 - **Neighborhood Watch**: Incident reporting and anonymous tip submission
 - **Emergency Preparedness**: Localized protocols and emergency contact directories
 - **Security Camera Network**: IP camera integration with motion detection
 - **Real-time Monitoring**: Live surveillance with status tracking
 
 ### 3. Civic Administration
+
 - **Contribution Management**: Transparent financial tracking with Stripe integration
 - **Member Directory**: Contact management with privacy controls
 - **Document Management**: Secure file storage with version control
 - **Budget Planning**: Financial reporting and planning tools
 
 ### 4. Local Services Integration
+
 - **Weather Integration**: Localized forecasts with agricultural alerts
 - **Business Directory**: Local business registration and promotion
 - **Service Requests**: Community service coordination platform
@@ -84,12 +92,14 @@ PintoPellines is a comprehensive community management platform designed for Pint
 ## Platform-Specific Optimizations
 
 ### Web Platform Features
+
 - **Progressive Web App**: Installable web app with offline capabilities
 - **Advanced Analytics**: Comprehensive user behavior tracking
 - **Rich Interactions**: Complex UI components and animations
 - **SEO Optimization**: Server-side rendering and meta tag management
 
 ### Mobile Platform Features
+
 - **Native Performance**: Optimized for mobile hardware and network conditions
 - **Device Integration**: Camera, GPS, biometric authentication
 - **Push Notifications**: Real-time alerts and updates
@@ -98,6 +108,7 @@ PintoPellines is a comprehensive community management platform designed for Pint
 ## Security Architecture
 
 ### Authentication & Authorization
+
 ```text
 Client → Clerk → JWT → Convex → Database
    ↑        ↑         ↑         ↑
@@ -110,6 +121,7 @@ Client → Clerk → JWT → Convex → Database
 - **Session Management**: Secure token handling with automatic refresh
 
 ### Data Protection
+
 - **End-to-End Encryption**: Sensitive data encrypted in transit and at rest
 - **GDPR Compliance**: Data protection and privacy regulations
 - **Audit Logging**: Comprehensive activity tracking and monitoring
@@ -118,12 +130,14 @@ Client → Clerk → JWT → Convex → Database
 ## Performance Optimizations
 
 ### Cross-Platform Performance
+
 - **Lazy Loading**: Components loaded on demand
 - **Code Splitting**: Platform-specific bundles
 - **Caching Strategies**: Intelligent caching with platform-specific TTL
 - **Image Optimization**: Automatic compression and format selection
 
 ### Real-time Features
+
 - **Live Updates**: Real-time data synchronization across platforms
 - **Optimistic Updates**: Immediate UI feedback with conflict resolution
 - **Background Sync**: Offline changes sync when connectivity returns
@@ -132,12 +146,14 @@ Client → Clerk → JWT → Convex → Database
 ## Deployment Strategy
 
 ### Web Deployment
+
 - **Global CDN**: Vercel Edge Network for worldwide distribution
 - **Serverless Functions**: Automatic scaling based on demand
 - **Environment Management**: Separate environments for development, staging, and production
 - **Monitoring**: Real-time performance and error tracking
 
 ### Mobile Deployment
+
 - **Cross-Platform Builds**: Single codebase for iOS and Android
 - **Native App Stores**: App Store and Google Play distribution
 - **Update Management**: Over-the-air updates and version control
@@ -146,12 +162,14 @@ Client → Clerk → JWT → Convex → Database
 ## Scalability Considerations
 
 ### Database Scalability
+
 - **Convex Auto-scaling**: Automatic database scaling based on load
 - **Query Optimization**: Efficient data fetching and caching
 - **Connection Pooling**: Optimized database connections
 - **Backup & Recovery**: Automated backup and disaster recovery
 
 ### Application Scalability
+
 - **Microservices Architecture**: Modular, independently scalable components
 - **Load Balancing**: Distributed load across multiple instances
 - **Caching Layers**: Multi-level caching for improved performance
@@ -160,12 +178,14 @@ Client → Clerk → JWT → Convex → Database
 ## Monitoring & Observability
 
 ### Performance Monitoring
+
 - **Core Web Vitals**: User experience performance metrics
 - **Real-time Analytics**: Live user behavior and system performance
 - **Error Tracking**: Comprehensive error monitoring and alerting
 - **Custom Metrics**: Business-specific KPI tracking
 
 ### System Health
+
 - **Uptime Monitoring**: 24/7 system availability tracking
 - **Resource Utilization**: CPU, memory, and storage monitoring
 - **API Performance**: Endpoint response times and error rates

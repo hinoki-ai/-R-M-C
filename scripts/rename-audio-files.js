@@ -113,7 +113,9 @@ function renameFile(oldPath, newPath) {
   try {
     if (fs.existsSync(oldPath)) {
       fs.renameSync(oldPath, newPath);
-      console.log(`✅ Renamed: ${path.basename(oldPath)} → ${path.basename(newPath)}`);
+      console.log(
+        `✅ Renamed: ${path.basename(oldPath)} → ${path.basename(newPath)}`
+      );
     } else {
       console.log(`⚠️  File not found: ${oldPath}`);
     }
@@ -147,9 +149,13 @@ function main() {
 
   console.log('\n✨ Audio files renaming completed!');
   console.log('📋 Summary:');
-  console.log(`   - Community voice files: ${Object.keys(voiceRenameMap).length} renamed`);
+  console.log(
+    `   - Community voice files: ${Object.keys(voiceRenameMap).length} renamed`
+  );
   console.log(`   - UI sound files: ${uiFilesToRename.length} renamed`);
-  console.log(`   - Total files renamed: ${Object.keys(voiceRenameMap).length + uiFilesToRename.length}`);
+  console.log(
+    `   - Total files renamed: ${Object.keys(voiceRenameMap).length + uiFilesToRename.length}`
+  );
 
   console.log('\n🔄 Next steps:');
   console.log('   1. Update audio hooks to use new file names');

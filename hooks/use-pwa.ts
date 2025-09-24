@@ -28,7 +28,8 @@ export function usePWAController() {
 
   return {
     install: controller.install.bind(controller),
-    requestNotificationPermission: controller.requestNotificationPermission.bind(controller),
+    requestNotificationPermission:
+      controller.requestNotificationPermission.bind(controller),
     getStatus: controller.getStatus.bind(controller),
   };
 }

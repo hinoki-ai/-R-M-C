@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dev.log
 
 # Mobile app directories
 android/
@@ -13,6 +14,12 @@ ios/
 out/
 build/
 dist/
+
+# Exclude non-deployable local dirs
+_upstream/
+radio-server/
+.clerk/
+docs/
 
 # Deployment artifacts
 *.tar.gz
@@ -25,8 +32,8 @@ vercel-deploy.tar.gz
 *.tsbuildinfo
 next-env.d.ts
 
-# Environment files
-.env*
+# Environment files (removed to allow env vars in deployment)
+# .env*
 
 # IDE files
 .vscode/

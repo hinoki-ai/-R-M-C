@@ -42,33 +42,39 @@ export function usePerformanceAnimations() {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const fadeIn = useCallback((element: HTMLElement, duration: number = 300) => {
-    if (isReducedMotion || !element) return Promise.resolve();
+  const fadeIn = useCallback(
+    (element: HTMLElement, duration: number = 300) => {
+      if (isReducedMotion || !element) return Promise.resolve();
 
-    return new Promise<void>((resolve) => {
-      element.style.opacity = '0';
-      element.style.transition = `opacity ${duration}ms ease-in-out`;
+      return new Promise<void>(resolve => {
+        element.style.opacity = '0';
+        element.style.transition = `opacity ${duration}ms ease-in-out`;
 
-      requestAnimationFrame(() => {
-        element.style.opacity = '1';
-        setTimeout(resolve, duration);
+        requestAnimationFrame(() => {
+          element.style.opacity = '1';
+          setTimeout(resolve, duration);
+        });
       });
-    });
-  }, [isReducedMotion]);
+    },
+    [isReducedMotion]
+  );
 
-  const scale = useCallback((element: HTMLElement, scaleValue: number, duration: number = 200) => {
-    if (isReducedMotion || !element) return Promise.resolve();
+  const scale = useCallback(
+    (element: HTMLElement, scaleValue: number, duration: number = 200) => {
+      if (isReducedMotion || !element) return Promise.resolve();
 
-    return new Promise<void>((resolve) => {
-      element.style.transition = `transform ${duration}ms ease-in-out`;
-      element.style.transform = `scale(${scaleValue})`;
+      return new Promise<void>(resolve => {
+        element.style.transition = `transform ${duration}ms ease-in-out`;
+        element.style.transform = `scale(${scaleValue})`;
 
-      setTimeout(() => {
-        element.style.transform = 'scale(1)';
-        setTimeout(resolve, duration);
-      }, duration);
-    });
-  }, [isReducedMotion]);
+        setTimeout(() => {
+          element.style.transform = 'scale(1)';
+          setTimeout(resolve, duration);
+        }, duration);
+      });
+    },
+    [isReducedMotion]
+  );
 
   const useIntersectionAnimation = useCallback((threshold: number = 0.1) => {
     const [isVisible, setIsVisible] = useState(false);

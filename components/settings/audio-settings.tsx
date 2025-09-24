@@ -1,10 +1,16 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import { Volume2, VolumeX, Settings, RotateCcw } from 'lucide-react';
 import { useAudioSystem } from '@/hooks/use-audio-system';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
@@ -15,7 +21,15 @@ interface AudioSettingsProps {
 }
 
 export function AudioSettings({ className }: AudioSettingsProps) {
-  const { preferences, updatePreferences, resetPreferences, playWelcome, playEmergency, playSuccess, playError } = useAudioSystem();
+  const {
+    preferences,
+    updatePreferences,
+    resetPreferences,
+    playWelcome,
+    playEmergency,
+    playSuccess,
+    playError,
+  } = useAudioSystem();
   const [testPlaying, setTestPlaying] = useState<string | null>(null);
 
   const handleTestSound = async (soundType: string) => {
@@ -46,7 +60,10 @@ export function AudioSettings({ className }: AudioSettingsProps) {
     updatePreferences({ masterVolume: value[0] });
   };
 
-  const updateCategoryVolume = (category: 'ui' | 'voice' | 'alerts', value: number[]) => {
+  const updateCategoryVolume = (
+    category: 'ui' | 'voice' | 'alerts',
+    value: number[]
+  ) => {
     updatePreferences({
       categoryVolumes: {
         ...preferences.categoryVolumes,
@@ -105,7 +122,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-sm font-medium">Restablecer Configuración</Label>
+                <Label className="text-sm font-medium">
+                  Restablecer Configuración
+                </Label>
                 <p className="text-xs text-muted-foreground">
                   Vuelve a la configuración de audio predeterminada
                 </p>
@@ -128,7 +147,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base">Sonidos de Interfaz</CardTitle>
+                    <CardTitle className="text-base">
+                      Sonidos de Interfaz
+                    </CardTitle>
                     <CardDescription className="text-sm">
                       Clicks, hovers y transiciones de la interfaz
                     </CardDescription>
@@ -145,7 +166,7 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                     <Label className="text-sm">Volumen de UI</Label>
                     <Slider
                       value={[preferences.categoryVolumes.ui]}
-                      onValueChange={(value) => updateCategoryVolume('ui', value)}
+                      onValueChange={value => updateCategoryVolume('ui', value)}
                       max={1}
                       min={0}
                       step={0.1}
@@ -177,7 +198,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                     <Label className="text-sm">Volumen de Voz</Label>
                     <Slider
                       value={[preferences.categoryVolumes.voice]}
-                      onValueChange={(value) => updateCategoryVolume('voice', value)}
+                      onValueChange={value =>
+                        updateCategoryVolume('voice', value)
+                      }
                       max={1}
                       min={0}
                       step={0.1}
@@ -192,9 +215,12 @@ export function AudioSettings({ className }: AudioSettingsProps) {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base">Alertas de Emergencia</CardTitle>
+                    <CardTitle className="text-base">
+                      Alertas de Emergencia
+                    </CardTitle>
                     <CardDescription className="text-sm">
-                      Notificaciones críticas de seguridad (siempre recomendado activar)
+                      Notificaciones críticas de seguridad (siempre recomendado
+                      activar)
                     </CardDescription>
                   </div>
                   <Switch
@@ -209,7 +235,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                     <Label className="text-sm">Volumen de Alertas</Label>
                     <Slider
                       value={[preferences.categoryVolumes.alerts]}
-                      onValueChange={(value) => updateCategoryVolume('alerts', value)}
+                      onValueChange={value =>
+                        updateCategoryVolume('alerts', value)
+                      }
                       max={1}
                       min={0}
                       step={0.1}
@@ -233,7 +261,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                 className="flex items-center gap-2"
               >
                 <Volume2 className="h-4 w-4" />
-                {testPlaying === 'welcome' ? 'Reproduciendo...' : 'Mensaje de Bienvenida'}
+                {testPlaying === 'welcome'
+                  ? 'Reproduciendo...'
+                  : 'Mensaje de Bienvenida'}
               </Button>
 
               <Button
@@ -243,7 +273,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                 className="flex items-center gap-2"
               >
                 <Volume2 className="h-4 w-4" />
-                {testPlaying === 'emergency' ? 'Reproduciendo...' : 'Alerta de Emergencia'}
+                {testPlaying === 'emergency'
+                  ? 'Reproduciendo...'
+                  : 'Alerta de Emergencia'}
               </Button>
 
               <Button
@@ -253,7 +285,9 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                 className="flex items-center gap-2"
               >
                 <Volume2 className="h-4 w-4" />
-                {testPlaying === 'success' ? 'Reproduciendo...' : 'Sonido de Éxito'}
+                {testPlaying === 'success'
+                  ? 'Reproduciendo...'
+                  : 'Sonido de Éxito'}
               </Button>
 
               <Button
@@ -263,13 +297,17 @@ export function AudioSettings({ className }: AudioSettingsProps) {
                 className="flex items-center gap-2"
               >
                 <Volume2 className="h-4 w-4" />
-                {testPlaying === 'error' ? 'Reproduciendo...' : 'Sonido de Error'}
+                {testPlaying === 'error'
+                  ? 'Reproduciendo...'
+                  : 'Sonido de Error'}
               </Button>
             </div>
 
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">
-                💡 <strong>Consejo:</strong> Las alertas de emergencia tienen el volumen más alto para asegurar que sean audibles en situaciones críticas.
+                💡 <strong>Consejo:</strong> Las alertas de emergencia tienen el
+                volumen más alto para asegurar que sean audibles en situaciones
+                críticas.
               </p>
             </div>
           </TabsContent>

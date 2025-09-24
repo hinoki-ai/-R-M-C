@@ -5,13 +5,13 @@ import { mutation } from '../_generated/server';
 
 // LS Vision camera configuration for Pinto Los Pellines
 const generateCommunityCameras = (): any[] => {
-  const cameras: any[] = []
-  const now = Date.now()
+  const cameras: any[] = [];
+  const now = Date.now();
 
   // Check for multiple LSVISION_UID environment variables
   for (let i = 1; i <= 10; i++) {
-    const uidKey = i === 1 ? 'LSVISION_UID' : `LSVISION_UID_${i}`
-    const uid = process.env[uidKey]
+    const uidKey = i === 1 ? 'LSVISION_UID' : `LSVISION_UID_${i}`;
+    const uid = process.env[uidKey];
 
     if (uid) {
       cameras.push({
@@ -28,7 +28,7 @@ const generateCommunityCameras = (): any[] => {
         updatedAt: now,
         // For LS Vision units, add multiple feeds (2-5 cameras per unit)
         feeds: generateCameraFeeds(uid, now),
-      })
+      });
     }
   }
 
@@ -47,17 +47,17 @@ const generateCommunityCameras = (): any[] => {
       createdAt: now,
       updatedAt: now,
       feeds: generateSampleFeeds(now),
-    })
+    });
   }
 
-  return cameras
-}
+  return cameras;
+};
 
 // Generate feeds for a LS Vision camera unit (2-5 cameras per unit)
 const generateCameraFeeds = (baseUid: string, now: number): any[] => {
-  const feeds: any[] = []
+  const feeds: any[] = [];
   // LS Vision units typically have 2-5 cameras
-  const numCameras = Math.floor(Math.random() * 4) + 2 // Random between 2-5
+  const numCameras = Math.floor(Math.random() * 4) + 2; // Random between 2-5
 
   for (let i = 1; i <= numCameras; i++) {
     feeds.push({
@@ -65,16 +65,16 @@ const generateCameraFeeds = (baseUid: string, now: number): any[] => {
       isActive: true,
       lastAccessed: now,
       createdAt: now,
-    })
+    });
   }
 
-  return feeds
-}
+  return feeds;
+};
 
 // Generate sample feeds for placeholder camera
 const generateSampleFeeds = (now: number): any[] => {
-  const feeds: any[] = []
-  const numCameras = 3 // Sample with 3 cameras
+  const feeds: any[] = [];
+  const numCameras = 3; // Sample with 3 cameras
 
   for (let i = 1; i <= numCameras; i++) {
     feeds.push({
@@ -82,11 +82,11 @@ const generateSampleFeeds = (now: number): any[] => {
       isActive: i <= 2, // Make first 2 active
       lastAccessed: i <= 2 ? now : undefined,
       createdAt: now,
-    })
+    });
   }
 
-  return feeds
-}
+  return feeds;
+};
 
 // Sample camera events for testing
 const CAMERA_EVENTS: any[] = [
@@ -96,12 +96,12 @@ const CAMERA_EVENTS: any[] = [
     timestamp: Date.now(),
     severity: 'low',
     acknowledged: false,
-  }
-]
+  },
+];
 
 export const seedCameras = mutation({
   args: {},
-  handler: async (ctx) => {
+  handler: async ctx => {
     console.log('🔄 Starting camera seeding process...');
 
     // Get the first admin user to assign cameras to
@@ -118,9 +118,10 @@ export const seedCameras = mutation({
 
     // Check for existing cameras
     const existingCameras = await ctx.db.query('cameras').collect();
-    const existingLsvisionCameras = existingCameras.filter(camera =>
-      camera.name.toLowerCase().includes('lsvision') ||
-      camera.name.toLowerCase().includes('ls vision')
+    const existingLsvisionCameras = existingCameras.filter(
+      camera =>
+        camera.name.toLowerCase().includes('lsvision') ||
+        camera.name.toLowerCase().includes('ls vision')
     );
 
     let camerasCreated = 0;
@@ -129,8 +130,8 @@ export const seedCameras = mutation({
 
     // Create cameras that don't already exist
     for (const config of cameraConfigs) {
-      const existingCamera = existingLsvisionCameras.find(camera =>
-        camera.name === config.name
+      const existingCamera = existingLsvisionCameras.find(
+        camera => camera.name === config.name
       );
 
       let cameraId: Id<'cameras'>;
@@ -152,7 +153,9 @@ export const seedCameras = mutation({
 
         // Create camera feeds for this camera
         if (feeds && feeds.length > 0) {
-          console.log(`🔨 Creating ${feeds.length} feeds for camera "${config.name}"...`);
+          console.log(
+            `🔨 Creating ${feeds.length} feeds for camera "${config.name}"...`
+          );
           for (let i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
             await ctx.db.insert('cameraFeeds', {
@@ -161,7 +164,9 @@ export const seedCameras = mutation({
             });
             feedsCreated++;
           }
-          console.log(`✅ Created ${feeds.length} feeds for camera "${config.name}"`);
+          console.log(
+            `✅ Created ${feeds.length} feeds for camera "${config.name}"`
+          );
         }
       }
     }
@@ -173,9 +178,10 @@ export const seedCameras = mutation({
     for (const cameraId of cameraIds) {
       for (const eventData of CAMERA_EVENTS) {
         // Check if similar event already exists for this camera
-        const existingEvent = existingEvents.find(event =>
-          event.cameraId === cameraId &&
-          event.eventType === eventData.eventType
+        const existingEvent = existingEvents.find(
+          event =>
+            event.cameraId === cameraId &&
+            event.eventType === eventData.eventType
         );
 
         if (!existingEvent) {
@@ -190,14 +196,15 @@ export const seedCameras = mutation({
     }
 
     // Create camera permissions for admin user for each camera
-    const existingPermissions = await ctx.db.query('cameraPermissions')
-      .withIndex('byUser', (q) => q.eq('userId', adminUser._id))
+    const existingPermissions = await ctx.db
+      .query('cameraPermissions')
+      .withIndex('byUser', q => q.eq('userId', adminUser._id))
       .collect();
 
     let permissionsCreated = 0;
     for (const cameraId of cameraIds) {
-      const hasPermission = existingPermissions.some(p =>
-        p.cameraId === cameraId && p.isActive
+      const hasPermission = existingPermissions.some(
+        p => p.cameraId === cameraId && p.isActive
       );
 
       if (!hasPermission) {
@@ -214,7 +221,9 @@ export const seedCameras = mutation({
     }
 
     if (permissionsCreated > 0) {
-      console.log(`✅ Created ${permissionsCreated} camera permissions for admin user`);
+      console.log(
+        `✅ Created ${permissionsCreated} camera permissions for admin user`
+      );
     }
 
     const result = {
@@ -225,9 +234,10 @@ export const seedCameras = mutation({
       existingCameras: existingCameras.length,
       existingEvents: existingEvents.length,
       cameraIds,
-      message: camerasCreated > 0
-        ? `${camerasCreated} LS Vision cameras and ${feedsCreated} feeds created successfully`
-        : 'All LS Vision cameras already exist'
+      message:
+        camerasCreated > 0
+          ? `${camerasCreated} LS Vision cameras and ${feedsCreated} feeds created successfully`
+          : 'All LS Vision cameras already exist',
     };
 
     console.log(`📊 Camera seeding completed:`, result);

@@ -5,23 +5,40 @@ import { mutation, query } from './_generated/server';
 // Get all payments for admin management
 export const getAllPayments = query({
   args: {
-    status: v.optional(v.union(v.literal('pending'), v.literal('completed'), v.literal('failed'), v.literal('cancelled'))),
-    type: v.optional(v.union(v.literal('contribution'), v.literal('project'), v.literal('maintenance'), v.literal('event'), v.literal('other'))),
+    status: v.optional(
+      v.union(
+        v.literal('pending'),
+        v.literal('completed'),
+        v.literal('failed'),
+        v.literal('cancelled')
+      )
+    ),
+    type: v.optional(
+      v.union(
+        v.literal('contribution'),
+        v.literal('project'),
+        v.literal('maintenance'),
+        v.literal('event'),
+        v.literal('other')
+      )
+    ),
   },
-  returns: v.array(v.object({
-    _id: v.id('payments'),
-    userId: v.id('users'),
-    amount: v.number(),
-    description: v.string(),
-    type: v.string(),
-    status: v.string(),
-    paymentMethod: v.optional(v.string()),
-    referenceId: v.optional(v.string()),
-    dueDate: v.optional(v.string()),
-    paidAt: v.optional(v.number()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('payments'),
+      userId: v.id('users'),
+      amount: v.number(),
+      description: v.string(),
+      type: v.string(),
+      status: v.string(),
+      paymentMethod: v.optional(v.string()),
+      referenceId: v.optional(v.string()),
+      dueDate: v.optional(v.string()),
+      paidAt: v.optional(v.number()),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     let query = ctx.db.query('payments');
 
@@ -57,18 +74,20 @@ export const getPaymentsByUser = query({
   args: {
     userId: v.id('users'),
   },
-  returns: v.array(v.object({
-    _id: v.id('payments'),
-    amount: v.number(),
-    description: v.string(),
-    type: v.string(),
-    status: v.string(),
-    paymentMethod: v.optional(v.string()),
-    referenceId: v.optional(v.string()),
-    dueDate: v.optional(v.string()),
-    paidAt: v.optional(v.number()),
-    createdAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('payments'),
+      amount: v.number(),
+      description: v.string(),
+      type: v.string(),
+      status: v.string(),
+      paymentMethod: v.optional(v.string()),
+      referenceId: v.optional(v.string()),
+      dueDate: v.optional(v.string()),
+      paidAt: v.optional(v.number()),
+      createdAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     const payments = await ctx.db
       .query('payments')
@@ -97,8 +116,21 @@ export const createPayment = mutation({
     userId: v.id('users'),
     amount: v.number(),
     description: v.string(),
-    type: v.union(v.literal('contribution'), v.literal('project'), v.literal('maintenance'), v.literal('event'), v.literal('other')),
-    paymentMethod: v.optional(v.union(v.literal('stripe'), v.literal('bank_transfer'), v.literal('cash'), v.literal('other'))),
+    type: v.union(
+      v.literal('contribution'),
+      v.literal('project'),
+      v.literal('maintenance'),
+      v.literal('event'),
+      v.literal('other')
+    ),
+    paymentMethod: v.optional(
+      v.union(
+        v.literal('stripe'),
+        v.literal('bank_transfer'),
+        v.literal('cash'),
+        v.literal('other')
+      )
+    ),
     referenceId: v.optional(v.string()),
     dueDate: v.optional(v.string()),
   },
@@ -127,9 +159,31 @@ export const updatePayment = mutation({
     paymentId: v.id('payments'),
     amount: v.optional(v.number()),
     description: v.optional(v.string()),
-    type: v.optional(v.union(v.literal('contribution'), v.literal('project'), v.literal('maintenance'), v.literal('event'), v.literal('other'))),
-    status: v.optional(v.union(v.literal('pending'), v.literal('completed'), v.literal('failed'), v.literal('cancelled'))),
-    paymentMethod: v.optional(v.union(v.literal('stripe'), v.literal('bank_transfer'), v.literal('cash'), v.literal('other'))),
+    type: v.optional(
+      v.union(
+        v.literal('contribution'),
+        v.literal('project'),
+        v.literal('maintenance'),
+        v.literal('event'),
+        v.literal('other')
+      )
+    ),
+    status: v.optional(
+      v.union(
+        v.literal('pending'),
+        v.literal('completed'),
+        v.literal('failed'),
+        v.literal('cancelled')
+      )
+    ),
+    paymentMethod: v.optional(
+      v.union(
+        v.literal('stripe'),
+        v.literal('bank_transfer'),
+        v.literal('cash'),
+        v.literal('other')
+      )
+    ),
     referenceId: v.optional(v.string()),
     dueDate: v.optional(v.string()),
     paidAt: v.optional(v.number()),
@@ -154,7 +208,8 @@ export const updatePayment = mutation({
         updates.paidAt = Date.now();
       }
     }
-    if (args.paymentMethod !== undefined) updates.paymentMethod = args.paymentMethod;
+    if (args.paymentMethod !== undefined)
+      updates.paymentMethod = args.paymentMethod;
     if (args.referenceId !== undefined) updates.referenceId = args.referenceId;
     if (args.dueDate !== undefined) updates.dueDate = args.dueDate;
     if (args.paidAt !== undefined) updates.paidAt = args.paidAt;
@@ -196,7 +251,7 @@ export const getPaymentStats = query({
     completedTransactions: v.number(),
     failedTransactions: v.number(),
   }),
-  handler: async (ctx) => {
+  handler: async ctx => {
     const payments = await ctx.db.query('payments').collect();
 
     const stats = {

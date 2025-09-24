@@ -1,229 +1,268 @@
-// Enhanced Service Worker for Mobile-First Offline Experience
-const CACHE_NAME = 'pellines-mobile-v1';
-const OFFLINE_URL = '/';
+/**
+ * Service Worker for Los Pellines Dashboard
+ * Mobile-optimized caching and offline functionality
+ */
 
-// Enhanced static assets to cache for mobile performance
-const STATIC_ASSETS = [
+// Versioned mobile cache names (match mobile naming across tools)
+const CACHE_VERSION = 'v1.0.1';
+const CACHE_NAME = `pellines-mobile-${CACHE_VERSION}`;
+const STATIC_CACHE = `pellines-mobile-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `pellines-mobile-dynamic-${CACHE_VERSION}`;
+
+// Files to cache immediately
+const STATIC_FILES = [
   '/',
-  '/favicon.ico',
+  '/dashboard',
   '/manifest.json',
+  '/favicon.ico',
   '/apple-touch-icon.png',
-  // Add critical fonts and small assets here
+  '/favicon-16x16.png',
+  '/favicon-192x192.png',
+  '/images/backgrounds/bg1.jpg',
+  '/images/backgrounds/bg2.jpg',
+  '/images/backgrounds/bg3.jpg',
 ];
 
-// Dynamic cache for API responses
-const API_CACHE = 'pellines-api-v1';
+// API endpoints to cache (for offline functionality)
+const API_CACHE_PATTERNS = [
+  /\/api\/weather/,
+  /\/api\/emergency/,
+];
 
-// Install event - cache critical resources
+// Files that should be cached aggressively (for mobile)
+const MOBILE_CACHE_PATTERNS = [
+  /\.(png|jpg|jpeg|gif|svg|webp)$/,
+  /\.(woff|woff2|ttf|eot)$/,
+  /\/_next\/static\//,
+];
+
+// Install event - cache static assets
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing enhanced service worker');
+  console.log('[SW] Installing service worker');
+
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Caching critical assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .catch((error) => {
-        console.error('[SW] Failed to cache critical assets:', error);
-      })
+    Promise.all([
+      // Cache static files
+      caches.open(STATIC_CACHE).then(cache => {
+        console.log('[SW] Caching static files');
+        return cache.addAll(STATIC_FILES);
+      }),
+
+      // Skip waiting to activate immediately
+      self.skipWaiting()
+    ])
   );
-  self.skipWaiting();
 });
 
-// Activate event - clean up old caches and take control
+// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating enhanced service worker');
+  console.log('[SW] Activating service worker');
+
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== API_CACHE) {
-            console.log('[SW] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
+    Promise.all([
+      // Clean up old caches
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+              console.log('[SW] Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+
+      // Take control of all clients
+      self.clients.claim()
+    ])
   );
 });
 
-// Enhanced fetch event with network-first for APIs, cache-first for static
+// Fetch event - serve cached content and cache new requests
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Only handle GET requests
+  // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Network-first strategy for API calls
-  if (url.pathname.startsWith('/api/') || url.hostname !== self.location.hostname) {
+  // Skip external domains (except allowed ones)
+  if (!url.origin.includes(self.location.origin) &&
+      !url.origin.includes('api.open-meteo.com') &&
+      !url.origin.includes('convex')) {
+    return;
+  }
+
+  // Handle API requests with network-first strategy
+  if (API_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          // Cache successful API responses
-          if (response.ok) {
+        .then(response => {
+          // Cache successful responses
+          if (response.status === 200) {
             const responseClone = response.clone();
-            caches.open(API_CACHE).then((cache) => {
-              // Add timestamp for cache invalidation
-              const responseWithTimestamp = new Response(responseClone.body, {
-                ...responseClone,
-                headers: {
-                  ...Object.fromEntries(responseClone.headers),
-                  'sw-cache-timestamp': Date.now().toString(),
-                },
-              });
-              cache.put(request, responseWithTimestamp);
+            caches.open(DYNAMIC_CACHE).then(cache => {
+              cache.put(request, responseClone);
             });
           }
           return response;
         })
         .catch(() => {
-          // Return cached API response if network fails
+          // Fallback to cache if network fails
           return caches.match(request);
         })
     );
     return;
   }
 
-  // Cache-first strategy for static assets
-  event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        // Fetch from network and cache
-        return fetch(request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+  // Handle static assets with cache-first strategy
+  if (MOBILE_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
+    event.respondWith(
+      caches.match(request)
+        .then(response => {
+          if (response) {
             return response;
           }
 
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
+          // Fetch and cache
+          return fetch(request).then(response => {
+            if (response.status === 200) {
+              const responseClone = response.clone();
+              caches.open(STATIC_CACHE).then(cache => {
+                cache.put(request, responseClone);
+              });
+            }
+            return response;
           });
+        })
+    );
+    return;
+  }
 
-          return response;
-        });
+  // Default strategy: network first, then cache
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        // Don't cache HTML pages to ensure fresh content
+        if (!request.headers.get('accept').includes('text/html')) {
+          const responseClone = response.clone();
+          caches.open(DYNAMIC_CACHE).then(cache => {
+            cache.put(request, responseClone);
+          });
+        }
+        return response;
       })
       .catch(() => {
-        // Offline fallback for navigation requests
-        if (request.mode === 'navigate') {
-          return caches.match(OFFLINE_URL);
-        }
+        // Fallback to cache for offline support
+        return caches.match(request)
+          .then(response => {
+            if (response) {
+              return response;
+            }
 
-        // Return offline indicator for other requests
-        return new Response(JSON.stringify({
-          offline: true,
-          message: 'Content not available offline'
-        }), {
-          headers: { 'Content-Type': 'application/json' },
-          status: 503
-        });
+            // Return offline page for navigation requests
+            if (request.mode === 'navigate') {
+              return caches.match('/dashboard');
+            }
+          });
       })
   );
 });
 
-// Background sync for offline actions
+// Background Sync: revalidate critical API caches when back online
+// Tag names: 'background-sync' (generic) or 'sync-data'
 self.addEventListener('sync', (event) => {
-  console.log('[SW] Background sync triggered:', event.tag);
-
-  if (event.tag === 'background-sync') {
-    event.waitUntil(processBackgroundSync());
-  }
-});
-
-async function processBackgroundSync() {
-  try {
-    // Get all pending sync requests from IndexedDB
-    const syncRequests = await getSyncRequests();
-
-    for (const syncRequest of syncRequests) {
+  if (!event || !event.tag) return;
+  if (event.tag === 'background-sync' || event.tag === 'sync-data') {
+    event.waitUntil((async () => {
       try {
-        await fetch(syncRequest.url, syncRequest.options);
-        await removeSyncRequest(syncRequest.id);
-        console.log('[SW] Synced request:', syncRequest.id);
-      } catch (error) {
-        console.error('[SW] Failed to sync request:', syncRequest.id, error);
+        const endpoints = [
+          '/api/weather?type=current',
+          '/api/weather?type=forecast',
+        ];
+
+        await Promise.all(endpoints.map(async (path) => {
+          try {
+            const req = new Request(path, { method: 'GET' });
+            const resp = await fetch(req);
+            if (resp && resp.ok) {
+              const clone = resp.clone();
+              const cache = await caches.open(DYNAMIC_CACHE);
+              await cache.put(req, clone);
+            }
+          } catch (_) {
+            // ignore individual fetch failures during background sync
+          }
+        }));
+      } catch (err) {
+        // swallow to avoid failing the sync event
       }
-    }
-  } catch (error) {
-    console.error('[SW] Background sync error:', error);
+    })());
   }
-}
-
-// IndexedDB helpers for sync queue
-async function getSyncRequests() {
-  return new Promise((resolve) => {
-    const request = indexedDB.open('offline-sync', 1);
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['sync-queue'], 'readonly');
-      const store = transaction.objectStore('sync-queue');
-      const getAllRequest = store.getAll();
-      getAllRequest.onsuccess = () => resolve(getAllRequest.result);
-    };
-    request.onerror = () => resolve([]);
-  });
-}
-
-async function removeSyncRequest(id) {
-  return new Promise((resolve) => {
-    const request = indexedDB.open('offline-sync', 1);
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['sync-queue'], 'readwrite');
-      const store = transaction.objectStore('sync-queue');
-      store.delete(id);
-      transaction.oncomplete = () => resolve(undefined);
-    };
-    request.onerror = () => resolve(undefined);
-  });
-}
-
-// Push notification support
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
-
-  const data = event.data.json();
-
-  const options = {
-    body: data.body,
-    icon: '/icon-192x192.png',
-    badge: '/badge-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: data.primaryKey,
-      url: data.url || '/'
-    },
-    actions: [
-      {
-        action: 'view',
-        title: 'View',
-      },
-      {
-        action: 'dismiss',
-        title: 'Dismiss',
-      }
-    ]
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
 });
 
-// Notification click handler
+// Handle messages from the main thread
+self.addEventListener('message', (event) => {
+  const { type, payload } = event.data;
+
+  switch (type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+
+    case 'GET_CACHE_STATS':
+      Promise.all([
+        caches.open(STATIC_CACHE).then(cache => cache.keys()),
+        caches.open(DYNAMIC_CACHE).then(cache => cache.keys())
+      ]).then(([staticKeys, dynamicKeys]) => {
+        event.ports[0].postMessage({
+          staticCacheSize: staticKeys.length,
+          dynamicCacheSize: dynamicKeys.length,
+          totalSize: staticKeys.length + dynamicKeys.length
+        });
+      });
+      break;
+
+    case 'CLEAR_CACHE':
+      Promise.all([
+        caches.delete(STATIC_CACHE),
+        caches.delete(DYNAMIC_CACHE)
+      ]).then(() => {
+        event.ports[0].postMessage({ success: true });
+      });
+      break;
+
+    default:
+      console.log('[SW] Unknown message type:', type);
+  }
+});
+
+// Handle push notifications (if implemented)
+self.addEventListener('push', (event) => {
+  if (event.data) {
+    const data = event.data.json();
+
+    const options = {
+      body: data.body,
+      icon: '/favicon-192x192.png',
+      badge: '/favicon-192x192.png',
+      vibrate: [100, 50, 100],
+      data: {
+        url: data.url || '/dashboard'
+      }
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title, options)
+    );
+  }
+});
+
+// Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  if (event.action === 'view') {
-    event.waitUntil(
-      clients.openWindow(event.notification.data.url || '/')
-    );
-  }
+  event.waitUntil(
+    self.clients.openWindow(event.notification.data.url)
+  );
 });

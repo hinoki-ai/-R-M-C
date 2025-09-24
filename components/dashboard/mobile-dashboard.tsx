@@ -9,7 +9,10 @@ interface MobileDashboardProps {
   onRefresh?: () => Promise<void>;
 }
 
-export const MobileDashboard: React.FC<MobileDashboardProps> = ({ children, onRefresh }) => {
+export const MobileDashboard: React.FC<MobileDashboardProps> = ({
+  children,
+  onRefresh,
+}) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   const handleRefresh = async () => {
@@ -35,15 +38,15 @@ export const MobileDashboard: React.FC<MobileDashboardProps> = ({ children, onRe
             disabled={isRefreshing}
             className="h-8 w-8 p-0"
           >
-            <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
+            <RefreshCw
+              className={cn('h-4 w-4', isRefreshing && 'animate-spin')}
+            />
           </Button>
         </div>
       </div>
 
       {/* Mobile Content */}
-      <div className="px-4 py-4 space-y-4">
-        {children}
-      </div>
+      <div className="px-4 py-4 space-y-4">{children}</div>
     </div>
   );
 };
@@ -53,26 +56,27 @@ interface MobileCardProps {
   className?: string;
 }
 
-export const MobileCard: React.FC<MobileCardProps> = ({ children, className }) => {
+export const MobileCard: React.FC<MobileCardProps> = ({
+  children,
+  className,
+}) => {
   return (
-    <Card className={cn("w-full", className)}>
-      <CardContent className="p-4">
-        {children}
-      </CardContent>
+    <Card className={cn('w-full', className)}>
+      <CardContent className="p-4">{children}</CardContent>
     </Card>
   );
 };
 
-export const TouchButton: React.FC<{ children: React.ReactNode; onClick?: () => void; className?: string }> = ({
-  children,
-  onClick,
-  className
-}) => {
+export const TouchButton: React.FC<{
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}> = ({ children, onClick, className }) => {
   return (
     <Button
       onClick={onClick}
       className={cn(
-        "w-full h-12 text-base font-medium touch-manipulation active:scale-95 transition-transform",
+        'w-full h-12 text-base font-medium touch-manipulation active:scale-95 transition-transform',
         className
       )}
     >

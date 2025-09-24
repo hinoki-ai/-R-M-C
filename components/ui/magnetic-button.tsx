@@ -48,7 +48,7 @@ interface FloatingElementProps {
 export const FloatingElement: React.FC<FloatingElementProps> = ({
   delay = 0,
   children,
-  className
+  className,
 }) => {
   return (
     <motion.div
@@ -80,7 +80,7 @@ export const PulseElement: React.FC<PulseElementProps> = ({
   pulse = false,
   pulseColor = 'currentColor',
   children,
-  className
+  className,
 }) => {
   if (!pulse) {
     return <div className={className}>{children}</div>;
@@ -90,10 +90,7 @@ export const PulseElement: React.FC<PulseElementProps> = ({
     <motion.div
       className={cn('relative', className)}
       animate={{
-        boxShadow: [
-          `0 0 0 0 ${pulseColor}40`,
-          `0 0 0 8px ${pulseColor}00`,
-        ],
+        boxShadow: [`0 0 0 0 ${pulseColor}40`, `0 0 0 8px ${pulseColor}00`],
       }}
       transition={{
         duration: 2,
@@ -120,9 +117,7 @@ export const MagneticButton: React.FC = () => {
 export const AnotherButton: React.FC = () => {
   return (
     <div className="flex justify-center items-center">
-      <button className="text-lg font-bold m-1.5">
-        Another Button
-      </button>
+      <button className="text-lg font-bold m-1.5">Another Button</button>
     </div>
   );
 };

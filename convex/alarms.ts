@@ -6,41 +6,50 @@ import { action, mutation, query } from './_generated/server';
 // Get all alarms for a user
 export const getAlarms = query({
   args: {
-    userId: v.id('users')
+    userId: v.id('users'),
   },
-  returns: v.array(v.object({
-    _id: v.id('alarms'),
-    title: v.string(),
-    description: v.string(),
-    type: v.union(
-      v.literal('emergency'),
-      v.literal('weather'),
-      v.literal('community'),
-      v.literal('maintenance'),
-      v.literal('security'),
-      v.literal('medical'),
-      v.literal('fire'),
-      v.literal('custom')
-    ),
-    isActive: v.boolean(),
-    isRecurring: v.boolean(),
-    schedule: v.optional(v.object({
-      startTime: v.string(),
-      endTime: v.string(),
-      daysOfWeek: v.optional(v.array(v.number()))
-    })),
-    soundEnabled: v.boolean(),
-    vibrationEnabled: v.boolean(),
-    notificationEnabled: v.boolean(),
-    priority: v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical')),
-    lastTriggered: v.optional(v.number()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('alarms'),
+      title: v.string(),
+      description: v.string(),
+      type: v.union(
+        v.literal('emergency'),
+        v.literal('weather'),
+        v.literal('community'),
+        v.literal('maintenance'),
+        v.literal('security'),
+        v.literal('medical'),
+        v.literal('fire'),
+        v.literal('custom')
+      ),
+      isActive: v.boolean(),
+      isRecurring: v.boolean(),
+      schedule: v.optional(
+        v.object({
+          startTime: v.string(),
+          endTime: v.string(),
+          daysOfWeek: v.optional(v.array(v.number())),
+        })
+      ),
+      soundEnabled: v.boolean(),
+      vibrationEnabled: v.boolean(),
+      notificationEnabled: v.boolean(),
+      priority: v.union(
+        v.literal('low'),
+        v.literal('medium'),
+        v.literal('high'),
+        v.literal('critical')
+      ),
+      lastTriggered: v.optional(v.number()),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     const alarms = await ctx.db
       .query('alarms')
-      .withIndex('byUser', (q) => q.eq('userId', args.userId))
+      .withIndex('byUser', q => q.eq('userId', args.userId))
       .collect();
 
     return alarms.map(alarm => ({
@@ -79,15 +88,22 @@ export const createAlarm = mutation({
     ),
     isActive: v.boolean(),
     isRecurring: v.boolean(),
-    schedule: v.optional(v.object({
-      startTime: v.string(),
-      endTime: v.string(),
-      daysOfWeek: v.optional(v.array(v.number()))
-    })),
+    schedule: v.optional(
+      v.object({
+        startTime: v.string(),
+        endTime: v.string(),
+        daysOfWeek: v.optional(v.array(v.number())),
+      })
+    ),
     soundEnabled: v.boolean(),
     vibrationEnabled: v.boolean(),
     notificationEnabled: v.boolean(),
-    priority: v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical')),
+    priority: v.union(
+      v.literal('low'),
+      v.literal('medium'),
+      v.literal('high'),
+      v.literal('critical')
+    ),
     userId: v.id('users'),
   },
   returns: v.id('alarms'),
@@ -111,27 +127,38 @@ export const updateAlarm = mutation({
     alarmId: v.id('alarms'),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
-    type: v.optional(v.union(
-      v.literal('emergency'),
-      v.literal('weather'),
-      v.literal('community'),
-      v.literal('maintenance'),
-      v.literal('security'),
-      v.literal('medical'),
-      v.literal('fire'),
-      v.literal('custom')
-    )),
+    type: v.optional(
+      v.union(
+        v.literal('emergency'),
+        v.literal('weather'),
+        v.literal('community'),
+        v.literal('maintenance'),
+        v.literal('security'),
+        v.literal('medical'),
+        v.literal('fire'),
+        v.literal('custom')
+      )
+    ),
     isActive: v.optional(v.boolean()),
     isRecurring: v.optional(v.boolean()),
-    schedule: v.optional(v.object({
-      startTime: v.string(),
-      endTime: v.string(),
-      daysOfWeek: v.optional(v.array(v.number()))
-    })),
+    schedule: v.optional(
+      v.object({
+        startTime: v.string(),
+        endTime: v.string(),
+        daysOfWeek: v.optional(v.array(v.number())),
+      })
+    ),
     soundEnabled: v.optional(v.boolean()),
     vibrationEnabled: v.optional(v.boolean()),
     notificationEnabled: v.optional(v.boolean()),
-    priority: v.optional(v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical'))),
+    priority: v.optional(
+      v.union(
+        v.literal('low'),
+        v.literal('medium'),
+        v.literal('high'),
+        v.literal('critical')
+      )
+    ),
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
@@ -156,7 +183,7 @@ export const deleteAlarm = mutation({
     // First delete all triggers for this alarm
     const triggers = await ctx.db
       .query('alarmTriggers')
-      .withIndex('byAlarm', (q) => q.eq('alarmId', args.alarmId))
+      .withIndex('byAlarm', q => q.eq('alarmId', args.alarmId))
       .collect();
 
     for (const trigger of triggers) {
@@ -222,7 +249,7 @@ export const triggerAlarm = mutation({
 // Get a single alarm by ID
 export const getAlarm = query({
   args: {
-    alarmId: v.id('alarms')
+    alarmId: v.id('alarms'),
   },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.alarmId);
@@ -232,7 +259,7 @@ export const getAlarm = query({
 // Get a single alarm trigger by ID
 export const getTrigger = query({
   args: {
-    triggerId: v.id('alarmTriggers')
+    triggerId: v.id('alarmTriggers'),
   },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.triggerId);
@@ -242,7 +269,7 @@ export const getTrigger = query({
 // Get alarm settings for a user
 export const getAlarmSettings = query({
   args: {
-    userId: v.id('users')
+    userId: v.id('users'),
   },
   returns: v.union(
     v.object({
@@ -250,12 +277,14 @@ export const getAlarmSettings = query({
       globalSoundEnabled: v.boolean(),
       globalVibrationEnabled: v.boolean(),
       globalNotificationEnabled: v.boolean(),
-      quietHours: v.optional(v.object({
-        enabled: v.boolean(),
-        startTime: v.string(),
-        endTime: v.string(),
-        daysOfWeek: v.array(v.number())
-      })),
+      quietHours: v.optional(
+        v.object({
+          enabled: v.boolean(),
+          startTime: v.string(),
+          endTime: v.string(),
+          daysOfWeek: v.array(v.number()),
+        })
+      ),
       emergencyOverride: v.boolean(),
     }),
     v.null()
@@ -263,7 +292,7 @@ export const getAlarmSettings = query({
   handler: async (ctx, args) => {
     const settings = await ctx.db
       .query('alarmSettings')
-      .withIndex('byUser', (q) => q.eq('userId', args.userId))
+      .withIndex('byUser', q => q.eq('userId', args.userId))
       .first();
 
     if (!settings) return null;
@@ -286,12 +315,14 @@ export const updateAlarmSettings = mutation({
     globalSoundEnabled: v.optional(v.boolean()),
     globalVibrationEnabled: v.optional(v.boolean()),
     globalNotificationEnabled: v.optional(v.boolean()),
-    quietHours: v.optional(v.object({
-      enabled: v.boolean(),
-      startTime: v.string(),
-      endTime: v.string(),
-      daysOfWeek: v.array(v.number())
-    })),
+    quietHours: v.optional(
+      v.object({
+        enabled: v.boolean(),
+        startTime: v.string(),
+        endTime: v.string(),
+        daysOfWeek: v.array(v.number()),
+      })
+    ),
     emergencyOverride: v.optional(v.boolean()),
   },
   returns: v.boolean(),
@@ -300,7 +331,7 @@ export const updateAlarmSettings = mutation({
 
     const existingSettings = await ctx.db
       .query('alarmSettings')
-      .withIndex('byUser', (q) => q.eq('userId', userId))
+      .withIndex('byUser', q => q.eq('userId', userId))
       .first();
 
     if (existingSettings) {
@@ -331,22 +362,24 @@ export const getRecentTriggers = query({
     userId: v.id('users'),
     limit: v.optional(v.number()),
   },
-  returns: v.array(v.object({
-    _id: v.id('alarmTriggers'),
-    alarmId: v.id('alarms'),
-    alarmTitle: v.string(),
-    alarmType: v.string(),
-    triggerType: v.string(),
-    message: v.string(),
-    acknowledged: v.boolean(),
-    triggeredAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('alarmTriggers'),
+      alarmId: v.id('alarms'),
+      alarmTitle: v.string(),
+      alarmType: v.string(),
+      triggerType: v.string(),
+      message: v.string(),
+      acknowledged: v.boolean(),
+      triggeredAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     const limit = args.limit || 20;
 
     const triggers = await ctx.db
       .query('alarmTriggers')
-      .withIndex('byUser', (q) => q.eq('userId', args.userId))
+      .withIndex('byUser', q => q.eq('userId', args.userId))
       .order('desc')
       .take(limit);
 
@@ -400,8 +433,8 @@ export const getActiveAlarmsToTrigger = query({
 
     const alarms = await ctx.db
       .query('alarms')
-      .withIndex('byUser', (q) => q.eq('userId', args.userId))
-      .filter((q) => q.eq(q.field('isActive'), true))
+      .withIndex('byUser', q => q.eq('userId', args.userId))
+      .filter(q => q.eq(q.field('isActive'), true))
       .collect();
 
     const alarmsToTrigger = [];

@@ -4,13 +4,14 @@ import { api, internal } from '../_generated/api';
 import { action, internalAction, internalMutation } from '../_generated/server';
 
 // Import notification actions
-const { sendAlarmNotification, broadcastEmergencyNotification } = internal.notifications;
+const { sendAlarmNotification, broadcastEmergencyNotification } =
+  internal.notifications;
 
 // Internal action to check and trigger scheduled alarms
 export const checkScheduledAlarms = internalAction({
   args: {},
   returns: v.number(), // Returns number of alarms triggered
-  handler: async (ctx) => {
+  handler: async ctx => {
     const now = new Date();
     const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     const currentDay = now.getDay();
@@ -18,14 +19,17 @@ export const checkScheduledAlarms = internalAction({
 
     // Get all users first
     const users = await ctx.runQuery(api.users.listUsers, {});
-    
+
     // Get all active alarms for all users
     const allAlarmIds = [];
     for (const user of users) {
-      const userAlarmIds = await ctx.runQuery(api.alarms.getActiveAlarmsToTrigger, { userId: user._id });
+      const userAlarmIds = await ctx.runQuery(
+        api.alarms.getActiveAlarmsToTrigger,
+        { userId: user._id }
+      );
       allAlarmIds.push(...userAlarmIds);
     }
-    
+
     // Get full alarm objects
     const alarms = [];
     for (const alarmId of allAlarmIds) {
@@ -47,16 +51,22 @@ export const checkScheduledAlarms = internalAction({
       if (currentTime >= startTime && currentTime <= endTime) {
         // Check if alarm was already triggered recently (within last minute)
         const lastTriggered = alarm.lastTriggered;
-        if (lastTriggered && (now.getTime() - lastTriggered) < 60000) {
+        if (lastTriggered && now.getTime() - lastTriggered < 60000) {
           continue; // Skip if triggered within last minute
         }
 
         // Check user's settings
-        const settings = await ctx.runQuery(api.alarms.getAlarmSettings, { userId: alarm.userId });
+        const settings = await ctx.runQuery(api.alarms.getAlarmSettings, {
+          userId: alarm.userId,
+        });
 
-        const soundEnabled = (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
-        const vibrationEnabled = (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
-        const notificationEnabled = (settings?.globalNotificationEnabled ?? true) && alarm.notificationEnabled;
+        const soundEnabled =
+          (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
+        const vibrationEnabled =
+          (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
+        const notificationEnabled =
+          (settings?.globalNotificationEnabled ?? true) &&
+          alarm.notificationEnabled;
 
         // Check quiet hours
         let shouldTrigger = true;
@@ -65,22 +75,32 @@ export const checkScheduledAlarms = internalAction({
           const quietEnd = settings.quietHours.endTime;
           const quietDays = settings.quietHours.daysOfWeek;
 
-          if (quietDays.includes(currentDay) &&
-              currentTime >= quietStart &&
-              currentTime <= quietEnd) {
+          if (
+            quietDays.includes(currentDay) &&
+            currentTime >= quietStart &&
+            currentTime <= quietEnd
+          ) {
             // In quiet hours, only trigger if emergency override is enabled
-            shouldTrigger = alarm.priority === 'critical' && (settings.emergencyOverride ?? true);
+            shouldTrigger =
+              alarm.priority === 'critical' &&
+              (settings.emergencyOverride ?? true);
           }
         }
 
-        if (shouldTrigger && (soundEnabled || vibrationEnabled || notificationEnabled)) {
+        if (
+          shouldTrigger &&
+          (soundEnabled || vibrationEnabled || notificationEnabled)
+        ) {
           // Create trigger record
-          const triggerId = await ctx.runMutation(api.alarms.createAlarmTrigger, {
-            alarmId: alarm._id,
-            userId: alarm.userId,
-            triggerType: 'scheduled',
-            message: `Scheduled alarm: ${alarm.title}`,
-          });
+          const triggerId = await ctx.runMutation(
+            api.alarms.createAlarmTrigger,
+            {
+              alarmId: alarm._id,
+              userId: alarm.userId,
+              triggerType: 'scheduled',
+              message: `Scheduled alarm: ${alarm.title}`,
+            }
+          );
 
           // Update last triggered
           await ctx.runMutation(api.alarms.updateAlarmLastTriggered, {
@@ -112,10 +132,12 @@ export const triggerEmergencyAlarm = action({
   },
   returns: v.number(), // Returns number of users notified
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(internal.utils.alarmScheduler.triggerEmergencyAlarmMutation, args);
+    return await ctx.runMutation(
+      internal.utils.alarmScheduler.triggerEmergencyAlarmMutation,
+      args
+    );
   },
 });
-
 
 // Internal action to trigger weather-based alarms
 export const triggerWeatherAlarm = internalAction({
@@ -124,10 +146,12 @@ export const triggerWeatherAlarm = internalAction({
   },
   returns: v.number(),
   handler: async (ctx, args): Promise<number> => {
-    return await ctx.runMutation(internal.utils.alarmScheduler.triggerWeatherAlarmMutation, args);
+    return await ctx.runMutation(
+      internal.utils.alarmScheduler.triggerWeatherAlarmMutation,
+      args
+    );
   },
 });
-
 
 // Mutations for database operations
 
@@ -148,9 +172,10 @@ export const triggerEmergencyAlarmMutation = internalMutation({
       const emergencyAlarm = await ctx.db
         .query('alarms')
         .withIndex('byUser', (q: any) => q.eq('userId', user._id))
-        .filter((q: any) =>
-          q.eq(q.field('type'), 'emergency') &&
-          q.eq(q.field('isActive'), true)
+        .filter(
+          (q: any) =>
+            q.eq(q.field('type'), 'emergency') &&
+            q.eq(q.field('isActive'), true)
         )
         .first();
 
@@ -216,10 +241,11 @@ export const triggerWeatherAlarmMutation = internalMutation({
 
     for (const alarm of weatherAlarms) {
       // Check if user is in affected area
-      const isAffected = weatherAlert.areas.some((area: string) =>
-        area.toLowerCase().includes('pinto') ||
-        area.toLowerCase().includes('cobquecura') ||
-        area.toLowerCase().includes('ñuble')
+      const isAffected = weatherAlert.areas.some(
+        (area: string) =>
+          area.toLowerCase().includes('pinto') ||
+          area.toLowerCase().includes('cobquecura') ||
+          area.toLowerCase().includes('ñuble')
       );
 
       if (isAffected) {
@@ -280,9 +306,13 @@ export const testAlarmMutation = internalMutation({
       .withIndex('byUser', (q: any) => q.eq('userId', alarm.userId))
       .first();
 
-    const soundEnabled = (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
-    const vibrationEnabled = (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
-    const notificationEnabled = (settings?.globalNotificationEnabled ?? true) && alarm.notificationEnabled;
+    const soundEnabled =
+      (settings?.globalSoundEnabled ?? true) && alarm.soundEnabled;
+    const vibrationEnabled =
+      (settings?.globalVibrationEnabled ?? true) && alarm.vibrationEnabled;
+    const notificationEnabled =
+      (settings?.globalNotificationEnabled ?? true) &&
+      alarm.notificationEnabled;
 
     if (!soundEnabled && !vibrationEnabled && !notificationEnabled) {
       return false; // Nothing to test
@@ -316,6 +346,9 @@ export const testAlarm = action({
   },
   returns: v.boolean(),
   handler: async (ctx, args): Promise<boolean> => {
-    return await ctx.runMutation(internal.utils.alarmScheduler.testAlarmMutation, args);
+    return await ctx.runMutation(
+      internal.utils.alarmScheduler.testAlarmMutation,
+      args
+    );
   },
 });

@@ -22,7 +22,7 @@ const requiredStructure = {
     'eslint.config.js',
     '.prettierrc',
     'README.md',
-    'SYSTEM_DOCUMENTATION.md'
+    'SYSTEM_DOCUMENTATION.md',
   ],
 
   // Required directories
@@ -34,7 +34,7 @@ const requiredStructure = {
     'hooks',
     'types',
     'public',
-    'docs'
+    'docs',
   ],
 
   // Component structure validation
@@ -42,14 +42,11 @@ const requiredStructure = {
     // Component files should be in PascalCase
     fileName: /^[A-Z][a-zA-Z0-9]*$/,
     // Directories can be lowercase (common pattern)
-    dirName: /^[a-z][a-zA-Z0-9-]*$/
+    dirName: /^[a-z][a-zA-Z0-9-]*$/,
   },
 
   // Convex structure validation
-  convexStructure: [
-    'schema.ts',
-    'README.md'
-  ]
+  convexStructure: ['schema.ts', 'README.md'],
 };
 
 function validateFileExists(filePath, description) {
@@ -89,7 +86,9 @@ function validateComponentNaming() {
       if (stat.isDirectory()) {
         // Check if directory name follows lowercase pattern
         if (!requiredStructure.componentPatterns.dirName.test(item)) {
-          console.warn(`⚠️  Component directory "${prefix}${item}" doesn't follow lowercase convention (this is just a warning)`);
+          console.warn(
+            `⚠️  Component directory "${prefix}${item}" doesn't follow lowercase convention (this is just a warning)`
+          );
           // Don't fail validation for directory naming
         } else {
           console.log(`✅ Component directory: ${prefix}${item}`);
@@ -98,7 +97,9 @@ function validateComponentNaming() {
       } else if (item.endsWith('.tsx') || item.endsWith('.ts')) {
         const componentName = item.replace(/\.(tsx|ts)$/, '');
         if (!requiredStructure.componentPatterns.fileName.test(componentName)) {
-          console.warn(`⚠️  Component file "${prefix}${item}" doesn't follow PascalCase (this is just a warning)`);
+          console.warn(
+            `⚠️  Component file "${prefix}${item}" doesn't follow PascalCase (this is just a warning)`
+          );
           // Don't fail validation for component naming - existing project may not follow this
         } else {
           console.log(`✅ Component file: ${prefix}${item}`);

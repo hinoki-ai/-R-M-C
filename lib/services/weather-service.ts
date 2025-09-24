@@ -3,189 +3,191 @@
  * Provides real weather data integration for the Junta de Vecinos app
  */
 
-import axios from 'axios'
+import axios from 'axios';
 
 export interface WeatherAPIResponse {
-  temperature: number
-  precipitation: number
-  humidity?: number
-  pressure?: number
-  surfacePressure?: number // Ground level pressure
-  windSpeed?: number
-  windDirection?: number
-  windGusts?: number // Wind gust speed
-  uvIndex?: number
-  visibility?: number
-  description?: string
-  icon?: string
-  feelsLike?: number
-  dewPoint?: number
-  cloudCover?: number
-  weatherCode?: number // WMO weather code
-  location: string
-  lastUpdated: string
+  temperature: number;
+  precipitation: number;
+  humidity?: number;
+  pressure?: number;
+  surfacePressure?: number; // Ground level pressure
+  windSpeed?: number;
+  windDirection?: number;
+  windGusts?: number; // Wind gust speed
+  uvIndex?: number;
+  visibility?: number;
+  description?: string;
+  icon?: string;
+  feelsLike?: number;
+  dewPoint?: number;
+  cloudCover?: number;
+  weatherCode?: number; // WMO weather code
+  location: string;
+  lastUpdated: string;
 }
 
 export interface ForecastAPIResponse {
-  date: string
-  temperature: number
-  precipitation: number
-  precipitationProbability: number
-  visibility: number
-  sunrise: string
-  sunset: string
-  tempMin?: number
-  tempMax?: number
-  humidity?: number
-  windSpeed?: number
-  windDirection?: number
-  description?: string
-  icon?: string
-  uvIndex?: number
-  evapotranspiration?: number // For agricultural use
+  date: string;
+  temperature: number;
+  precipitation: number;
+  precipitationProbability: number;
+  visibility: number;
+  sunrise: string;
+  sunset: string;
+  tempMin?: number;
+  tempMax?: number;
+  humidity?: number;
+  windSpeed?: number;
+  windDirection?: number;
+  description?: string;
+  icon?: string;
+  uvIndex?: number;
+  evapotranspiration?: number; // For agricultural use
 }
 
 export interface HourlyWeatherData {
-  time: string
-  temperature: number
-  precipitation: number
-  precipitationProbability: number
-  visibility: number
-  humidity: number
-  pressure: number
-  windSpeed: number
-  windDirection: number
+  time: string;
+  temperature: number;
+  precipitation: number;
+  precipitationProbability: number;
+  visibility: number;
+  humidity: number;
+  pressure: number;
+  windSpeed: number;
+  windDirection: number;
 }
 
 export interface OpenMeteoResponse {
-  latitude: number
-  longitude: number
-  generationtime_ms: number
-  utc_offset_seconds: number
-  timezone: string
-  timezone_abbreviation: string
-  elevation: number
+  latitude: number;
+  longitude: number;
+  generationtime_ms: number;
+  utc_offset_seconds: number;
+  timezone: string;
+  timezone_abbreviation: string;
+  elevation: number;
   current_units: {
-    time: string
-    interval: string
-    temperature_2m: string
-    relative_humidity_2m: string
-    apparent_temperature: string
-    precipitation: string
-    pressure_msl: string
-    surface_pressure: string
-    wind_speed_10m: string
-    wind_direction_10m: string
-    wind_gusts_10m: string
-    visibility: string
-    uv_index: string
-    cloud_cover: string
-    weather_code: string
-  }
+    time: string;
+    interval: string;
+    temperature_2m: string;
+    relative_humidity_2m: string;
+    apparent_temperature: string;
+    precipitation: string;
+    pressure_msl: string;
+    surface_pressure: string;
+    wind_speed_10m: string;
+    wind_direction_10m: string;
+    wind_gusts_10m: string;
+    visibility: string;
+    uv_index: string;
+    cloud_cover: string;
+    weather_code: string;
+  };
   current: {
-    time: string
-    interval: number
-    temperature_2m: number
-    relative_humidity_2m: number
-    apparent_temperature: number
-    precipitation: number
-    pressure_msl: number
-    surface_pressure: number
-    wind_speed_10m: number
-    wind_direction_10m: number
-    wind_gusts_10m: number
-    visibility: number
-    uv_index: number
-    cloud_cover: number
-    weather_code: number
-  }
+    time: string;
+    interval: number;
+    temperature_2m: number;
+    relative_humidity_2m: number;
+    apparent_temperature: number;
+    precipitation: number;
+    pressure_msl: number;
+    surface_pressure: number;
+    wind_speed_10m: number;
+    wind_direction_10m: number;
+    wind_gusts_10m: number;
+    visibility: number;
+    uv_index: number;
+    cloud_cover: number;
+    weather_code: number;
+  };
   hourly_units: {
-    time: string
-    temperature_2m: string
-    precipitation_probability: string
-    precipitation: string
-    visibility: string
-    relative_humidity_2m: string
-    pressure_msl: string
-    wind_speed_10m: string
-    wind_direction_10m: string
-  }
+    time: string;
+    temperature_2m: string;
+    precipitation_probability: string;
+    precipitation: string;
+    visibility: string;
+    relative_humidity_2m: string;
+    pressure_msl: string;
+    wind_speed_10m: string;
+    wind_direction_10m: string;
+  };
   hourly: {
-    time: string[]
-    temperature_2m: number[]
-    precipitation_probability: number[]
-    precipitation: number[]
-    visibility: number[]
-    relative_humidity_2m: number[]
-    pressure_msl: number[]
-    wind_speed_10m: number[]
-    wind_direction_10m: number[]
-  }
+    time: string[];
+    temperature_2m: number[];
+    precipitation_probability: number[];
+    precipitation: number[];
+    visibility: number[];
+    relative_humidity_2m: number[];
+    pressure_msl: number[];
+    wind_speed_10m: number[];
+    wind_direction_10m: number[];
+  };
   daily_units: {
-    time: string
-    sunrise: string
-    sunset: string
-    weather_code: string
-    temperature_2m_max: string
-    temperature_2m_min: string
-    precipitation_sum: string
-    precipitation_probability_max: string
-    uv_index_max: string
-  }
+    time: string;
+    sunrise: string;
+    sunset: string;
+    weather_code: string;
+    temperature_2m_max: string;
+    temperature_2m_min: string;
+    precipitation_sum: string;
+    precipitation_probability_max: string;
+    uv_index_max: string;
+  };
   daily: {
-    time: string[]
-    sunrise: string[]
-    sunset: string[]
-    weather_code: number[]
-    temperature_2m_max: number[]
-    temperature_2m_min: number[]
-    precipitation_sum: number[]
-    precipitation_probability_max: number[]
-    uv_index_max: number[]
-    et0_fao_evapotranspiration: number[]
-  }
+    time: string[];
+    sunrise: string[];
+    sunset: string[];
+    weather_code: number[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    precipitation_sum: number[];
+    precipitation_probability_max: number[];
+    uv_index_max: number[];
+    et0_fao_evapotranspiration: number[];
+  };
 }
 
 export class WeatherService {
-  private static readonly BASE_URL = 'https://api.open-meteo.com/v1/forecast'
-  private static readonly CACHE_DURATION = 15 * 60 * 1000 // 15 minutes
+  private static readonly BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+  private static readonly CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
   // Default coordinates for Pinto Los Pellines, Chile (from the provided URL)
-  private static readonly DEFAULT_LAT = -36.8139
-  private static readonly DEFAULT_LON = -71.7316
+  private static readonly DEFAULT_LAT = -36.8139;
+  private static readonly DEFAULT_LON = -71.7316;
 
   // Simple in-memory cache
-  private static cache = new Map<string, { data: any; timestamp: number }>()
+  private static cache = new Map<string, { data: any; timestamp: number }>();
 
   /**
    * Get cached data if available and not expired
    */
   private static getCachedData(key: string): any | null {
-    const cached = this.cache.get(key)
+    const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.data
+      return cached.data;
     }
-    return null
+    return null;
   }
 
   /**
    * Store data in cache
    */
   private static setCachedData(key: string, data: any): void {
-    this.cache.set(key, { data, timestamp: Date.now() })
+    this.cache.set(key, { data, timestamp: Date.now() });
   }
 
   /**
    * Get current weather for a location
    * Optimized: Only fetch metrics that are actually used, with caching
    */
-  static async getCurrentWeather(location: string): Promise<WeatherAPIResponse | null> {
-    const cacheKey = `current_${location}`
+  static async getCurrentWeather(
+    location: string
+  ): Promise<WeatherAPIResponse | null> {
+    const cacheKey = `current_${location}`;
 
     // Check cache first
-    const cached = this.getCachedData(cacheKey)
+    const cached = this.getCachedData(cacheKey);
     if (cached) {
-      return cached
+      return cached;
     }
 
     try {
@@ -193,20 +195,54 @@ export class WeatherService {
         params: {
           latitude: this.DEFAULT_LAT,
           longitude: this.DEFAULT_LON,
-          current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover,weather_code',
-          timezone: 'America/Santiago' // Changed from America/New_York to correct timezone
-        }
-      })
+          current:
+            'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover,weather_code',
+          timezone: 'America/Santiago',
+        },
+        timeout: 10000, // 10 second timeout
+        validateStatus: status => status < 500, // Accept 4xx errors to handle them specifically
+      });
 
-      const transformedData = this.transformCurrentWeatherData(response.data, location)
+      // Validate response structure
+      if (!response.data?.current) {
+        console.error('Invalid API response structure:', response.data);
+        return null;
+      }
+
+      const transformedData = this.transformCurrentWeatherData(
+        response.data,
+        location
+      );
+
+      // Validate transformed data
+      if (!this.isValidWeatherData(transformedData)) {
+        console.error('Invalid transformed weather data:', transformedData);
+        return null;
+      }
 
       // Cache the result
-      this.setCachedData(cacheKey, transformedData)
+      this.setCachedData(cacheKey, transformedData);
 
-      return transformedData
+      return transformedData;
     } catch (error) {
-      console.error('Error fetching current weather:', error)
-      return null
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          console.error('Weather API request timeout');
+        } else if (error.response?.status === 404) {
+          console.error('Weather API endpoint not found');
+        } else if (error.response?.status === 429) {
+          console.error('Weather API rate limit exceeded');
+        } else {
+          console.error(
+            'Weather API error:',
+            error.response?.status,
+            error.response?.statusText
+          );
+        }
+      } else {
+        console.error('Unexpected error fetching weather:', error);
+      }
+      return null;
     }
   }
 
@@ -214,13 +250,15 @@ export class WeatherService {
    * Get weather forecast with hourly and daily data
    * Optimized: Only fetch metrics that are actually used, reduced past_days for efficiency, with caching
    */
-  static async getWeatherForecast(location: string): Promise<ForecastAPIResponse[]> {
-    const cacheKey = `forecast_${location}`
+  static async getWeatherForecast(
+    location: string
+  ): Promise<ForecastAPIResponse[]> {
+    const cacheKey = `forecast_${location}`;
 
     // Check cache first
-    const cached = this.getCachedData(cacheKey)
+    const cached = this.getCachedData(cacheKey);
     if (cached) {
-      return cached
+      return cached;
     }
 
     try {
@@ -228,31 +266,74 @@ export class WeatherService {
         params: {
           latitude: this.DEFAULT_LAT,
           longitude: this.DEFAULT_LON,
-          daily: 'sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,et0_fao_evapotranspiration',
-          hourly: 'temperature_2m,precipitation_probability,precipitation,visibility,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,cloud_cover,weather_code',
-          past_days: 7, // Reduced from 31 to 7 days for better performance
-          timezone: 'America/Santiago' // Changed from America/New_York to correct timezone
-        }
-      })
+          daily:
+            'sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,et0_fao_evapotranspiration',
+          hourly:
+            'temperature_2m,precipitation_probability,precipitation,visibility,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,cloud_cover,weather_code',
+          past_days: 7,
+          timezone: 'America/Santiago',
+        },
+        timeout: 15000, // 15 second timeout for forecast (more data)
+        validateStatus: status => status < 500,
+      });
 
-      const transformedData = this.transformForecastData(response.data, location)
+      // Validate response structure
+      if (
+        !response.data?.daily?.time ||
+        !Array.isArray(response.data.daily.time)
+      ) {
+        console.error(
+          'Invalid forecast API response structure:',
+          response.data
+        );
+        return [];
+      }
+
+      const transformedData = this.transformForecastData(
+        response.data,
+        location
+      );
+
+      // Validate forecast data
+      if (!this.isValidForecastData(transformedData)) {
+        console.error('Invalid transformed forecast data:', transformedData);
+        return [];
+      }
 
       // Cache the result
-      this.setCachedData(cacheKey, transformedData)
+      this.setCachedData(cacheKey, transformedData);
 
-      return transformedData
+      return transformedData;
     } catch (error) {
-      console.error('Error fetching weather forecast:', error)
-      return []
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          console.error('Weather forecast API request timeout');
+        } else if (error.response?.status === 404) {
+          console.error('Weather forecast API endpoint not found');
+        } else if (error.response?.status === 429) {
+          console.error('Weather forecast API rate limit exceeded');
+        } else {
+          console.error(
+            'Weather forecast API error:',
+            error.response?.status,
+            error.response?.statusText
+          );
+        }
+      } else {
+        console.error('Unexpected error fetching forecast:', error);
+      }
+      return [];
     }
   }
-
 
   /**
    * Transform Open-Meteo API response to our format
    * Now using all available data from Open-Meteo API
    */
-  private static transformCurrentWeatherData(data: OpenMeteoResponse, location: string): WeatherAPIResponse {
+  private static transformCurrentWeatherData(
+    data: OpenMeteoResponse,
+    location: string
+  ): WeatherAPIResponse {
     return {
       temperature: Math.round(data.current.temperature_2m),
       precipitation: data.current.precipitation,
@@ -267,28 +348,39 @@ export class WeatherService {
       description: this.getWeatherDescription(data.current.weather_code), // Dynamic description
       icon: this.getWeatherIcon(data.current.weather_code), // Dynamic icon
       feelsLike: Math.round(data.current.apparent_temperature), // Real feels-like temperature
-      dewPoint: this.calculateDewPoint(data.current.temperature_2m, data.current.relative_humidity_2m), // Calculated dew point
+      dewPoint: this.calculateDewPoint(
+        data.current.temperature_2m,
+        data.current.relative_humidity_2m
+      ), // Calculated dew point
       cloudCover: data.current.cloud_cover, // Available from Open-Meteo
       weatherCode: data.current.weather_code, // Raw WMO code for advanced usage
       location,
-      lastUpdated: new Date().toISOString()
-    }
+      lastUpdated: new Date().toISOString(),
+    };
   }
 
   /**
    * Transform Open-Meteo forecast data to our format
    * Now using comprehensive daily data from Open-Meteo API
    */
-  private static transformForecastData(data: OpenMeteoResponse, location: string): ForecastAPIResponse[] {
-    const dailyData = data.daily
+  private static transformForecastData(
+    data: OpenMeteoResponse,
+    location: string
+  ): ForecastAPIResponse[] {
+    const dailyData = data.daily;
 
     // Create daily forecasts using the direct daily data
     return dailyData.time.map((date, index) => {
       return {
         date,
-        temperature: Math.round((dailyData.temperature_2m_max[index] + dailyData.temperature_2m_min[index]) / 2), // Average temp
+        temperature: Math.round(
+          (dailyData.temperature_2m_max[index] +
+            dailyData.temperature_2m_min[index]) /
+            2
+        ), // Average temp
         precipitation: dailyData.precipitation_sum[index],
-        precipitationProbability: dailyData.precipitation_probability_max[index],
+        precipitationProbability:
+          dailyData.precipitation_probability_max[index],
         visibility: 10, // Default good visibility for forecast
         sunrise: dailyData.sunrise[index],
         sunset: dailyData.sunset[index],
@@ -300,25 +392,29 @@ export class WeatherService {
         description: this.getWeatherDescription(dailyData.weather_code[index]), // Dynamic description
         icon: this.getWeatherIcon(dailyData.weather_code[index]), // Dynamic icon
         uvIndex: Math.round(dailyData.uv_index_max[index]), // Max UV index for the day
-        evapotranspiration: Math.round(dailyData.et0_fao_evapotranspiration[index] * 10) / 10 // FAO reference evapotranspiration
-      }
-    })
+        evapotranspiration:
+          Math.round(dailyData.et0_fao_evapotranspiration[index] * 10) / 10, // FAO reference evapotranspiration
+      };
+    });
   }
 
   /**
    * Calculate dew point using Magnus formula approximation
    */
-  private static calculateDewPoint(temperature: number, humidity: number): number {
+  private static calculateDewPoint(
+    temperature: number,
+    humidity: number
+  ): number {
     // Magnus formula: Td = (243.04 * (ln(RH/100) + ((17.625 * T)/(243.04 + T)))) / (17.625 - ln(RH/100) - ((17.625 * T)/(243.04 + T)))
-    const a = 17.625
-    const b = 243.04
-    const rh = humidity / 100
-    const lnRH = Math.log(rh)
+    const a = 17.625;
+    const b = 243.04;
+    const rh = humidity / 100;
+    const lnRH = Math.log(rh);
 
-    const numerator = b * (lnRH + (a * temperature) / (b + temperature))
-    const denominator = a - lnRH - (a * temperature) / (b + temperature)
+    const numerator = b * (lnRH + (a * temperature) / (b + temperature));
+    const denominator = a - lnRH - (a * temperature) / (b + temperature);
 
-    return Math.round((numerator / denominator) * 10) / 10
+    return Math.round((numerator / denominator) * 10) / 10;
   }
 
   /**
@@ -353,9 +449,9 @@ export class WeatherService {
       86: 'Chubasco de nieve intenso',
       95: 'Tormenta eléctrica',
       96: 'Tormenta con granizo pequeño',
-      99: 'Tormenta con granizo grande'
-    }
-    return descriptions[weatherCode] || 'Condiciones meteorológicas'
+      99: 'Tormenta con granizo grande',
+    };
+    return descriptions[weatherCode] || 'Condiciones meteorológicas';
   }
 
   /**
@@ -390,16 +486,16 @@ export class WeatherService {
       86: 'snow',
       95: 'thunderstorm',
       96: 'thunderstorm',
-      99: 'thunderstorm'
-    }
-    return icons[weatherCode] || 'cloud'
+      99: 'thunderstorm',
+    };
+    return icons[weatherCode] || 'cloud';
   }
 
   /**
    * Clear all cached data
    */
   static clearCache(): void {
-    this.cache.clear()
+    this.cache.clear();
   }
 
   /**
@@ -408,14 +504,67 @@ export class WeatherService {
   static getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys()),
+    };
+  }
+
+  /**
+   * Validate weather data structure
+   */
+  private static isValidWeatherData(data: WeatherAPIResponse): boolean {
+    return (
+      typeof data.temperature === 'number' &&
+      !isNaN(data.temperature) &&
+      data.temperature > -100 &&
+      data.temperature < 100 && // Reasonable temperature range
+      typeof data.precipitation === 'number' &&
+      !isNaN(data.precipitation) &&
+      data.precipitation >= 0 &&
+      typeof data.humidity === 'number' &&
+      !isNaN(data.humidity) &&
+      data.humidity >= 0 &&
+      data.humidity <= 100 &&
+      typeof data.location === 'string' &&
+      data.location.length > 0 &&
+      typeof data.lastUpdated === 'string'
+    );
+  }
+
+  /**
+   * Validate forecast data structure
+   */
+  private static isValidForecastData(data: ForecastAPIResponse[]): boolean {
+    if (!Array.isArray(data) || data.length === 0) {
+      return false;
     }
+
+    return data.every(
+      item =>
+        typeof item.date === 'string' &&
+        item.date.length > 0 &&
+        typeof item.temperature === 'number' &&
+        !isNaN(item.temperature) &&
+        item.temperature > -100 &&
+        item.temperature < 100 &&
+        typeof item.precipitation === 'number' &&
+        !isNaN(item.precipitation) &&
+        item.precipitation >= 0 &&
+        typeof item.precipitationProbability === 'number' &&
+        !isNaN(item.precipitationProbability) &&
+        item.precipitationProbability >= 0 &&
+        item.precipitationProbability <= 100 &&
+        typeof item.visibility === 'number' &&
+        !isNaN(item.visibility) &&
+        item.visibility >= 0 &&
+        typeof item.sunrise === 'string' &&
+        typeof item.sunset === 'string'
+    );
   }
 
   /**
    * Check if weather service is configured (always true for Open-Meteo)
    */
   static isConfigured(): boolean {
-    return true
+    return true;
   }
 }

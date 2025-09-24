@@ -27,7 +27,7 @@ async function setupAdminUser() {
     const result = await client.mutation(api.users.createAdminUser, {
       name: 'Agustin Aramác',
       externalId: 'admin_agustinaramac_email', // Placeholder ID to be linked later
-      role: 'admin'
+      role: 'admin',
     });
 
     console.log('✅ Admin user created successfully!');
@@ -49,16 +49,21 @@ async function setupAdminUser() {
     console.log('   - Copy the User ID (looks like "user_2abcd123ef")');
     console.log('');
     console.log('3. Link the account to admin:');
-    console.log('   node link-admin-to-clerk.js admin_agustinaramac_email <CLERK_USER_ID> "Agustin Aramác"');
+    console.log(
+      '   node link-admin-to-clerk.js admin_agustinaramac_email <CLERK_USER_ID> "Agustin Aramác"'
+    );
     console.log('');
-    console.log('🎉 Once linked, agustinaramac@gmail.com will have full admin access!');
-
+    console.log(
+      '🎉 Once linked, agustinaramac@gmail.com will have full admin access!'
+    );
   } catch (error) {
     console.error('❌ Error setting up admin user:', error.message);
 
     if (error.message.includes('already exists')) {
       console.log('');
-      console.log('ℹ️  User might already exist. Let\'s check existing users...');
+      console.log(
+        "ℹ️  User might already exist. Let's check existing users..."
+      );
 
       try {
         const users = await client.query(api.users.list);
@@ -74,13 +79,12 @@ async function setupAdminUser() {
         const updateResult = await client.mutation(api.users.createAdminUser, {
           name: 'Agustin Aramác',
           externalId: 'admin_agustinaramac_email',
-          role: 'admin'
+          role: 'admin',
         });
 
         console.log('✅ User updated to admin successfully!');
         console.log(`   User ID: ${updateResult._id}`);
         console.log(`   Role: ${updateResult.role}`);
-
       } catch (updateError) {
         console.error('❌ Could not update user:', updateError.message);
       }

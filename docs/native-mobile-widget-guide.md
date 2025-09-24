@@ -683,14 +683,14 @@ const config: CapacitorConfig = {
     // Weather widget plugin would go here
   },
   ios: {
-    scheme: 'WeatherApp'
+    scheme: 'WeatherApp',
   },
   android: {
     buildOptions: {
       // Enable widgets
-      androidXEnabled: true
-    }
-  }
+      androidXEnabled: true,
+    },
+  },
 };
 
 export default config;

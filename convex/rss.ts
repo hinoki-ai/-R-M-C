@@ -6,21 +6,26 @@ import { action, mutation, query } from './_generated/server';
 // Get all active RSS feeds
 export const getRssFeeds = query({
   args: {},
-  returns: v.array(v.object({
-    _id: v.id('rssFeeds'),
-    name: v.string(),
-    url: v.string(),
-    description: v.optional(v.string()),
-    category: v.string(),
-    region: v.string(),
-    isActive: v.boolean(),
-    lastFetched: v.optional(v.number()),
-    fetchInterval: v.number(),
-    logoUrl: v.optional(v.string()),
-    createdAt: v.number(),
-  })),
-  handler: async (ctx) => {
-    const feeds = await ctx.db.query('rssFeeds').filter(q => q.eq(q.field('isActive'), true)).collect();
+  returns: v.array(
+    v.object({
+      _id: v.id('rssFeeds'),
+      name: v.string(),
+      url: v.string(),
+      description: v.optional(v.string()),
+      category: v.string(),
+      region: v.string(),
+      isActive: v.boolean(),
+      lastFetched: v.optional(v.number()),
+      fetchInterval: v.number(),
+      logoUrl: v.optional(v.string()),
+      createdAt: v.number(),
+    })
+  ),
+  handler: async ctx => {
+    const feeds = await ctx.db
+      .query('rssFeeds')
+      .filter(q => q.eq(q.field('isActive'), true))
+      .collect();
 
     return feeds.map(feed => ({
       _id: feed._id,
@@ -38,30 +43,67 @@ export const getRssFeeds = query({
   },
 });
 
+// Get all RSS feeds for admin (includes inactive ones)
+export const getAllRssFeeds = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id('rssFeeds'),
+      name: v.string(),
+      url: v.string(),
+      description: v.optional(v.string()),
+      category: v.string(),
+      region: v.string(),
+      isActive: v.boolean(),
+      lastFetched: v.optional(v.number()),
+      fetchInterval: v.number(),
+      logoUrl: v.optional(v.string()),
+      createdBy: v.id('users'),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
+  handler: async ctx => {
+    const feeds = await ctx.db.query('rssFeeds').collect();
+
+    return feeds;
+  },
+});
+
 // Get RSS articles with pagination
 export const getRssArticles = query({
   args: {
-    category: v.optional(v.union(v.literal('news'), v.literal('sports'), v.literal('local'), v.literal('politics'), v.literal('emergency'))),
+    category: v.optional(
+      v.union(
+        v.literal('news'),
+        v.literal('sports'),
+        v.literal('local'),
+        v.literal('politics'),
+        v.literal('emergency')
+      )
+    ),
     region: v.optional(v.string()),
     limit: v.optional(v.number()),
     includeArchived: v.optional(v.boolean()),
   },
-  returns: v.array(v.object({
-    _id: v.id('rssArticles'),
-    feedId: v.id('rssFeeds'),
-    title: v.string(),
-    description: v.optional(v.string()),
-    url: v.string(),
-    author: v.optional(v.string()),
-    publishedAt: v.number(),
-    imageUrl: v.optional(v.string()),
-    category: v.string(),
-    region: v.string(),
-    isRead: v.boolean(),
-    tags: v.array(v.string()),
-    feedName: v.string(),
-    createdAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('rssArticles'),
+      feedId: v.id('rssFeeds'),
+      title: v.string(),
+      description: v.optional(v.string()),
+      url: v.string(),
+      author: v.optional(v.string()),
+      publishedAt: v.number(),
+      imageUrl: v.optional(v.string()),
+      category: v.string(),
+      region: v.string(),
+      isRead: v.boolean(),
+      tags: v.array(v.string()),
+      feedName: v.string(),
+      createdAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     const limit = args.limit || 20;
     const includeArchived = args.includeArchived || false;
@@ -81,13 +123,11 @@ export const getRssArticles = query({
       query = query.filter(q => q.eq(q.field('isArchived'), false));
     }
 
-    const articles = await query
-      .order('desc')
-      .take(limit);
+    const articles = await query.order('desc').take(limit);
 
     // Get feed names for each article
     const articlesWithFeedNames = await Promise.all(
-      articles.map(async (article) => {
+      articles.map(async article => {
         const feed = await ctx.db.get(article.feedId);
         return {
           _id: article._id,
@@ -152,7 +192,13 @@ export const createRssFeed = mutation({
     name: v.string(),
     url: v.string(),
     description: v.optional(v.string()),
-    category: v.union(v.literal('news'), v.literal('sports'), v.literal('local'), v.literal('politics'), v.literal('emergency')),
+    category: v.union(
+      v.literal('news'),
+      v.literal('sports'),
+      v.literal('local'),
+      v.literal('politics'),
+      v.literal('emergency')
+    ),
     region: v.string(),
     fetchInterval: v.optional(v.number()),
     logoUrl: v.optional(v.string()),
@@ -191,7 +237,9 @@ export const fetchRssFeed: any = action({
   handler: async (ctx: any, args: any) => {
     try {
       // Get the feed details
-      const feed = await ctx.runQuery(api.rss.getFeedById, { feedId: args.feedId });
+      const feed = await ctx.runQuery(api.rss.getFeedById, {
+        feedId: args.feedId,
+      });
 
       if (!feed || !feed.isActive) {
         return {
@@ -259,7 +307,6 @@ export const fetchRssFeed: any = action({
         success: true,
         articlesFetched,
       };
-
     } catch (error) {
       console.error('RSS fetch error:', error);
       return {
@@ -377,6 +424,67 @@ export const updateFeedLastFetched = mutation({
   },
 });
 
+// Update RSS feed
+export const updateRssFeed = mutation({
+  args: {
+    feedId: v.id('rssFeeds'),
+    name: v.string(),
+    url: v.string(),
+    description: v.optional(v.string()),
+    category: v.union(
+      v.literal('news'),
+      v.literal('sports'),
+      v.literal('local'),
+      v.literal('politics'),
+      v.literal('emergency')
+    ),
+    region: v.string(),
+    isActive: v.boolean(),
+    fetchInterval: v.number(),
+    logoUrl: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.feedId, {
+      name: args.name,
+      url: args.url,
+      description: args.description,
+      category: args.category,
+      region: args.region,
+      isActive: args.isActive,
+      fetchInterval: args.fetchInterval,
+      logoUrl: args.logoUrl,
+      updatedAt: Date.now(),
+    });
+
+    return null;
+  },
+});
+
+// Delete RSS feed
+export const deleteRssFeed = mutation({
+  args: {
+    feedId: v.id('rssFeeds'),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    // First delete all related articles
+    const articles = await ctx.db
+      .query('rssArticles')
+      .filter(q => q.eq(q.field('feedId'), args.feedId))
+      .collect();
+
+    for (const article of articles) {
+      await ctx.db.delete(article._id);
+    }
+
+    // Then delete the feed
+    await ctx.db.delete(args.feedId);
+
+    return null;
+  },
+});
+
 // Basic RSS parser (simplified - in production use a proper RSS library)
 function parseRSSBasic(rssText: string): Array<{
   title: string;
@@ -403,12 +511,16 @@ function parseRSSBasic(rssText: string): Array<{
     // Very basic XML parsing - extract items
     const itemMatches = rssText.match(/<item>[\s\S]*?<\/item>/g) || [];
 
-    for (const item of itemMatches.slice(0, 10)) { // Limit to 10 articles per fetch
+    for (const item of itemMatches.slice(0, 10)) {
+      // Limit to 10 articles per fetch
       const title = extractXmlValue(item, 'title') || 'Sin título';
       const description = extractXmlValue(item, 'description');
-      const link = extractXmlValue(item, 'link') || extractXmlValue(item, 'guid');
-      const author = extractXmlValue(item, 'author') || extractXmlValue(item, 'creator');
-      const pubDate = extractXmlValue(item, 'pubDate') || extractXmlValue(item, 'published');
+      const link =
+        extractXmlValue(item, 'link') || extractXmlValue(item, 'guid');
+      const author =
+        extractXmlValue(item, 'author') || extractXmlValue(item, 'creator');
+      const pubDate =
+        extractXmlValue(item, 'pubDate') || extractXmlValue(item, 'published');
 
       if (title && link) {
         articles.push({

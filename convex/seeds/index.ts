@@ -2,35 +2,42 @@ import { v } from 'convex/values';
 
 import { mutation } from '../_generated/server';
 
-// Import all seed functions
+// Direct imports to avoid dynamic import issues
+import { seedCameras as seedCamerasFn } from './cameras';
+import { seedWeather as seedWeatherFn } from './weather';
+import { seedPayments as seedPaymentsFn } from './payments';
+import { seedRadioStations as seedRadioFn } from './radio';
+import { seedRssFeeds as seedRssFn } from './rss';
+import { seedEmergencyProtocols as seedProtocolsFn } from './emergency_protocols';
+import { seedContacts as seedContactsFn } from './contacts';
+
+// Wrapper functions
 const seedCameras = async (ctx: any) => {
-  const { seedCameras: seedCamerasFn } = await import('./cameras');
   return await ctx.runMutation(seedCamerasFn, {});
 };
 
 const seedWeather = async (ctx: any) => {
-  const { seedWeather: seedWeatherFn } = await import('./weather');
   return await ctx.runMutation(seedWeatherFn, {});
 };
 
 const seedPayments = async (ctx: any) => {
-  const { seedPayments: seedPaymentsFn } = await import('./payments');
   return await ctx.runMutation(seedPaymentsFn, {});
 };
 
 const seedRadio = async (ctx: any, forceProduction?: boolean) => {
-  const { seedRadioStations: seedRadioFn } = await import('./radio');
   return await ctx.runMutation(seedRadioFn, { forceProduction });
 };
 
 const seedRss = async (ctx: any, forceProduction?: boolean) => {
-  const { seedRssFeeds: seedRssFn } = await import('./rss');
   return await ctx.runMutation(seedRssFn, { forceProduction });
 };
 
 const seedEmergencyProtocols = async (ctx: any, forceProduction?: boolean) => {
-  const { seedEmergencyProtocols: seedProtocolsFn } = await import('./emergency_protocols');
   return await ctx.runMutation(seedProtocolsFn, { forceProduction });
+};
+
+const seedContacts = async (ctx: any) => {
+  return await ctx.runMutation(seedContactsFn, {});
 };
 
 export const seedAll = mutation({
@@ -41,24 +48,31 @@ export const seedAll = mutation({
     radio: v.optional(v.boolean()),
     rss: v.optional(v.boolean()),
     emergencyProtocols: v.optional(v.boolean()),
+    contacts: v.optional(v.boolean()),
     forceProduction: v.optional(v.boolean()), // Explicit flag for production seeding
   },
   handler: async (ctx, args) => {
     // PRODUCTION SAFETY CHECK
-    const isProduction = process.env.NODE_ENV === 'production' ||
-                        process.env.CONVEX_ENV === 'production' ||
-                        !process.env.CONVEX_DEV;
+    const isProduction =
+      process.env.NODE_ENV === 'production' ||
+      process.env.CONVEX_ENV === 'production' ||
+      !process.env.CONVEX_DEV;
 
     if (isProduction && !args.forceProduction) {
       console.log('🚨 PRODUCTION ENVIRONMENT DETECTED');
-      console.log('❌ Seeding is DISABLED by default in production to prevent overwriting real data');
+      console.log(
+        '❌ Seeding is DISABLED by default in production to prevent overwriting real data'
+      );
       console.log('💡 To seed in production, set forceProduction: true');
-      console.log('📋 This mutation will NOT seed any data in production unless explicitly forced');
+      console.log(
+        '📋 This mutation will NOT seed any data in production unless explicitly forced'
+      );
       console.log('');
 
       return {
         success: false,
-        message: 'Seeding disabled in production. Use forceProduction: true to override.',
+        message:
+          'Seeding disabled in production. Use forceProduction: true to override.',
         environment: 'production',
         seeded: false,
       };
@@ -68,7 +82,9 @@ export const seedAll = mutation({
     console.log('🏘️ Community platform seeding initiated');
 
     if (isProduction && args.forceProduction) {
-      console.log('⚠️ PRODUCTION MODE WITH FORCE FLAG - PROCEEDING WITH CAUTION');
+      console.log(
+        '⚠️ PRODUCTION MODE WITH FORCE FLAG - PROCEEDING WITH CAUTION'
+      );
     }
 
     console.log('');
@@ -80,6 +96,7 @@ export const seedAll = mutation({
     const radio = args.radio ?? false;
     const rss = args.rss ?? false;
     const emergencyProtocols = args.emergencyProtocols ?? false;
+    const contacts = args.contacts ?? false;
 
     const results = {
       cameras: null as any,
@@ -88,6 +105,7 @@ export const seedAll = mutation({
       radio: null as any,
       rss: null as any,
       emergencyProtocols: null as any,
+      contacts: null as any,
     };
 
     const errors = [];
@@ -131,7 +149,17 @@ export const seedAll = mutation({
       // Seed emergency protocols if requested
       if (emergencyProtocols) {
         console.log('📋 Seeding emergency protocols data...');
-        results.emergencyProtocols = await seedEmergencyProtocols(ctx, args.forceProduction);
+        results.emergencyProtocols = await seedEmergencyProtocols(
+          ctx,
+          args.forceProduction
+        );
+        console.log('');
+      }
+
+      // Seed contacts if requested
+      if (contacts) {
+        console.log('📞 Seeding contact data...');
+        results.contacts = await seedContacts(ctx);
         console.log('');
       }
 
@@ -140,33 +168,53 @@ export const seedAll = mutation({
       console.log('📊 Summary:');
 
       if (results.cameras) {
-        console.log(`   📹 Cameras: ${results.cameras.camerasCreated} cameras seeded`);
+        console.log(
+          `   📹 Cameras: ${results.cameras.camerasCreated} cameras seeded`
+        );
       }
 
       if (results.weather) {
-        console.log(`   🌤️ Weather: ${results.weather.weatherDataPoints} data points, ${results.weather.alerts} alerts, ${results.weather.forecasts} forecasts`);
+        console.log(
+          `   🌤️ Weather: ${results.weather.weatherDataPoints} data points, ${results.weather.alerts} alerts, ${results.weather.forecasts} forecasts`
+        );
       }
 
       if (results.payments) {
-        console.log(`   💰 Payments: ${results.payments.paymentsCreated} attempts (${results.payments.summary.succeeded} succeeded, ${results.payments.summary.pending} pending, ${results.payments.summary.failed} failed)`);
+        console.log(
+          `   💰 Payments: ${results.payments.paymentsCreated} attempts (${results.payments.summary.succeeded} succeeded, ${results.payments.summary.pending} pending, ${results.payments.summary.failed} failed)`
+        );
       }
 
       if (results.radio) {
-        console.log(`   📻 Radio: ${results.radio.seeded} stations created, ${results.radio.skipped} skipped`);
+        console.log(
+          `   📻 Radio: ${results.radio.seeded} stations created, ${results.radio.skipped} skipped`
+        );
       }
 
       if (results.rss) {
-        console.log(`   📰 RSS: ${results.rss.seeded} feeds created, ${results.rss.skipped} skipped`);
+        console.log(
+          `   📰 RSS: ${results.rss.seeded} feeds created, ${results.rss.skipped} skipped`
+        );
       }
 
       if (results.emergencyProtocols) {
-        console.log(`   📋 Protocols: ${results.emergencyProtocols.seeded} protocols created, ${results.emergencyProtocols.skipped} skipped`);
+        console.log(
+          `   📋 Protocols: ${results.emergencyProtocols.seeded} protocols created, ${results.emergencyProtocols.skipped} skipped`
+        );
+      }
+
+      if (results.contacts) {
+        console.log(
+          `   📞 Contacts: ${results.contacts.contactsCreated} contacts created`
+        );
       }
 
       console.log('');
       console.log('✨ Community platform seeded successfully!');
       if (isProduction) {
-        console.log('🚨 REMINDER: This was run in PRODUCTION with forceProduction flag');
+        console.log(
+          '🚨 REMINDER: This was run in PRODUCTION with forceProduction flag'
+        );
       }
       console.log('🌟 Ready for real community data!');
 
@@ -176,7 +224,6 @@ export const seedAll = mutation({
         message: 'Complete database seeding finished successfully',
         community: 'Community Platform',
       };
-
     } catch (error) {
       console.error('❌ Seeding failed:', error);
       errors.push(error);
@@ -195,6 +242,7 @@ export const seedAll = mutation({
 export { seedCameras } from './cameras';
 export { seedWeather } from './weather';
 export { seedPayments } from './payments';
-export { seedRadioStations } from './radio';
+export { seedRadioStations, updateRadioStreams } from './radio';
 export { seedRssFeeds } from './rss';
 export { seedEmergencyProtocols } from './emergency_protocols';
+export { seedContacts } from './contacts';

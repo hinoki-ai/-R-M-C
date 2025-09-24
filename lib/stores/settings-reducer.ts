@@ -1,7 +1,14 @@
-import { DEFAULT_SETTINGS, SettingsAction, SettingsState } from '@/types/settings';
+import {
+  DEFAULT_SETTINGS,
+  SettingsAction,
+  SettingsState,
+} from '@/types/settings';
 
 // SETTINGS REDUCER - COMPREHENSIVE STATE MANAGEMENT
-export function settingsReducer(state: SettingsState, action: SettingsAction): SettingsState {
+export function settingsReducer(
+  state: SettingsState,
+  action: SettingsAction
+): SettingsState {
   switch (action.type) {
     case 'UPDATE_SETTING':
       return {
@@ -23,45 +30,57 @@ export function settingsReducer(state: SettingsState, action: SettingsAction): S
 
         case 'security':
           sectionDefaults.sessionTimeout = DEFAULT_SETTINGS.sessionTimeout;
-          sectionDefaults.passwordMinLength = DEFAULT_SETTINGS.passwordMinLength;
-          sectionDefaults.twoFactorRequired = DEFAULT_SETTINGS.twoFactorRequired;
-          sectionDefaults.rateLimitingEnabled = DEFAULT_SETTINGS.rateLimitingEnabled;
+          sectionDefaults.passwordMinLength =
+            DEFAULT_SETTINGS.passwordMinLength;
+          sectionDefaults.twoFactorRequired =
+            DEFAULT_SETTINGS.twoFactorRequired;
+          sectionDefaults.rateLimitingEnabled =
+            DEFAULT_SETTINGS.rateLimitingEnabled;
           sectionDefaults.securityAlerts = DEFAULT_SETTINGS.securityAlerts;
           break;
 
         case 'database':
           sectionDefaults.dbConnectionPool = DEFAULT_SETTINGS.dbConnectionPool;
           sectionDefaults.dbQueryTimeout = DEFAULT_SETTINGS.dbQueryTimeout;
-          sectionDefaults.dbBackupFrequency = DEFAULT_SETTINGS.dbBackupFrequency;
-          sectionDefaults.dbOptimizationEnabled = DEFAULT_SETTINGS.dbOptimizationEnabled;
+          sectionDefaults.dbBackupFrequency =
+            DEFAULT_SETTINGS.dbBackupFrequency;
+          sectionDefaults.dbOptimizationEnabled =
+            DEFAULT_SETTINGS.dbOptimizationEnabled;
           break;
 
         case 'notifications':
           sectionDefaults.smtpHost = DEFAULT_SETTINGS.smtpHost;
-          sectionDefaults.emailNotifications = DEFAULT_SETTINGS.emailNotifications;
+          sectionDefaults.emailNotifications =
+            DEFAULT_SETTINGS.emailNotifications;
           sectionDefaults.adminAlerts = DEFAULT_SETTINGS.adminAlerts;
-          sectionDefaults.notificationFrequency = DEFAULT_SETTINGS.notificationFrequency;
+          sectionDefaults.notificationFrequency =
+            DEFAULT_SETTINGS.notificationFrequency;
           break;
 
         case 'performance':
           sectionDefaults.cacheEnabled = DEFAULT_SETTINGS.cacheEnabled;
           sectionDefaults.maxWorkers = DEFAULT_SETTINGS.maxWorkers;
           sectionDefaults.memoryLimit = DEFAULT_SETTINGS.memoryLimit;
-          sectionDefaults.compressionEnabled = DEFAULT_SETTINGS.compressionEnabled;
+          sectionDefaults.compressionEnabled =
+            DEFAULT_SETTINGS.compressionEnabled;
           sectionDefaults.quality = DEFAULT_SETTINGS.quality;
           break;
 
         case 'ui':
-          sectionDefaults.animationsEnabled = DEFAULT_SETTINGS.animationsEnabled;
+          sectionDefaults.animationsEnabled =
+            DEFAULT_SETTINGS.animationsEnabled;
           sectionDefaults.highContrast = DEFAULT_SETTINGS.highContrast;
-          sectionDefaults.keyboardShortcuts = DEFAULT_SETTINGS.keyboardShortcuts;
+          sectionDefaults.keyboardShortcuts =
+            DEFAULT_SETTINGS.keyboardShortcuts;
           sectionDefaults.autoSave = DEFAULT_SETTINGS.autoSave;
           sectionDefaults.layout = DEFAULT_SETTINGS.layout;
           break;
 
         case 'features':
-          sectionDefaults.clientPortalEnabled = DEFAULT_SETTINGS.clientPortalEnabled;
-          sectionDefaults.advancedAnalytics = DEFAULT_SETTINGS.advancedAnalytics;
+          sectionDefaults.clientPortalEnabled =
+            DEFAULT_SETTINGS.clientPortalEnabled;
+          sectionDefaults.advancedAnalytics =
+            DEFAULT_SETTINGS.advancedAnalytics;
           sectionDefaults.mobileAppEnabled = DEFAULT_SETTINGS.mobileAppEnabled;
           sectionDefaults.apiAccessEnabled = DEFAULT_SETTINGS.apiAccessEnabled;
           break;
@@ -69,7 +88,8 @@ export function settingsReducer(state: SettingsState, action: SettingsAction): S
         case 'advanced':
           sectionDefaults.debugMode = DEFAULT_SETTINGS.debugMode;
           sectionDefaults.logLevel = DEFAULT_SETTINGS.logLevel;
-          sectionDefaults.experimentalFeatures = DEFAULT_SETTINGS.experimentalFeatures;
+          sectionDefaults.experimentalFeatures =
+            DEFAULT_SETTINGS.experimentalFeatures;
           sectionDefaults.telemetryEnabled = DEFAULT_SETTINGS.telemetryEnabled;
           sectionDefaults.developerMode = DEFAULT_SETTINGS.developerMode;
           break;
@@ -107,63 +127,110 @@ export function settingsReducer(state: SettingsState, action: SettingsAction): S
 }
 
 // UTILITY FUNCTIONS
-export const getSettingsByCategory = (settings: SettingsState, category: string) => {
+export const getSettingsByCategory = (
+  settings: SettingsState,
+  category: string
+) => {
   const entries = Object.entries(settings) as [keyof SettingsState, any][];
 
   switch (category) {
     case 'system':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['systemName', 'systemTimezone', 'maintenanceMode', 'systemTheme'].includes(key)
+          [
+            'systemName',
+            'systemTimezone',
+            'maintenanceMode',
+            'systemTheme',
+          ].includes(key)
         )
       );
 
     case 'security':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['sessionTimeout', 'passwordMinLength', 'twoFactorRequired', 'rateLimitingEnabled', 'securityAlerts'].includes(key)
+          [
+            'sessionTimeout',
+            'passwordMinLength',
+            'twoFactorRequired',
+            'rateLimitingEnabled',
+            'securityAlerts',
+          ].includes(key)
         )
       );
 
     case 'database':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['dbConnectionPool', 'dbQueryTimeout', 'dbBackupFrequency', 'dbOptimizationEnabled'].includes(key)
+          [
+            'dbConnectionPool',
+            'dbQueryTimeout',
+            'dbBackupFrequency',
+            'dbOptimizationEnabled',
+          ].includes(key)
         )
       );
 
     case 'notifications':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['smtpHost', 'emailNotifications', 'adminAlerts', 'notificationFrequency'].includes(key)
+          [
+            'smtpHost',
+            'emailNotifications',
+            'adminAlerts',
+            'notificationFrequency',
+          ].includes(key)
         )
       );
 
     case 'performance':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['cacheEnabled', 'maxWorkers', 'memoryLimit', 'compressionEnabled', 'quality'].includes(key)
+          [
+            'cacheEnabled',
+            'maxWorkers',
+            'memoryLimit',
+            'compressionEnabled',
+            'quality',
+          ].includes(key)
         )
       );
 
     case 'ui':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['animationsEnabled', 'highContrast', 'keyboardShortcuts', 'autoSave', 'layout'].includes(key)
+          [
+            'animationsEnabled',
+            'highContrast',
+            'keyboardShortcuts',
+            'autoSave',
+            'layout',
+          ].includes(key)
         )
       );
 
     case 'features':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['clientPortalEnabled', 'advancedAnalytics', 'mobileAppEnabled', 'apiAccessEnabled'].includes(key)
+          [
+            'clientPortalEnabled',
+            'advancedAnalytics',
+            'mobileAppEnabled',
+            'apiAccessEnabled',
+          ].includes(key)
         )
       );
 
     case 'advanced':
       return Object.fromEntries(
         entries.filter(([key]) =>
-          ['debugMode', 'logLevel', 'experimentalFeatures', 'telemetryEnabled', 'developerMode'].includes(key)
+          [
+            'debugMode',
+            'logLevel',
+            'experimentalFeatures',
+            'telemetryEnabled',
+            'developerMode',
+          ].includes(key)
         )
       );
 
@@ -172,7 +239,10 @@ export const getSettingsByCategory = (settings: SettingsState, category: string)
   }
 };
 
-export const getModifiedSettings = (current: SettingsState, original: SettingsState): string[] => {
+export const getModifiedSettings = (
+  current: SettingsState,
+  original: SettingsState
+): string[] => {
   const modified: string[] = [];
 
   (Object.keys(current) as (keyof SettingsState)[]).forEach(key => {
@@ -184,6 +254,9 @@ export const getModifiedSettings = (current: SettingsState, original: SettingsSt
   return modified;
 };
 
-export const hasUnsavedChanges = (current: SettingsState, original: SettingsState): boolean => {
+export const hasUnsavedChanges = (
+  current: SettingsState,
+  original: SettingsState
+): boolean => {
   return getModifiedSettings(current, original).length > 0;
 };

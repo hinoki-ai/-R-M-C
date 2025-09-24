@@ -1,22 +1,22 @@
 export interface RetryOptions {
-  maxRetries?: number
-  initialDelay?: number
-  maxDelay?: number
-  backoffFactor?: number
-  retryCondition?: (error: Error) => boolean
-  onRetry?: (attempt: number, error: Error) => void
-  timeout?: number
+  maxRetries?: number;
+  initialDelay?: number;
+  maxDelay?: number;
+  backoffFactor?: number;
+  retryCondition?: (error: Error) => boolean;
+  onRetry?: (attempt: number, error: Error) => void;
+  timeout?: number;
 }
 
 export class RetryError extends Error {
-  public readonly attempts: number
-  public readonly lastError: Error
+  public readonly attempts: number;
+  public readonly lastError: Error;
 
   constructor(message: string, attempts: number, lastError: Error) {
-    super(message)
-    this.name = 'RetryError'
-    this.attempts = attempts
-    this.lastError = lastError
+    super(message);
+    this.name = 'RetryError';
+    this.attempts = attempts;
+    this.lastError = lastError;
   }
 }
 
@@ -31,49 +31,52 @@ export async function withRetry<T>(
     backoffFactor = 2,
     retryCondition = () => true,
     onRetry,
-    timeout
-  } = options
+    timeout,
+  } = options;
 
-  let lastError: Error
-  let delay = initialDelay
+  let lastError: Error;
+  let delay = initialDelay;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       // Add timeout if specified
-      let promise = operation()
+      let promise = operation();
       if (timeout) {
         promise = Promise.race([
           promise,
           new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error(`Operation timed out after ${timeout}ms`)), timeout)
-          )
-        ])
+            setTimeout(
+              () => reject(new Error(`Operation timed out after ${timeout}ms`)),
+              timeout
+            )
+          ),
+        ]);
       }
 
-      return await promise
+      return await promise;
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error))
+      lastError = error instanceof Error ? error : new Error(String(error));
 
       // Don't retry if this is the last attempt
       if (attempt === maxRetries) {
-        break
+        break;
       }
 
       // Check if we should retry this error
       if (!retryCondition(lastError)) {
-        break
+        break;
       }
 
       // Call retry callback if provided
       if (onRetry) {
-        onRetry(attempt + 1, lastError)
+        onRetry(attempt + 1, lastError);
       }
 
       // Wait before retrying
-      await new Promise(resolve => setTimeout(resolve, delay))
+      await new Promise(resolve => setTimeout(resolve, delay));
 
       // Calculate next delay with exponential backoff
-      delay = Math.min(delay * backoffFactor, maxDelay)
+      delay = Math.min(delay * backoffFactor, maxDelay);
     }
   }
 
@@ -81,12 +84,12 @@ export async function withRetry<T>(
     `Operation failed after ${maxRetries + 1} attempts`,
     maxRetries + 1,
     lastError!
-  )
+  );
 }
 
 // Network-specific retry conditions
 export const isNetworkError = (error: Error): boolean => {
-  const message = error.message.toLowerCase()
+  const message = error.message.toLowerCase();
   return (
     message.includes('network') ||
     message.includes('fetch') ||
@@ -96,11 +99,11 @@ export const isNetworkError = (error: Error): boolean => {
     message.includes('net::') ||
     error.name === 'NetworkError' ||
     error.name === 'TypeError' // Often indicates network issues in fetch
-  )
-}
+  );
+};
 
 export const isServerError = (error: Error): boolean => {
-  const message = error.message.toLowerCase()
+  const message = error.message.toLowerCase();
   return (
     message.includes('500') ||
     message.includes('502') ||
@@ -109,12 +112,12 @@ export const isServerError = (error: Error): boolean => {
     message.includes('server error') ||
     message.includes('internal server') ||
     message.includes('service unavailable')
-  )
-}
+  );
+};
 
 export const isRetryableError = (error: Error): boolean => {
-  return isNetworkError(error) || isServerError(error)
-}
+  return isNetworkError(error) || isServerError(error);
+};
 
 // Pre-configured retry strategies
 export const networkRetryOptions: RetryOptions = {
@@ -124,9 +127,9 @@ export const networkRetryOptions: RetryOptions = {
   backoffFactor: 2,
   retryCondition: isNetworkError,
   onRetry: (attempt, error) => {
-    console.warn(`Network retry attempt ${attempt} for error:`, error.message)
-  }
-}
+    console.warn(`Network retry attempt ${attempt} for error:`, error.message);
+  },
+};
 
 export const serverRetryOptions: RetryOptions = {
   maxRetries: 3,
@@ -135,9 +138,9 @@ export const serverRetryOptions: RetryOptions = {
   backoffFactor: 2,
   retryCondition: isServerError,
   onRetry: (attempt, error) => {
-    console.warn(`Server retry attempt ${attempt} for error:`, error.message)
-  }
-}
+    console.warn(`Server retry attempt ${attempt} for error:`, error.message);
+  },
+};
 
 export const aggressiveRetryOptions: RetryOptions = {
   maxRetries: 10,
@@ -146,60 +149,65 @@ export const aggressiveRetryOptions: RetryOptions = {
   backoffFactor: 1.5,
   retryCondition: isRetryableError,
   onRetry: (attempt, error) => {
-    console.warn(`Aggressive retry attempt ${attempt} for error:`, error.message)
-  }
-}
+    console.warn(
+      `Aggressive retry attempt ${attempt} for error:`,
+      error.message
+    );
+  },
+};
 
 // React hook for retrying operations
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react';
 
 export function useRetry<T>(
   operation: () => Promise<T>,
   options: RetryOptions = {}
 ) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
-  const [attempts, setAttempts] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [attempts, setAttempts] = useState(0);
 
   const execute = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    setAttempts(0)
+    setLoading(true);
+    setError(null);
+    setAttempts(0);
 
     try {
       const result = await withRetry(operation, {
         ...options,
         onRetry: (attempt, error) => {
-          setAttempts(attempt)
-          options.onRetry?.(attempt, error)
-        }
-      })
-      return result
+          setAttempts(attempt);
+          options.onRetry?.(attempt, error);
+        },
+      });
+      return result;
     } catch (error) {
-      const retryError = error instanceof RetryError ? error.lastError : error
-      setError(retryError instanceof Error ? retryError : new Error(String(retryError)))
-      throw error
+      const retryError = error instanceof RetryError ? error.lastError : error;
+      setError(
+        retryError instanceof Error ? retryError : new Error(String(retryError))
+      );
+      throw error;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [operation, options])
+  }, [operation, options]);
 
-  const retry = useCallback(() => execute(), [execute])
+  const retry = useCallback(() => execute(), [execute]);
 
   return {
     execute,
     retry,
     loading,
     error,
-    attempts
-  }
+    attempts,
+  };
 }
 
 // Circuit breaker pattern for preventing cascading failures
 export class CircuitBreaker {
-  private failures = 0
-  private lastFailureTime = 0
-  private state: 'closed' | 'open' | 'half-open' = 'closed'
+  private failures = 0;
+  private lastFailureTime = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
 
   constructor(
     private readonly failureThreshold: number = 5,
@@ -210,43 +218,43 @@ export class CircuitBreaker {
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     if (this.state === 'open') {
       if (Date.now() - this.lastFailureTime > this.recoveryTimeout) {
-        this.state = 'half-open'
+        this.state = 'half-open';
       } else {
-        throw new Error('Circuit breaker is open')
+        throw new Error('Circuit breaker is open');
       }
     }
 
     try {
-      const result = await operation()
-      this.onSuccess()
-      return result
+      const result = await operation();
+      this.onSuccess();
+      return result;
     } catch (error) {
-      this.onFailure()
-      throw error
+      this.onFailure();
+      throw error;
     }
   }
 
   private onSuccess() {
-    this.failures = 0
-    this.state = 'closed'
+    this.failures = 0;
+    this.state = 'closed';
   }
 
   private onFailure() {
-    this.failures++
-    this.lastFailureTime = Date.now()
+    this.failures++;
+    this.lastFailureTime = Date.now();
 
     if (this.failures >= this.failureThreshold) {
-      this.state = 'open'
+      this.state = 'open';
     }
   }
 
   getState() {
-    return this.state
+    return this.state;
   }
 
   reset() {
-    this.failures = 0
-    this.lastFailureTime = 0
-    this.state = 'closed'
+    this.failures = 0;
+    this.lastFailureTime = 0;
+    this.state = 'closed';
   }
 }

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
+import { motion } from 'framer-motion';
 import {
   Cloud,
   CloudRain,
@@ -11,97 +11,138 @@ import {
   Sun,
   Thermometer,
   Wind,
-  Zap
-} from 'lucide-react'
-import { useState, useEffect } from 'react'
+  Zap,
+} from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { WeatherData, WeatherForecast } from '@/types/dashboard'
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { WeatherAlert, WeatherData, WeatherForecast } from '@/types/dashboard';
+import { useMobilePerformance } from '@/lib/hooks/use-mobile-performance';
 
 interface MobileHomeWeatherWidgetProps {
-  weatherData?: WeatherData | null
-  forecastData?: WeatherForecast[] | null
-  onRefresh?: () => void
-  onOpenFullWeather?: () => void
-  compact?: boolean
+  weatherData?: WeatherData | null;
+  forecastData?: WeatherForecast[] | null;
+  onRefresh?: () => void;
+  onOpenFullWeather?: () => void;
+  compact?: boolean;
+  alerts?: WeatherAlert[] | null;
 }
 
 // Mock hourly data - in real implementation this would come from API
 interface HourlyForecast {
-  time: string
-  temperature: number
-  icon: string
-  precipitationChance: number
+  time: string;
+  temperature: number;
+  icon: string;
+  precipitationChance: number;
 }
 
 const mockHourlyData: HourlyForecast[] = [
   { time: 'Ahora', temperature: 18, icon: 'sunny', precipitationChance: 0 },
-  { time: '14:00', temperature: 20, icon: 'partly-cloudy', precipitationChance: 10 },
+  {
+    time: '14:00',
+    temperature: 20,
+    icon: 'partly-cloudy',
+    precipitationChance: 10,
+  },
   { time: '15:00', temperature: 22, icon: 'sunny', precipitationChance: 0 },
   { time: '16:00', temperature: 23, icon: 'sunny', precipitationChance: 5 },
-  { time: '17:00', temperature: 21, icon: 'partly-cloudy', precipitationChance: 15 },
+  {
+    time: '17:00',
+    temperature: 21,
+    icon: 'partly-cloudy',
+    precipitationChance: 15,
+  },
   { time: '18:00', temperature: 19, icon: 'cloudy', precipitationChance: 20 },
   { time: '19:00', temperature: 17, icon: 'cloudy', precipitationChance: 25 },
   { time: '20:00', temperature: 16, icon: 'rain', precipitationChance: 60 },
-]
+];
 
 export function MobileHomeWeatherWidget({
   weatherData,
   forecastData,
   onRefresh,
   onOpenFullWeather,
-  compact = false
+  compact = false,
+  alerts = [],
 }: MobileHomeWeatherWidgetProps) {
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [now, setNow] = useState(new Date());
 
-  const currentWeather = weatherData
-  const forecast = forecastData?.slice(0, 7) // 7-day forecast
+  // Battery and performance info (mobile-aware)
+  const { batteryInfo } = useMobilePerformance();
+
+  const currentWeather = weatherData;
+  const forecast = forecastData?.slice(0, 7); // 7-day forecast
 
   const getWeatherIcon = (icon: string, size = 24) => {
-    const iconClass = `w-${size} h-${size}`
+    const iconClass = `w-${size} h-${size}`;
     switch (icon?.toLowerCase()) {
       case 'sunny':
       case 'clear':
-        return <Sun className={`${iconClass} text-yellow-500`} />
+        return <Sun className={`${iconClass} text-yellow-500`} />;
       case 'partly-cloudy':
       case 'partly_cloudy':
-        return <Cloud className={`${iconClass} text-gray-400`} />
+        return <Cloud className={`${iconClass} text-gray-400`} />;
       case 'cloudy':
-        return <Cloud className={`${iconClass} text-gray-500`} />
+        return <Cloud className={`${iconClass} text-gray-500`} />;
       case 'rain':
       case 'heavy-rain':
-        return <CloudRain className={`${iconClass} text-blue-500`} />
+        return <CloudRain className={`${iconClass} text-blue-500`} />;
       default:
-        return <Cloud className={`${iconClass} text-gray-500`} />
+        return <Cloud className={`${iconClass} text-gray-500`} />;
     }
-  }
+  };
 
   const handleRefresh = async () => {
     if (onRefresh) {
-      setIsRefreshing(true)
-      await onRefresh()
-      setLastUpdated(new Date())
-      setTimeout(() => setIsRefreshing(false), 1000)
+      setIsRefreshing(true);
+      await onRefresh();
+      setLastUpdated(new Date());
+      setTimeout(() => setIsRefreshing(false), 1000);
     }
-  }
+  };
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('es-CL', {
       hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+      minute: '2-digit',
+    });
+  };
 
   // Auto-refresh every 30 minutes
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleRefresh()
-    }, 30 * 60 * 1000)
+    const interval = setInterval(
+      () => {
+        handleRefresh();
+      },
+      30 * 60 * 1000
+    );
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
+
+  // Clock tick (update every 30s for smooth display without battery drain)
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const timeDisplay = useMemo(() => {
+    return now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  }, [now]);
+
+  // Battery indicator helpers
+  const batteryLevelPercent = Math.round((batteryInfo?.level ?? 0) * 100);
+  const isCharging = !!batteryInfo?.charging;
+  const batteryColor = batteryInfo
+    ? batteryLevelPercent <= 20 && !isCharging
+      ? 'text-red-500'
+      : batteryLevelPercent <= 50 && !isCharging
+        ? 'text-yellow-500'
+        : 'text-emerald-500'
+    : 'text-gray-400';
 
   if (compact) {
     return (
@@ -118,21 +159,38 @@ export function MobileHomeWeatherWidget({
                 <span className="text-sm font-medium text-gray-700">Ñuble</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-500">
-                  {formatTime(lastUpdated)}
+                <span className="text-xs text-gray-600" title="Hora actual">
+                  {timeDisplay}
                 </span>
+                {batteryInfo && (
+                  <span
+                    className={`text-xs ${batteryColor} flex items-center`}
+                    title={isCharging ? 'Cargando' : 'Batería'}
+                  >
+                    {isCharging ? '⚡' : '🔋'} {batteryLevelPercent}%
+                  </span>
+                )}
                 <button
                   onClick={handleRefresh}
                   title="Actualizar clima"
                   aria-label="Actualizar datos del clima"
                   className={`p-1 rounded-full transition-colors ${
-                    isRefreshing ? 'animate-spin text-blue-500' : 'text-gray-400 hover:text-gray-600'
+                    isRefreshing
+                      ? 'animate-spin text-blue-500'
+                      : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
                   <RefreshCw className="w-3 h-3" />
                 </button>
               </div>
             </div>
+
+            {/* Emergency prompt (compact) */}
+            {alerts && alerts.length > 0 && (
+              <div className="mb-3 p-2 rounded bg-red-50 border border-red-200 text-red-700 text-xs">
+                ⚠️ {alerts[0].title}
+              </div>
+            )}
 
             {currentWeather ? (
               <div className="flex items-center justify-between">
@@ -150,7 +208,9 @@ export function MobileHomeWeatherWidget({
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-gray-500">ST: {currentWeather.feelsLike?.toFixed(0)}°</div>
+                  <div className="text-xs text-gray-500">
+                    ST: {currentWeather.feelsLike?.toFixed(0)}°
+                  </div>
                   <div className="flex items-center space-x-1 text-xs text-gray-600">
                     <Wind className="w-3 h-3" />
                     <span>{currentWeather.windSpeed.toFixed(0)} km/h</span>
@@ -168,7 +228,7 @@ export function MobileHomeWeatherWidget({
           </CardContent>
         </Card>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -185,16 +245,27 @@ export function MobileHomeWeatherWidget({
               <MapPin className="w-4 h-4" />
               <span className="font-medium">Pinto Los Pellines, Ñuble</span>
             </div>
-              <button
-                onClick={handleRefresh}
-                title="Actualizar clima"
-                aria-label="Actualizar datos del clima"
-                className={`p-1 rounded-full transition-colors ${
-                  isRefreshing ? 'animate-spin' : 'hover:bg-white/20'
-                }`}
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
+            <button
+              onClick={handleRefresh}
+              title="Actualizar clima"
+              aria-label="Actualizar datos del clima"
+              className={`p-1 rounded-full transition-colors ${
+                isRefreshing ? 'animate-spin' : 'hover:bg-white/20'
+              }`}
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
+          {/* Big clock and battery */}
+          <div className="flex items-center justify-between">
+            <div className="text-3xl font-bold tracking-tight" aria-label="Hora actual">
+              {timeDisplay}
+            </div>
+            {batteryInfo && (
+              <div className={`text-sm ${batteryColor}`} aria-label={isCharging ? 'Cargando' : 'Batería'}>
+                {isCharging ? '⚡ Cargando' : '🔋'} {batteryLevelPercent}%
+              </div>
+            )}
           </div>
 
           {currentWeather ? (
@@ -219,7 +290,10 @@ export function MobileHomeWeatherWidget({
                 <div className="text-xs opacity-75 mb-1">
                   Actualizado: {formatTime(lastUpdated)}
                 </div>
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                <Badge
+                  variant="secondary"
+                  className="bg-white/20 text-white border-white/30"
+                >
                   <Wind className="w-3 h-3 mr-1" />
                   {currentWeather.windSpeed.toFixed(0)} km/h
                 </Badge>
@@ -236,6 +310,22 @@ export function MobileHomeWeatherWidget({
         </div>
 
         <CardContent className="p-0">
+          {/* Emergency prompt */}
+          {alerts && alerts.length > 0 && (
+            <div className="p-3 bg-red-50 border-b border-red-200 text-red-800 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span>⚠️</span>
+                <span className="font-medium truncate">{alerts[0].title}</span>
+              </div>
+              <button
+                onClick={onOpenFullWeather}
+                className="text-sm underline text-red-700 hover:text-red-900"
+              >
+                Ver detalles
+              </button>
+            </div>
+          )}
+
           {/* Hourly Forecast */}
           <div className="p-4 border-b border-gray-100">
             <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
@@ -254,9 +344,7 @@ export function MobileHomeWeatherWidget({
                   <span className="text-xs text-gray-600 font-medium">
                     {hour.time}
                   </span>
-                  <div className="text-lg">
-                    {getWeatherIcon(hour.icon, 6)}
-                  </div>
+                  <div className="text-lg">{getWeatherIcon(hour.icon, 6)}</div>
                   <span className="text-sm font-semibold text-gray-900">
                     {hour.temperature}°
                   </span>
@@ -290,17 +378,17 @@ export function MobileHomeWeatherWidget({
                 >
                   <div className="flex items-center space-x-3">
                     <span className="text-sm font-medium text-gray-900 min-w-0">
-                      {index === 0 ? 'Hoy' :
-                       index === 1 ? 'Mañana' :
-                       new Date(day.date).toLocaleDateString('es-CL', {
-                         weekday: 'short',
-                         month: 'short',
-                         day: 'numeric'
-                       })}
+                      {index === 0
+                        ? 'Hoy'
+                        : index === 1
+                          ? 'Mañana'
+                          : new Date(day.date).toLocaleDateString('es-CL', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
                     </span>
-                    <div className="text-lg">
-                      {getWeatherIcon(day.icon, 6)}
-                    </div>
+                    <div className="text-lg">{getWeatherIcon(day.icon, 6)}</div>
                   </div>
                   <div className="flex items-center space-x-4">
                     {day.precipitationProbability > 0 && (
@@ -315,9 +403,7 @@ export function MobileHomeWeatherWidget({
                       <span className="font-semibold text-gray-900">
                         {day.tempMax}°
                       </span>
-                      <span className="text-gray-500">
-                        {day.tempMin}°
-                      </span>
+                      <span className="text-gray-500">{day.tempMin}°</span>
                     </div>
                   </div>
                 </motion.div>
@@ -339,7 +425,7 @@ export function MobileHomeWeatherWidget({
                 <div className="bg-white/60 rounded-lg p-3 text-center">
                   <Eye className="w-5 h-5 text-purple-500 mx-auto mb-1" />
                   <div className="text-lg font-semibold text-gray-900">
-                    {(currentWeather.visibility / 1000).toFixed(1)} km
+                    {currentWeather.visibility?.toFixed?.(1) ?? currentWeather.visibility} km
                   </div>
                   <div className="text-xs text-gray-600">Visibilidad</div>
                 </div>
@@ -373,5 +459,5 @@ export function MobileHomeWeatherWidget({
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }

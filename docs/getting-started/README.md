@@ -58,8 +58,7 @@ NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-app.clerk.accounts.dev
 CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 
-# Optional: Weather API - Get free API key from OpenWeatherMap
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
+# Weather Integration - No API key required (uses free Open-Meteo API)
 
 # Optional: Admin operations - For database seeding
 CONVEX_ADMIN_KEY=your_convex_admin_key_here
@@ -87,7 +86,7 @@ CONVEX_ADMIN_KEY=your_convex_admin_key_here
 
 #### Optional: Weather Integration
 
-1. Sign up at [openweathermap.org](https://openweathermap.org/api)
+1. Weather data is automatically available via Open-Meteo (no signup required)
 2. Get a free API key
 3. Add it to `.env.local`
 
@@ -103,15 +102,15 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the Next.js development server |
-| `npm run build` | Build the production bundle |
-| `npm run start` | Run the production server locally |
-| `npm run lint` | Execute ESLint checks |
-| `npm run type-check` | Run TypeScript in no-emit mode |
-| `npm test` | Execute Jest test suite |
-| `npm run quality-check` | Run all quality gates sequentially |
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `npm run dev`           | Start the Next.js development server |
+| `npm run build`         | Build the production bundle          |
+| `npm run start`         | Run the production server locally    |
+| `npm run lint`          | Execute ESLint checks                |
+| `npm run type-check`    | Run TypeScript in no-emit mode       |
+| `npm test`              | Execute Jest test suite              |
+| `npm run quality-check` | Run all quality gates sequentially   |
 
 ### Quality Gates
 
@@ -168,7 +167,7 @@ npx cap open ios
 ## Project Structure
 
 ```bash
-juntadevecinos/
+pintopellines/
 ├── app/                    # Next.js app directory
 │   ├── (landing)/         # Landing page components
 │   ├── dashboard/         # Protected dashboard pages

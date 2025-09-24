@@ -34,17 +34,21 @@ import { AramacCopyright } from '@/components/ui/copyright'
 ### TypeScript/JavaScript
 
 ```ts
-import { getAramacCopyright, getAramacCopyrightHTML, generateCopyright } from '@/lib/copyright-system'
+import {
+  getAramacCopyright,
+  getAramacCopyrightHTML,
+  generateCopyright,
+} from '@/lib/copyright-system';
 
 // Get standard copyright text
-const copyright = getAramacCopyright()
+const copyright = getAramacCopyright();
 
 // Get HTML formatted copyright
-const htmlCopyright = getAramacCopyrightHTML()
+const htmlCopyright = getAramacCopyrightHTML();
 
 // Generate context-specific copyright
-const readmeCopyright = generateCopyright('readme')
-const licenseCopyright = generateCopyright('license')
+const readmeCopyright = generateCopyright('readme');
+const licenseCopyright = generateCopyright('license');
 ```
 
 ### HTML Templates
@@ -53,7 +57,8 @@ const licenseCopyright = generateCopyright('license')
 <footer>
   <div class="copyright">
     <!-- Using the standard format -->
-    2025 Powered by <span class="font-mono text-lg tracking-wider">ΛRΛMΛC®</span>
+    2025 Powered by
+    <span class="font-mono text-lg tracking-wider">ΛRΛMΛC®</span>
   </div>
 </footer>
 ```
@@ -79,7 +84,7 @@ npm install framer-motion  # For React components (if using magnetic effects)
 
 ```tsx
 // In your main layout
-import { AramacCopyright } from '@/components/ui/copyright'
+import { AramacCopyright } from '@/components/ui/copyright';
 
 export default function Layout({ children }) {
   return (
@@ -89,7 +94,7 @@ export default function Layout({ children }) {
         <AramacCopyright />
       </footer>
     </div>
-  )
+  );
 }
 ```
 
@@ -109,12 +114,12 @@ export default function Layout({ children }) {
 Use the validation function to ensure correct copyright usage:
 
 ```ts
-import { validateCopyright } from '@/lib/copyright-system'
+import { validateCopyright } from '@/lib/copyright-system';
 
 if (validateCopyright(someCopyrightText)) {
-  console.log('Copyright format is correct')
+  console.log('Copyright format is correct');
 } else {
-  console.error('Copyright format is incorrect')
+  console.error('Copyright format is incorrect');
 }
 ```
 

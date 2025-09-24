@@ -5,30 +5,55 @@ import { mutation, query } from './_generated/server';
 // Get all maintenance requests for admin management
 export const getAllMaintenanceRequests = query({
   args: {
-    status: v.optional(v.union(v.literal('pending'), v.literal('in-progress'), v.literal('completed'), v.literal('cancelled'))),
-    priority: v.optional(v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical'))),
-    category: v.optional(v.union(v.literal('roads'), v.literal('lighting'), v.literal('water'), v.literal('sewage'), v.literal('buildings'), v.literal('other'))),
+    status: v.optional(
+      v.union(
+        v.literal('pending'),
+        v.literal('in-progress'),
+        v.literal('completed'),
+        v.literal('cancelled')
+      )
+    ),
+    priority: v.optional(
+      v.union(
+        v.literal('low'),
+        v.literal('medium'),
+        v.literal('high'),
+        v.literal('critical')
+      )
+    ),
+    category: v.optional(
+      v.union(
+        v.literal('roads'),
+        v.literal('lighting'),
+        v.literal('water'),
+        v.literal('sewage'),
+        v.literal('buildings'),
+        v.literal('other')
+      )
+    ),
   },
-  returns: v.array(v.object({
-    _id: v.id('maintenanceRequests'),
-    title: v.string(),
-    description: v.string(),
-    location: v.string(),
-    priority: v.string(),
-    status: v.string(),
-    category: v.string(),
-    reportedBy: v.id('users'),
-    reportedAt: v.number(),
-    assignedTo: v.optional(v.id('users')),
-    assignedAt: v.optional(v.number()),
-    completedAt: v.optional(v.number()),
-    estimatedCost: v.optional(v.number()),
-    actualCost: v.optional(v.number()),
-    photos: v.array(v.string()),
-    notes: v.optional(v.string()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('maintenanceRequests'),
+      title: v.string(),
+      description: v.string(),
+      location: v.string(),
+      priority: v.string(),
+      status: v.string(),
+      category: v.string(),
+      reportedBy: v.id('users'),
+      reportedAt: v.number(),
+      assignedTo: v.optional(v.id('users')),
+      assignedAt: v.optional(v.number()),
+      completedAt: v.optional(v.number()),
+      estimatedCost: v.optional(v.number()),
+      actualCost: v.optional(v.number()),
+      photos: v.array(v.string()),
+      notes: v.optional(v.string()),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     let query = ctx.db.query('maintenanceRequests');
 
@@ -74,23 +99,25 @@ export const getMaintenanceRequestsByUser = query({
   args: {
     userId: v.id('users'),
   },
-  returns: v.array(v.object({
-    _id: v.id('maintenanceRequests'),
-    title: v.string(),
-    description: v.string(),
-    location: v.string(),
-    priority: v.string(),
-    status: v.string(),
-    category: v.string(),
-    reportedAt: v.number(),
-    assignedTo: v.optional(v.id('users')),
-    assignedAt: v.optional(v.number()),
-    completedAt: v.optional(v.number()),
-    estimatedCost: v.optional(v.number()),
-    actualCost: v.optional(v.number()),
-    photos: v.array(v.string()),
-    notes: v.optional(v.string()),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('maintenanceRequests'),
+      title: v.string(),
+      description: v.string(),
+      location: v.string(),
+      priority: v.string(),
+      status: v.string(),
+      category: v.string(),
+      reportedAt: v.number(),
+      assignedTo: v.optional(v.id('users')),
+      assignedAt: v.optional(v.number()),
+      completedAt: v.optional(v.number()),
+      estimatedCost: v.optional(v.number()),
+      actualCost: v.optional(v.number()),
+      photos: v.array(v.string()),
+      notes: v.optional(v.string()),
+    })
+  ),
   handler: async (ctx, args) => {
     const requests = await ctx.db
       .query('maintenanceRequests')
@@ -124,8 +151,20 @@ export const createMaintenanceRequest = mutation({
     title: v.string(),
     description: v.string(),
     location: v.string(),
-    priority: v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical')),
-    category: v.union(v.literal('roads'), v.literal('lighting'), v.literal('water'), v.literal('sewage'), v.literal('buildings'), v.literal('other')),
+    priority: v.union(
+      v.literal('low'),
+      v.literal('medium'),
+      v.literal('high'),
+      v.literal('critical')
+    ),
+    category: v.union(
+      v.literal('roads'),
+      v.literal('lighting'),
+      v.literal('water'),
+      v.literal('sewage'),
+      v.literal('buildings'),
+      v.literal('other')
+    ),
     reportedBy: v.id('users'),
     photos: v.optional(v.array(v.string())),
     estimatedCost: v.optional(v.number()),
@@ -158,9 +197,32 @@ export const updateMaintenanceRequest = mutation({
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     location: v.optional(v.string()),
-    priority: v.optional(v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical'))),
-    status: v.optional(v.union(v.literal('pending'), v.literal('in-progress'), v.literal('completed'), v.literal('cancelled'))),
-    category: v.optional(v.union(v.literal('roads'), v.literal('lighting'), v.literal('water'), v.literal('sewage'), v.literal('buildings'), v.literal('other'))),
+    priority: v.optional(
+      v.union(
+        v.literal('low'),
+        v.literal('medium'),
+        v.literal('high'),
+        v.literal('critical')
+      )
+    ),
+    status: v.optional(
+      v.union(
+        v.literal('pending'),
+        v.literal('in-progress'),
+        v.literal('completed'),
+        v.literal('cancelled')
+      )
+    ),
+    category: v.optional(
+      v.union(
+        v.literal('roads'),
+        v.literal('lighting'),
+        v.literal('water'),
+        v.literal('sewage'),
+        v.literal('buildings'),
+        v.literal('other')
+      )
+    ),
     assignedTo: v.optional(v.id('users')),
     estimatedCost: v.optional(v.number()),
     actualCost: v.optional(v.number()),
@@ -197,7 +259,8 @@ export const updateMaintenanceRequest = mutation({
         updates.assignedAt = Date.now();
       }
     }
-    if (args.estimatedCost !== undefined) updates.estimatedCost = args.estimatedCost;
+    if (args.estimatedCost !== undefined)
+      updates.estimatedCost = args.estimatedCost;
     if (args.actualCost !== undefined) updates.actualCost = args.actualCost;
     if (args.photos !== undefined) updates.photos = args.photos;
     if (args.notes !== undefined) updates.notes = args.notes;

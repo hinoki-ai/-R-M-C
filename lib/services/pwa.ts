@@ -29,10 +29,13 @@ class PWAController {
 
   private async init() {
     // Check if PWA is supported
-    this.status.isSupported = 'serviceWorker' in navigator && 'Notification' in window;
+    this.status.isSupported =
+      'serviceWorker' in navigator && 'Notification' in window;
 
     // Check if already installed
-    this.status.isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    this.status.isInstalled = window.matchMedia(
+      '(display-mode: standalone)'
+    ).matches;
 
     // Register service worker
     if (this.status.isSupported) {
@@ -40,7 +43,7 @@ class PWAController {
     }
 
     // Listen for install prompt
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       this.deferredPrompt = e;
       this.status.canInstall = true;
@@ -90,6 +93,17 @@ class PWAController {
           });
         }
       });
+
+      // Attempt background sync registration when available
+      try {
+        // One-off background sync to refresh key caches
+        if ('sync' in registration) {
+          // @ts-ignore - Background Sync is not in TS DOM lib everywhere
+          await registration.sync.register('background-sync');
+        }
+      } catch (_) {
+        // Ignore if not supported
+      }
 
       // Handle existing service worker
       if (registration.active) {
@@ -188,19 +202,20 @@ export function addOfflineListener(callback: () => void): () => void {
   return () => window.removeEventListener('offline', callback);
 }
 
-
 // Cache management utilities
 export async function clearCache(): Promise<void> {
   if ('caches' in window) {
     const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames.map(cacheName => caches.delete(cacheName))
-    );
+    await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
   }
 }
 
 export async function getCacheSize(): Promise<number> {
-  if ('caches' in window && 'storage' in navigator && 'estimate' in navigator.storage) {
+  if (
+    'caches' in window &&
+    'storage' in navigator &&
+    'estimate' in navigator.storage
+  ) {
     const estimate = await navigator.storage.estimate();
     return estimate.usage || 0;
   }
@@ -208,7 +223,10 @@ export async function getCacheSize(): Promise<number> {
 }
 
 // Periodic cleanup function
-export function schedulePeriodicCleanup(intervalMs: number = 24 * 60 * 60 * 1000) { // 24 hours
+export function schedulePeriodicCleanup(
+  intervalMs: number = 24 * 60 * 60 * 1000
+) {
+  // 24 hours
   setInterval(async () => {
     try {
       // Clear old cache entries
@@ -237,7 +255,7 @@ async function clearOldCacheEntries() {
           const response = await cache.match(request);
           if (response) {
             const date = response.headers.get('date');
-            if (date && (Date.now() - new Date(date).getTime()) > maxAge) {
+            if (date && Date.now() - new Date(date).getTime() > maxAge) {
               await cache.delete(request);
             }
           }

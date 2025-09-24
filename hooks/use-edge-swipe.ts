@@ -26,7 +26,9 @@ export function useEdgeSwipe() {
         deltaX > 0
       ) {
         // Trigger sidebar open
-        const sidebarTrigger = document.querySelector('[data-sidebar="trigger"]') as HTMLElement;
+        const sidebarTrigger = document.querySelector(
+          '[data-sidebar="trigger"]'
+        ) as HTMLElement;
         if (sidebarTrigger) {
           sidebarTrigger.click();
         }

@@ -19,7 +19,7 @@ export function AnimatedListItem({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <motion.div {...animations} layout className='mx-auto w-full'>
+    <motion.div {...animations} layout className="mx-auto w-full">
       {children}
     </motion.div>
   );
@@ -35,13 +35,13 @@ export const AnimatedList = React.memo(
     const [index, setIndex] = useState(0);
     const childrenArray = useMemo(
       () => React.Children.toArray(children),
-      [children],
+      [children]
     );
 
     useEffect(() => {
       if (index < childrenArray.length - 1) {
         const timeout = setTimeout(() => {
-          setIndex((prevIndex) => (prevIndex + 1) % childrenArray.length);
+          setIndex(prevIndex => (prevIndex + 1) % childrenArray.length);
         }, delay);
 
         return () => clearTimeout(timeout);
@@ -59,7 +59,7 @@ export const AnimatedList = React.memo(
         {...props}
       >
         <AnimatePresence>
-          {itemsToShow.map((item) => (
+          {itemsToShow.map(item => (
             <AnimatedListItem key={(item as React.ReactElement).key}>
               {item}
             </AnimatedListItem>
@@ -67,7 +67,7 @@ export const AnimatedList = React.memo(
         </AnimatePresence>
       </div>
     );
-  },
+  }
 );
 
 AnimatedList.displayName = 'AnimatedList';

@@ -1,6 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Mountain } from 'lucide-react';
 
 interface WikilocEmbedProps {
@@ -12,10 +18,11 @@ interface WikilocEmbedProps {
 export default function WikilocEmbed({
   className = '',
   width = 600,
-  height = 450
+  height = 450,
 }: WikilocEmbedProps) {
   // Wikiloc URL for Salto Los Pellines trail
-  const wikilocUrl = 'https://pt.wikiloc.com/wikiloc/map.do?sw=-36.83010462263656%2C-71.63569351767103&ne=-36.80749537736346%2C-71.60745048232894&place=Salto%20Los%20Pellines&page=1';
+  const wikilocUrl =
+    'https://pt.wikiloc.com/wikiloc/map.do?sw=-36.83010462263656%2C-71.63569351767103&ne=-36.80749537736346%2C-71.60745048232894&place=Salto%20Los%20Pellines&page=1';
 
   return (
     <Card className={className}>

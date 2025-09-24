@@ -5,25 +5,43 @@ import { mutation, query } from './_generated/server';
 // Get all community projects for admin management
 export const getAllCommunityProjects = query({
   args: {
-    status: v.optional(v.union(v.literal('planning'), v.literal('active'), v.literal('completed'), v.literal('cancelled'))),
-    category: v.optional(v.union(v.literal('agricultural'), v.literal('infrastructure'), v.literal('education'), v.literal('health'), v.literal('cultural'), v.literal('other'))),
+    status: v.optional(
+      v.union(
+        v.literal('planning'),
+        v.literal('active'),
+        v.literal('completed'),
+        v.literal('cancelled')
+      )
+    ),
+    category: v.optional(
+      v.union(
+        v.literal('agricultural'),
+        v.literal('infrastructure'),
+        v.literal('education'),
+        v.literal('health'),
+        v.literal('cultural'),
+        v.literal('other')
+      )
+    ),
   },
-  returns: v.array(v.object({
-    _id: v.id('communityProjects'),
-    title: v.string(),
-    description: v.string(),
-    goal: v.number(),
-    raised: v.number(),
-    deadline: v.string(),
-    category: v.string(),
-    status: v.string(),
-    organizerId: v.id('users'),
-    isPublic: v.boolean(),
-    images: v.array(v.string()),
-    documents: v.array(v.string()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('communityProjects'),
+      title: v.string(),
+      description: v.string(),
+      goal: v.number(),
+      raised: v.number(),
+      deadline: v.string(),
+      category: v.string(),
+      status: v.string(),
+      organizerId: v.id('users'),
+      isPublic: v.boolean(),
+      images: v.array(v.string()),
+      documents: v.array(v.string()),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     let query = ctx.db.query('communityProjects');
 
@@ -59,19 +77,21 @@ export const getAllCommunityProjects = query({
 // Get public community projects for public access
 export const getPublicCommunityProjects = query({
   args: {},
-  returns: v.array(v.object({
-    _id: v.id('communityProjects'),
-    title: v.string(),
-    description: v.string(),
-    goal: v.number(),
-    raised: v.number(),
-    deadline: v.string(),
-    category: v.string(),
-    status: v.string(),
-    organizerId: v.id('users'),
-    images: v.array(v.string()),
-  })),
-  handler: async (ctx) => {
+  returns: v.array(
+    v.object({
+      _id: v.id('communityProjects'),
+      title: v.string(),
+      description: v.string(),
+      goal: v.number(),
+      raised: v.number(),
+      deadline: v.string(),
+      category: v.string(),
+      status: v.string(),
+      organizerId: v.id('users'),
+      images: v.array(v.string()),
+    })
+  ),
+  handler: async ctx => {
     const projects = await ctx.db
       .query('communityProjects')
       .filter(q => q.eq(q.field('isPublic'), true))
@@ -101,7 +121,14 @@ export const createCommunityProject = mutation({
     description: v.string(),
     goal: v.number(),
     deadline: v.string(),
-    category: v.union(v.literal('agricultural'), v.literal('infrastructure'), v.literal('education'), v.literal('health'), v.literal('cultural'), v.literal('other')),
+    category: v.union(
+      v.literal('agricultural'),
+      v.literal('infrastructure'),
+      v.literal('education'),
+      v.literal('health'),
+      v.literal('cultural'),
+      v.literal('other')
+    ),
     organizerId: v.id('users'),
     isPublic: v.boolean(),
     images: v.optional(v.array(v.string())),
@@ -137,8 +164,24 @@ export const updateCommunityProject = mutation({
     description: v.optional(v.string()),
     goal: v.optional(v.number()),
     deadline: v.optional(v.string()),
-    category: v.optional(v.union(v.literal('agricultural'), v.literal('infrastructure'), v.literal('education'), v.literal('health'), v.literal('cultural'), v.literal('other'))),
-    status: v.optional(v.union(v.literal('planning'), v.literal('active'), v.literal('completed'), v.literal('cancelled'))),
+    category: v.optional(
+      v.union(
+        v.literal('agricultural'),
+        v.literal('infrastructure'),
+        v.literal('education'),
+        v.literal('health'),
+        v.literal('cultural'),
+        v.literal('other')
+      )
+    ),
+    status: v.optional(
+      v.union(
+        v.literal('planning'),
+        v.literal('active'),
+        v.literal('completed'),
+        v.literal('cancelled')
+      )
+    ),
     isPublic: v.optional(v.boolean()),
     images: v.optional(v.array(v.string())),
     documents: v.optional(v.array(v.string())),
@@ -205,7 +248,12 @@ export const addProjectContribution = mutation({
     projectId: v.id('communityProjects'),
     userId: v.id('users'),
     amount: v.number(),
-    paymentMethod: v.union(v.literal('stripe'), v.literal('bank_transfer'), v.literal('cash'), v.literal('other')),
+    paymentMethod: v.union(
+      v.literal('stripe'),
+      v.literal('bank_transfer'),
+      v.literal('cash'),
+      v.literal('other')
+    ),
     referenceId: v.optional(v.string()),
     isAnonymous: v.boolean(),
     message: v.optional(v.string()),

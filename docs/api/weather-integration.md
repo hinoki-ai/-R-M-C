@@ -2,39 +2,39 @@
 
 ## Overview
 
-The Junta de Vecinos app includes a comprehensive weather system that provides real-time weather data, forecasts, and alerts for the community. The system integrates with real weather APIs to provide accurate, live data for the Pinto Los Pellines community.
+The Junta de Vecinos app includes a comprehensive weather system that provides real-time weather data, forecasts, and alerts for the community. The system integrates with the free Open-Meteo API to provide accurate, live weather data for the Pinto Los Pellines community.
 
 ## Features
 
 - 🌤️ **Current Weather**: Real-time temperature, humidity, wind, and more
-- 📅 **7-Day Forecast**: Detailed weather predictions
+- 📅 **7-Day Forecast**: Detailed weather predictions with historical data
 - ⚠️ **Weather Alerts**: Storm warnings and safety notifications
 - 📊 **Analytics**: Historical weather statistics and trends
 - 🌱 **Community Impact**: How weather affects community activities
 - 📱 **Mobile Optimized**: Works perfectly on both web and mobile apps
+- 🚀 **Free & Unlimited**: No API keys required, powered by Open-Meteo
 
 ## Setup Instructions
 
 ### 1. Environment Configuration
 
-Create a `.env.local` file in your project root with the following variables:
+The weather system uses Open-Meteo API which is completely free and requires no API keys. No environment variables are needed for basic functionality.
+
+However, you can optionally configure:
 
 ```bash
-# Weather API (Optional - for real weather data)
-# Get your free API key from: https://openweathermap.org/api
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
-
 # Optional: Custom location for weather data
 NEXT_PUBLIC_DEFAULT_LOCATION=Pinto Los Pellines, Ñuble
 ```
 
-### 2. Get OpenWeather API Key
+### 2. Open-Meteo API
 
-1. Visit [OpenWeatherMap](https://openweathermap.org/api)
-2. Sign up for a free account
-3. Go to your API keys section
-4. Create a new API key
-5. Copy the API key to your `.env.local` file
+The system automatically uses the free Open-Meteo API:
+
+- **No API Key Required**: Completely free weather data
+- **No Rate Limits**: Unlimited requests for non-commercial use
+- **Global Coverage**: Weather data for any location worldwide
+- **Reliable Source**: Meteorological data from national weather services
 
 ### 3. Database Setup
 
@@ -47,37 +47,39 @@ The weather system uses Convex for data storage. The database schema is already 
 ### 4. Testing the Setup
 
 1. Start your development server:
+
    ```bash
    npm run dev
    ```
 
 2. Navigate to `/dashboard/weather`
 
-3. With API key configured, you'll see real weather data for Pinto Los Pellines
-4. Weather data will only display when real API data is available
+3. You'll immediately see real weather data for Pinto Los Pellines (no API key needed)
+4. The system provides live weather data powered by Open-Meteo
 
 ## System Architecture
 
 ### Components
 
 - **Weather Page** (`app/dashboard/weather/page.tsx`): Main weather interface
-- **Weather Service** (`lib/weather-service.ts`): API integration service
+- **Weather Service** (`lib/services/weather-service.ts`): Open-Meteo API integration service
 - **Weather Hook** (`hooks/use-weather-data.ts`): Data management hook
 - **Weather Components**: Alert manager and data manager components
 
 ### Data Flow
 
-1. **Real-time Data**: Fetched from OpenWeather API every 30 minutes
-2. **Caching**: Data stored in Convex for offline access
-3. **Reliability**: System only displays data when real API data is available
+1. **Real-time Data**: Fetched from Open-Meteo API with intelligent caching
+2. **Caching**: 15-minute in-memory cache to reduce API calls and improve performance
+3. **Reliability**: Robust error handling ensures the system works even during API outages
 4. **Mobile Sync**: Same real-time data available on web and mobile apps
 
 ### API Endpoints
 
 The system integrates with:
-- **OpenWeather Current Weather API**: Real-time weather data
-- **OpenWeather Forecast API**: 7-day weather predictions
-- **OpenWeather Geocoding API**: Location coordinate conversion
+
+- **Open-Meteo Current Weather API**: Real-time weather data (temperature, humidity, wind, etc.)
+- **Open-Meteo Forecast API**: 7-day weather predictions with historical data
+- **Automatic Location**: Fixed to Pinto Los Pellines coordinates for consistent data
 
 ## Mobile Integration
 
@@ -101,6 +103,7 @@ You can customize the weather location by:
 ### Weather Alerts
 
 Weather alerts can be:
+
 - **Automatic**: Generated from weather API data
 - **Manual**: Created by administrators
 - **Custom**: Configured for specific community needs
@@ -108,7 +111,8 @@ Weather alerts can be:
 ### Data Sources
 
 The system integrates with verified data sources:
-- **API**: Real weather data from OpenWeather
+
+- **API**: Real weather data from Open-Meteo (free, unlimited)
 - **Manual**: Manually entered data by administrators
 - **Sensor**: Data from local weather sensors (future integration)
 
@@ -117,8 +121,8 @@ The system integrates with verified data sources:
 ### Common Issues
 
 1. **No Weather Data Showing**
-   - Check if OpenWeather API key is configured
-   - Verify API key is valid and has quota remaining
+   - Check network connectivity to open-meteo.com
+   - Verify the API endpoint is accessible
    - Check browser console for error messages
 
 2. **Mobile App Issues**
@@ -127,23 +131,25 @@ The system integrates with verified data sources:
    - Verify mobile build is up to date
 
 3. **Performance Issues**
-   - Weather data refreshes every 30 minutes
-   - Check Convex database performance
-   - Monitor API rate limits
+   - Weather data is cached for 15 minutes to improve performance
+   - Check browser network tab for slow API responses
+   - Monitor cache usage with WeatherService.getCacheStats()
 
 ### Debug Mode
 
 Enable debug logging by setting:
+
 ```bash
 NEXT_PUBLIC_WEATHER_DEBUG=true
 ```
 
 ## Security Considerations
 
-- API keys are stored securely in environment variables
+- **No API Keys Required**: Open-Meteo is completely free and requires no authentication
 - Weather data is cached locally for offline access
 - No sensitive user data is transmitted to weather APIs
 - All data transmission uses HTTPS
+- Rate limiting protects against abuse while allowing legitimate use
 
 ## Future Enhancements
 
@@ -156,16 +162,20 @@ NEXT_PUBLIC_WEATHER_DEBUG=true
 ## Support
 
 For issues with the weather system:
+
 1. Check the browser console for error messages
-2. Verify API key configuration
-3. Review the Convex dashboard for data issues
-4. Check network connectivity
+2. Verify network connectivity to open-meteo.com
+3. Check the WeatherService.getCacheStats() for cache status
+4. Review API response times and error handling
 
 ## API Limits
 
-OpenWeather free tier includes:
-- 1,000 API calls per day
-- Current weather and 5-day forecast
-- Basic weather data (no radar or historical data)
+**Open-Meteo has NO limits for non-commercial use:**
 
-For higher usage, consider upgrading to a paid plan.
+- Unlimited API calls
+- All weather data freely available
+- No registration or API keys required
+- Global weather coverage
+- Historical data included
+
+This makes it perfect for community applications like Junta de Vecinos.

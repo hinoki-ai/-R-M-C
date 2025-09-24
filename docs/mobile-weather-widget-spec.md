@@ -16,13 +16,13 @@ This document outlines the optimal configuration for mobile home screen weather 
 
 ### Comparison Table
 
-| Days | Pros | Cons | Usage |
-|------|------|------|-------|
-| 3 | Very accurate, minimal space | Too short for planning | Emergency alerts |
-| 5 | Good accuracy, compact | Misses weekend | Google Weather |
-| **6** | **Best balance** | **None significant** | **Recommended** |
-| 7 | Complete week | Less accurate for day 7 | Apple Weather |
-| 10 | Long planning | Poor accuracy | Full apps only |
+| Days  | Pros                         | Cons                    | Usage            |
+| ----- | ---------------------------- | ----------------------- | ---------------- |
+| 3     | Very accurate, minimal space | Too short for planning  | Emergency alerts |
+| 5     | Good accuracy, compact       | Misses weekend          | Google Weather   |
+| **6** | **Best balance**             | **None significant**    | **Recommended**  |
+| 7     | Complete week                | Less accurate for day 7 | Apple Weather    |
+| 10    | Long planning                | Poor accuracy           | Full apps only   |
 
 ## 📱 Widget Sizes & Layouts
 
@@ -102,10 +102,22 @@ struct LargeWeatherWidget: Widget {
 
 ```css
 /* Widget Typography */
-.widget-temp-large { font-size: 36px; font-weight: 700; }
-.widget-temp-medium { font-size: 24px; font-weight: 600; }
-.widget-label { font-size: 12px; font-weight: 500; }
-.widget-time { font-size: 10px; font-weight: 400; }
+.widget-temp-large {
+  font-size: 36px;
+  font-weight: 700;
+}
+.widget-temp-medium {
+  font-size: 24px;
+  font-weight: 600;
+}
+.widget-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+.widget-time {
+  font-size: 10px;
+  font-weight: 400;
+}
 ```
 
 ## ⚡ Technical Implementation
@@ -115,21 +127,21 @@ struct LargeWeatherWidget: Widget {
 ```typescript
 // Refresh intervals
 const WIDGET_REFRESH_INTERVALS = {
-  current: 15 * 60 * 1000,    // 15 minutes
-  forecast: 60 * 60 * 1000,   // 1 hour
-  alerts: 30 * 60 * 1000,     // 30 minutes
-}
+  current: 15 * 60 * 1000, // 15 minutes
+  forecast: 60 * 60 * 1000, // 1 hour
+  alerts: 30 * 60 * 1000, // 30 minutes
+};
 
 // Background updates
 const updateWeatherWidget = async () => {
   const [current, forecast] = await Promise.all([
     WeatherService.getCurrentWeather(),
-    WeatherService.getForecast(6)
-  ])
+    WeatherService.getForecast(6),
+  ]);
 
   // Update widget with new data
-  WidgetCenter.shared.reloadAllTimelines()
-}
+  WidgetCenter.shared.reloadAllTimelines();
+};
 ```
 
 ### Battery Optimization
@@ -143,17 +155,17 @@ const updateWeatherWidget = async () => {
 
 ```typescript
 const getOfflineWeather = () => {
-  const cached = localStorage.getItem('weather_cache')
+  const cached = localStorage.getItem('weather_cache');
   if (cached) {
-    const data = JSON.parse(cached)
-    const age = Date.now() - data.timestamp
+    const data = JSON.parse(cached);
+    const age = Date.now() - data.timestamp;
     // Show cached data if < 2 hours old
     if (age < 2 * 60 * 60 * 1000) {
-      return data.weather
+      return data.weather;
     }
   }
-  return null
-}
+  return null;
+};
 ```
 
 ## 📊 Data Structure
@@ -163,33 +175,33 @@ const getOfflineWeather = () => {
 ```typescript
 interface MobileWeatherWidgetData {
   current: {
-    temperature: number
-    feelsLike: number
-    icon: string
-    description: string
-    humidity: number
-    windSpeed: number
-    uvIndex: number
-    lastUpdated: Date
-  }
+    temperature: number;
+    feelsLike: number;
+    icon: string;
+    description: string;
+    humidity: number;
+    windSpeed: number;
+    uvIndex: number;
+    lastUpdated: Date;
+  };
   hourly: Array<{
-    time: string
-    temperature: number
-    icon: string
-    precipitationChance: number
-  }>
+    time: string;
+    temperature: number;
+    icon: string;
+    precipitationChance: number;
+  }>;
   daily: Array<{
-    date: string
-    tempMin: number
-    tempMax: number
-    icon: string
-    precipitationChance: number
-    description: string
-  }>
+    date: string;
+    tempMin: number;
+    tempMax: number;
+    icon: string;
+    precipitationChance: number;
+    description: string;
+  }>;
   location: {
-    name: string
-    coordinates: { lat: number; lon: number }
-  }
+    name: string;
+    coordinates: { lat: number; lon: number };
+  };
 }
 ```
 
@@ -197,13 +209,13 @@ interface MobileWeatherWidgetData {
 
 ```typescript
 const WIDGET_FORECAST_CONFIG = {
-  days: 6,                    // Optimal: 6 days
-  hourlyPoints: 6,           // Next 6 hours
-  updateInterval: 15 * 60,   // 15 minutes
+  days: 6, // Optimal: 6 days
+  hourlyPoints: 6, // Next 6 hours
+  updateInterval: 15 * 60, // 15 minutes
   cacheDuration: 2 * 60 * 60, // 2 hours
   retryAttempts: 3,
-  timeout: 5000               // 5 seconds
-}
+  timeout: 5000, // 5 seconds
+};
 ```
 
 ## 🚀 Implementation Checklist
@@ -246,9 +258,9 @@ const trackWidgetInteraction = (action: string, data?: any) => {
     forecast_days: 6,
     location: userLocation,
     timestamp: Date.now(),
-    ...data
-  })
-}
+    ...data,
+  });
+};
 ```
 
 ### Performance Metrics

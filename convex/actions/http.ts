@@ -18,7 +18,11 @@ class ConvexRateLimiter {
     private maxRequests: number
   ) {}
 
-  checkLimit(identifier: string): { allowed: boolean; resetTime?: number; remaining?: number } {
+  checkLimit(identifier: string): {
+    allowed: boolean;
+    resetTime?: number;
+    remaining?: number;
+  } {
     const key = identifier;
     const now = Date.now();
 
@@ -73,9 +77,10 @@ http.route({
   method: 'POST',
   handler: httpAction(async (ctx, request) => {
     // Apply rate limiting for webhook endpoints
-    const clientIP = request.headers.get('x-forwarded-for') ||
-                    request.headers.get('x-real-ip') ||
-                    'unknown';
+    const clientIP =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     const rateLimitResult = webhookLimiter.checkLimit(`webhook:${clientIP}`);
 
     if (!rateLimitResult.allowed) {
@@ -84,13 +89,15 @@ http.route({
         JSON.stringify({
           error: 'Too many webhook requests',
           message: 'Rate limit exceeded. Please try again later.',
-          retryAfter: Math.ceil((resetTime - Date.now()) / 1000)
+          retryAfter: Math.ceil((resetTime - Date.now()) / 1000),
         }),
         {
           status: 429,
           headers: {
             'Content-Type': 'application/json',
-            'Retry-After': Math.ceil((resetTime - Date.now()) / 1000).toString(),
+            'Retry-After': Math.ceil(
+              (resetTime - Date.now()) / 1000
+            ).toString(),
             'X-RateLimit-Limit': '10',
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': new Date(resetTime).toISOString(),
@@ -125,8 +132,6 @@ http.route({
         break;
       }
 
-
-
       default:
         console.log('Ignored webhook event', (event as any).type);
     }
@@ -135,7 +140,10 @@ http.route({
     const response = new Response(null, { status: 200 });
     if (rateLimitResult.remaining !== undefined) {
       response.headers.set('X-RateLimit-Limit', '10');
-      response.headers.set('X-RateLimit-Remaining', rateLimitResult.remaining.toString());
+      response.headers.set(
+        'X-RateLimit-Remaining',
+        rateLimitResult.remaining.toString()
+      );
     }
     return response;
   }),
@@ -147,9 +155,10 @@ http.route({
   method: 'GET',
   handler: httpAction(async (ctx, request) => {
     // Apply rate limiting for health checks (more permissive)
-    const clientIP = request.headers.get('x-forwarded-for') ||
-                    request.headers.get('x-real-ip') ||
-                    'unknown';
+    const clientIP =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     const rateLimitResult = apiLimiter.checkLimit(`health:${clientIP}`);
 
     if (!rateLimitResult.allowed) {
@@ -157,13 +166,15 @@ http.route({
       return new Response(
         JSON.stringify({
           error: 'Too many health check requests',
-          status: 'rate_limited'
+          status: 'rate_limited',
         }),
         {
           status: 429,
           headers: {
             'Content-Type': 'application/json',
-            'Retry-After': Math.ceil((resetTime - Date.now()) / 1000).toString(),
+            'Retry-After': Math.ceil(
+              (resetTime - Date.now()) / 1000
+            ).toString(),
           },
         }
       );
@@ -196,9 +207,10 @@ http.route({
   method: 'GET',
   handler: httpAction(async (ctx, request) => {
     // Apply rate limiting for status endpoint
-    const clientIP = request.headers.get('x-forwarded-for') ||
-                    request.headers.get('x-real-ip') ||
-                    'unknown';
+    const clientIP =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     const rateLimitResult = apiLimiter.checkLimit(`status:${clientIP}`);
 
     if (!rateLimitResult.allowed) {
@@ -206,13 +218,15 @@ http.route({
       return new Response(
         JSON.stringify({
           error: 'Too many status requests',
-          status: 'rate_limited'
+          status: 'rate_limited',
         }),
         {
           status: 429,
           headers: {
             'Content-Type': 'application/json',
-            'Retry-After': Math.ceil((resetTime - Date.now()) / 1000).toString(),
+            'Retry-After': Math.ceil(
+              (resetTime - Date.now()) / 1000
+            ).toString(),
           },
         }
       );

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion'
+import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import {
   ChevronLeft,
   ChevronRight,
@@ -16,24 +16,24 @@ import {
   Zap,
   AlertTriangle,
   TrendingUp,
-  TrendingDown
-} from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+  TrendingDown,
+} from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { WeatherData, WeatherForecast } from '@/types/dashboard'
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { WeatherData, WeatherForecast } from '@/types/dashboard';
 
 interface EnhancedMobileWeatherWidgetProps {
-  weatherData?: WeatherData | null
-  forecastData?: WeatherForecast[] | null
-  alerts?: any[] | null
-  onRefresh?: () => void
-  onOpenFullWeather?: () => void
-  compact?: boolean
+  weatherData?: WeatherData | null;
+  forecastData?: WeatherForecast[] | null;
+  alerts?: any[] | null;
+  onRefresh?: () => void;
+  onOpenFullWeather?: () => void;
+  compact?: boolean;
 }
 
-type ViewMode = 'current' | 'hourly' | 'daily' | 'alerts'
+type ViewMode = 'current' | 'hourly' | 'daily' | 'alerts';
 
 export function EnhancedMobileWeatherWidget({
   weatherData,
@@ -41,118 +41,130 @@ export function EnhancedMobileWeatherWidget({
   alerts = [],
   onRefresh,
   onOpenFullWeather,
-  compact = false
+  compact = false,
 }: EnhancedMobileWeatherWidgetProps) {
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
-  const [viewMode, setViewMode] = useState<ViewMode>('current')
-  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
-  const [isClient, setIsClient] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('current');
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(
+    null
+  );
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true)
-    setLastUpdated(new Date())
-  }, [])
+    setIsClient(true);
+    setLastUpdated(new Date());
+  }, []);
 
-  const currentWeather = weatherData
-  const forecast = forecastData?.slice(0, 7)
+  const currentWeather = weatherData;
+  const forecast = forecastData?.slice(0, 7);
 
-  const x = useMotionValue(0)
-  const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5])
+  const x = useMotionValue(0);
+  const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
   const getWeatherIcon = (icon: string, size = 24) => {
-    const iconClass = `w-${size} h-${size}`
+    const iconClass = `w-${size} h-${size}`;
     switch (icon?.toLowerCase()) {
       case 'sunny':
       case 'clear':
-        return <Sun className={`${iconClass} text-yellow-500`} />
+        return <Sun className={`${iconClass} text-yellow-500`} />;
       case 'partly-cloudy':
       case 'partly_cloudy':
-        return <Cloud className={`${iconClass} text-gray-400`} />
+        return <Cloud className={`${iconClass} text-gray-400`} />;
       case 'cloudy':
-        return <Cloud className={`${iconClass} text-gray-500`} />
+        return <Cloud className={`${iconClass} text-gray-500`} />;
       case 'rain':
       case 'heavy-rain':
-        return <CloudRain className={`${iconClass} text-blue-500`} />
+        return <CloudRain className={`${iconClass} text-blue-500`} />;
       default:
-        return <Cloud className={`${iconClass} text-gray-500`} />
+        return <Cloud className={`${iconClass} text-gray-500`} />;
     }
-  }
+  };
 
   const handleRefresh = async () => {
     if (onRefresh) {
-      setIsRefreshing(true)
-      await onRefresh()
-      setLastUpdated(new Date())
-      setTimeout(() => setIsRefreshing(false), 1000)
+      setIsRefreshing(true);
+      await onRefresh();
+      setLastUpdated(new Date());
+      setTimeout(() => setIsRefreshing(false), 1000);
     }
-  }
+  };
 
   const handleDragEnd = (event: any, info: PanInfo) => {
-    const swipeThreshold = 50
-    const { offset } = info
+    const swipeThreshold = 50;
+    const { offset } = info;
 
     if (Math.abs(offset.x) > swipeThreshold) {
       if (offset.x > 0) {
         // Swipe right - previous view
-        setSwipeDirection('right')
+        setSwipeDirection('right');
         switch (viewMode) {
           case 'current':
-            setViewMode('alerts')
-            break
+            setViewMode('alerts');
+            break;
           case 'hourly':
-            setViewMode('current')
-            break
+            setViewMode('current');
+            break;
           case 'daily':
-            setViewMode('hourly')
-            break
+            setViewMode('hourly');
+            break;
           case 'alerts':
-            setViewMode('daily')
-            break
+            setViewMode('daily');
+            break;
         }
       } else {
         // Swipe left - next view
-        setSwipeDirection('left')
+        setSwipeDirection('left');
         switch (viewMode) {
           case 'current':
-            setViewMode('hourly')
-            break
+            setViewMode('hourly');
+            break;
           case 'hourly':
-            setViewMode('daily')
-            break
+            setViewMode('daily');
+            break;
           case 'daily':
-            setViewMode('alerts')
-            break
+            setViewMode('alerts');
+            break;
           case 'alerts':
-            setViewMode('current')
-            break
+            setViewMode('current');
+            break;
         }
       }
     }
 
     // Reset swipe direction after animation
-    setTimeout(() => setSwipeDirection(null), 300)
-  }
+    setTimeout(() => setSwipeDirection(null), 300);
+  };
 
   const formatTime = (date: Date | null) => {
-    if (!date) return '--:--'
+    if (!date) return '--:--';
     return date.toLocaleTimeString('es-CL', {
       hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+      minute: '2-digit',
+    });
+  };
 
   // Mock hourly data
   const mockHourlyData = [
     { time: 'Ahora', temperature: 18, icon: 'sunny', precipitationChance: 0 },
-    { time: '14:00', temperature: 20, icon: 'partly-cloudy', precipitationChance: 10 },
+    {
+      time: '14:00',
+      temperature: 20,
+      icon: 'partly-cloudy',
+      precipitationChance: 10,
+    },
     { time: '15:00', temperature: 22, icon: 'sunny', precipitationChance: 0 },
     { time: '16:00', temperature: 23, icon: 'sunny', precipitationChance: 5 },
-    { time: '17:00', temperature: 21, icon: 'partly-cloudy', precipitationChance: 15 },
+    {
+      time: '17:00',
+      temperature: 21,
+      icon: 'partly-cloudy',
+      precipitationChance: 15,
+    },
     { time: '18:00', temperature: 19, icon: 'cloudy', precipitationChance: 20 },
     { time: '19:00', temperature: 17, icon: 'cloudy', precipitationChance: 25 },
     { time: '20:00', temperature: 16, icon: 'rain', precipitationChance: 60 },
-  ]
+  ];
 
   const renderCurrentWeather = () => (
     <div className="p-4">
@@ -174,12 +186,16 @@ export function EnhancedMobileWeatherWidget({
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white/60 rounded-lg p-3 text-center">
               <Wind className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <div className="text-lg font-semibold">{currentWeather.windSpeed.toFixed(0)} km/h</div>
+              <div className="text-lg font-semibold">
+                {currentWeather.windSpeed.toFixed(0)} km/h
+              </div>
               <div className="text-xs text-gray-600">Viento</div>
             </div>
             <div className="bg-white/60 rounded-lg p-3 text-center">
               <Droplets className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-              <div className="text-lg font-semibold">{currentWeather.humidity}%</div>
+              <div className="text-lg font-semibold">
+                {currentWeather.humidity}%
+              </div>
               <div className="text-xs text-gray-600">Humedad</div>
             </div>
           </div>
@@ -191,7 +207,7 @@ export function EnhancedMobileWeatherWidget({
         </div>
       )}
     </div>
-  )
+  );
 
   const renderHourlyForecast = () => (
     <div className="p-4">
@@ -208,29 +224,35 @@ export function EnhancedMobileWeatherWidget({
             transition={{ delay: index * 0.05 }}
             className="flex flex-col items-center min-w-0 space-y-2 p-3 rounded-lg bg-white/60 hover:bg-white/80 transition-colors"
           >
-            <span className="text-xs text-gray-600 font-medium">{hour.time}</span>
+            <span className="text-xs text-gray-600 font-medium">
+              {hour.time}
+            </span>
             <div className="text-xl">{getWeatherIcon(hour.icon, 6)}</div>
-            <span className="text-sm font-semibold text-gray-900">{hour.temperature}°</span>
+            <span className="text-sm font-semibold text-gray-900">
+              {hour.temperature}°
+            </span>
             {hour.precipitationChance > 0 && (
               <div className="flex items-center space-x-1">
                 <Droplets className="w-3 h-3 text-blue-500" />
-                <span className="text-xs text-blue-600">{hour.precipitationChance}%</span>
+                <span className="text-xs text-blue-600">
+                  {hour.precipitationChance}%
+                </span>
               </div>
             )}
           </motion.div>
         ))}
       </div>
     </div>
-  )
+  );
 
   const renderDailyForecast = () => (
     <div className="p-4">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                    <Thermometer className="w-4 h-4 mr-2" />
-                    Pronóstico 6 días
-                  </h3>
-                  <div className="space-y-2">
-                    {forecast?.slice(0, 6).map((day, index) => (
+      <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+        <Thermometer className="w-4 h-4 mr-2" />
+        Pronóstico 6 días
+      </h3>
+      <div className="space-y-2">
+        {forecast?.slice(0, 6).map((day, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, x: -20 }}
@@ -240,9 +262,13 @@ export function EnhancedMobileWeatherWidget({
           >
             <div className="flex items-center space-x-3">
               <span className="text-sm font-medium text-gray-900 min-w-0 w-16">
-                {index === 0 ? 'Hoy' :
-                 index === 1 ? 'Mañana' :
-                 new Date(day.date).toLocaleDateString('es-CL', { weekday: 'short' })}
+                {index === 0
+                  ? 'Hoy'
+                  : index === 1
+                    ? 'Mañana'
+                    : new Date(day.date).toLocaleDateString('es-CL', {
+                        weekday: 'short',
+                      })}
               </span>
               <div className="text-lg">{getWeatherIcon(day.icon, 6)}</div>
             </div>
@@ -250,23 +276,31 @@ export function EnhancedMobileWeatherWidget({
               {day.precipitationProbability > 0 && (
                 <div className="flex items-center space-x-1">
                   <Droplets className="w-3 h-3 text-blue-500" />
-                  <span className="text-xs text-blue-600">{day.precipitationProbability}%</span>
+                  <span className="text-xs text-blue-600">
+                    {day.precipitationProbability}%
+                  </span>
                 </div>
               )}
               <div className="flex items-center space-x-2 text-sm">
-                <span className="font-semibold text-gray-900">{day.tempMax}°</span>
+                <span className="font-semibold text-gray-900">
+                  {day.tempMax}°
+                </span>
                 <span className="text-gray-500">{day.tempMin}°</span>
               </div>
               <div className="flex items-center">
-                {day.tempMax > (forecast[0]?.tempMax || 0) && <TrendingUp className="w-3 h-3 text-red-500" />}
-                {day.tempMax < (forecast[0]?.tempMax || 0) && <TrendingDown className="w-3 h-3 text-blue-500" />}
+                {day.tempMax > (forecast[0]?.tempMax || 0) && (
+                  <TrendingUp className="w-3 h-3 text-red-500" />
+                )}
+                {day.tempMax < (forecast[0]?.tempMax || 0) && (
+                  <TrendingDown className="w-3 h-3 text-blue-500" />
+                )}
               </div>
             </div>
           </motion.div>
         ))}
       </div>
     </div>
-  )
+  );
 
   const renderAlerts = () => (
     <div className="p-4">
@@ -287,8 +321,12 @@ export function EnhancedMobileWeatherWidget({
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-medium text-red-800">{alert.title}</h4>
-                  <p className="text-xs text-red-700 mt-1">{alert.description}</p>
+                  <h4 className="text-sm font-medium text-red-800">
+                    {alert.title}
+                  </h4>
+                  <p className="text-xs text-red-700 mt-1">
+                    {alert.description}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -301,11 +339,11 @@ export function EnhancedMobileWeatherWidget({
         </div>
       )}
     </div>
-  )
+  );
 
   const renderViewIndicator = () => (
     <div className="flex justify-center space-x-2 px-4 pb-2">
-      {(['current', 'hourly', 'daily', 'alerts'] as ViewMode[]).map((mode) => (
+      {(['current', 'hourly', 'daily', 'alerts'] as ViewMode[]).map(mode => (
         <button
           key={mode}
           onClick={() => setViewMode(mode)}
@@ -317,7 +355,7 @@ export function EnhancedMobileWeatherWidget({
         />
       ))}
     </div>
-  )
+  );
 
   if (compact) {
     return (
@@ -334,29 +372,39 @@ export function EnhancedMobileWeatherWidget({
                 <span className="text-sm font-medium text-gray-700">Ñuble</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-500">{formatTime(lastUpdated)}</span>
-              <button
-                onClick={handleRefresh}
-                title="Actualizar clima"
-                aria-label="Actualizar datos del clima"
-                className={`p-1 rounded-full transition-colors ${isRefreshing ? 'animate-spin text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
-              >
-                <RefreshCw className="w-3 h-3" />
-              </button>
+                <span className="text-xs text-gray-500">
+                  {formatTime(lastUpdated)}
+                </span>
+                <button
+                  onClick={handleRefresh}
+                  title="Actualizar clima"
+                  aria-label="Actualizar datos del clima"
+                  className={`p-1 rounded-full transition-colors ${isRefreshing ? 'animate-spin text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  <RefreshCw className="w-3 h-3" />
+                </button>
               </div>
             </div>
 
             {currentWeather ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="text-3xl">{getWeatherIcon(currentWeather.icon, 8)}</div>
+                  <div className="text-3xl">
+                    {getWeatherIcon(currentWeather.icon, 8)}
+                  </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">{currentWeather.temperature.toFixed(0)}°</div>
-                    <div className="text-xs text-gray-600 capitalize">{currentWeather.description}</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {currentWeather.temperature.toFixed(0)}°
+                    </div>
+                    <div className="text-xs text-gray-600 capitalize">
+                      {currentWeather.description}
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-gray-500">ST: {currentWeather.feelsLike?.toFixed(0)}°</div>
+                  <div className="text-xs text-gray-500">
+                    ST: {currentWeather.feelsLike?.toFixed(0)}°
+                  </div>
                   <div className="flex items-center space-x-1 text-xs text-gray-600">
                     <Wind className="w-3 h-3" />
                     <span>{currentWeather.windSpeed.toFixed(0)} km/h</span>
@@ -374,7 +422,7 @@ export function EnhancedMobileWeatherWidget({
           </CardContent>
         </Card>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -388,7 +436,9 @@ export function EnhancedMobileWeatherWidget({
               <span className="font-medium">Pinto Los Pellines, Ñuble</span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-xs opacity-75">{formatTime(lastUpdated)}</span>
+              <span className="text-xs opacity-75">
+                {formatTime(lastUpdated)}
+              </span>
               <button
                 onClick={handleRefresh}
                 title="Actualizar clima"
@@ -422,7 +472,9 @@ export function EnhancedMobileWeatherWidget({
             <div className="flex justify-between items-center px-4 py-2 bg-gray-50 border-t">
               <ChevronLeft className="w-4 h-4 text-gray-400" />
               <div className="flex space-x-1">
-                <span className="text-xs text-gray-600 capitalize">{viewMode}</span>
+                <span className="text-xs text-gray-600 capitalize">
+                  {viewMode}
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-400" />
             </div>
@@ -443,5 +495,5 @@ export function EnhancedMobileWeatherWidget({
         </Card>
       </motion.div>
     </div>
-  )
+  );
 }

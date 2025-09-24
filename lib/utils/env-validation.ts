@@ -25,7 +25,6 @@ const REQUIRED_ENV_VARS = [
  * Optional but recommended environment variables
  */
 const RECOMMENDED_ENV_VARS = [
-  'NEXT_PUBLIC_OPENWEATHER_API_KEY',
   'CONVEX_ADMIN_KEY',
   'LSVISION_UID',
 ] as const;
@@ -53,12 +52,11 @@ function isValidConvexUrl(url: string): boolean {
  * Validate Clerk frontend API URL
  */
 function isValidClerkUrl(url: string): boolean {
-  return url.startsWith('https://') && (
-    url.includes('clerk.accounts') ||
-    url.includes('clerk.com')
+  return (
+    url.startsWith('https://') &&
+    (url.includes('clerk.accounts') || url.includes('clerk.com') || url.includes('clerk.'))
   );
 }
-
 
 /**
  * Validate environment variables
@@ -95,7 +93,9 @@ export function validateEnvironment(): EnvValidationResult {
           break;
         case 'CLERK_WEBHOOK_SECRET':
           if (value.length < 20) {
-            result.invalidVars.push(`${envVar} (must be at least 20 characters)`);
+            result.invalidVars.push(
+              `${envVar} (must be at least 20 characters)`
+            );
             result.isValid = false;
           }
           break;
@@ -112,11 +112,6 @@ export function validateEnvironment(): EnvValidationResult {
     } else {
       // Validate format for specific recommended variables
       switch (envVar) {
-        case 'NEXT_PUBLIC_OPENWEATHER_API_KEY':
-          if (value.length < 20) {
-            result.warnings.push(`${envVar} appears to be invalid (too short)`);
-          }
-          break;
         case 'CONVEX_ADMIN_KEY':
           if (value.length < 20) {
             result.warnings.push(`${envVar} appears to be invalid (too short)`);
@@ -131,7 +126,9 @@ export function validateEnvironment(): EnvValidationResult {
   if (!nodeEnv) {
     result.warnings.push('NODE_ENV is not set (defaults to development)');
   } else if (!['development', 'production', 'test'].includes(nodeEnv)) {
-    result.warnings.push(`NODE_ENV has invalid value: ${nodeEnv} (should be development, production, or test)`);
+    result.warnings.push(
+      `NODE_ENV has invalid value: ${nodeEnv} (should be development, production, or test)`
+    );
   }
 
   return result;
@@ -163,8 +160,12 @@ export function validateEnvironmentOrThrow(): void {
       console.error('');
     }
 
-    console.error('Please set the required environment variables and try again.');
-    console.error('You can create a .env.local file in the project root with the required values.');
+    console.error(
+      'Please set the required environment variables and try again.'
+    );
+    console.error(
+      'You can create a .env.local file in the project root with the required values.'
+    );
     console.error('');
 
     if (result.warnings.length > 0) {
@@ -195,10 +196,16 @@ export function validateEnvironmentOrThrow(): void {
 export function getEnvironmentInfo(): Record<string, string | undefined> {
   return {
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL ? '[SET]' : undefined,
-    NEXT_PUBLIC_CLERK_FRONTEND_API_URL: process.env.NEXT_PUBLIC_CLERK_FRONTEND_API_URL ? '[SET]' : undefined,
-    CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET ? '[SET]' : undefined,
-    NEXT_PUBLIC_OPENWEATHER_API_KEY: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY ? '[SET]' : undefined,
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL
+      ? '[SET]'
+      : undefined,
+    NEXT_PUBLIC_CLERK_FRONTEND_API_URL: process.env
+      .NEXT_PUBLIC_CLERK_FRONTEND_API_URL
+      ? '[SET]'
+      : undefined,
+    CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET
+      ? '[SET]'
+      : undefined,
     CONVEX_ADMIN_KEY: process.env.CONVEX_ADMIN_KEY ? '[SET]' : undefined,
     MOBILE_BUILD: process.env.MOBILE_BUILD,
   };
@@ -217,8 +224,8 @@ NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-app.clerk.accounts.dev
 CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 
 # Optional but Recommended Variables
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
 CONVEX_ADMIN_KEY=your_convex_admin_key_here
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
 
 # LS Vision Camera Configuration (O-Kamm only - view access)
 LSVISION_UID=VE4386930MLXU

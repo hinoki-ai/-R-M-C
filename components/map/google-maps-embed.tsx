@@ -1,6 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 
 interface GoogleMapsEmbedProps {
@@ -12,7 +18,7 @@ interface GoogleMapsEmbedProps {
 export default function GoogleMapsEmbed({
   className = '',
   width = 600,
-  height = 450
+  height = 450,
 }: GoogleMapsEmbedProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -24,9 +30,7 @@ export default function GoogleMapsEmbed({
             <MapPin className="w-5 h-5" />
             Mapa Comunitario
           </CardTitle>
-          <CardDescription>
-            Mapa de Pinto Los Pellines, Chile
-          </CardDescription>
+          <CardDescription>Mapa de Pinto Los Pellines, Chile</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center w-full h-64 bg-gray-100 rounded-lg">
@@ -57,9 +61,7 @@ export default function GoogleMapsEmbed({
           <MapPin className="w-5 h-5" />
           Mapa Comunitario
         </CardTitle>
-        <CardDescription>
-          Mapa de Pinto Los Pellines, Chile
-        </CardDescription>
+        <CardDescription>Mapa de Pinto Los Pellines, Chile</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="w-full">

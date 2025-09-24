@@ -32,44 +32,56 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
       enableRipple = true,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const [ripples, setRipples] = React.useState<Array<{ id: string; x: number; y: number }>>([]);
+    const [ripples, setRipples] = React.useState<
+      Array<{ id: string; x: number; y: number }>
+    >([]);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
     const rotateX = useTransform(y, [-300, 300], [10, -10]);
     const rotateY = useTransform(x, [-300, 300], [-10, 10]);
 
     // Haptic feedback function
-    const triggerHaptic = React.useCallback(async (style: ImpactStyle = ImpactStyle.Light) => {
-      if (!enableHaptic) return;
+    const triggerHaptic = React.useCallback(
+      async (style: ImpactStyle = ImpactStyle.Light) => {
+        if (!enableHaptic) return;
 
-      try {
-        await Haptics.impact({ style });
-      } catch (error) {
-        // Silently fail on unsupported devices
-      }
-    }, [enableHaptic]);
+        try {
+          await Haptics.impact({ style });
+        } catch (error) {
+          // Silently fail on unsupported devices
+        }
+      },
+      [enableHaptic]
+    );
 
     // Create ripple effect
-    const createRipple = React.useCallback((event: React.TouchEvent | React.MouseEvent) => {
-      if (!enableRipple) return;
+    const createRipple = React.useCallback(
+      (event: React.TouchEvent | React.MouseEvent) => {
+        if (!enableRipple) return;
 
-      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-      const x = 'touches' in event
-        ? event.touches[0].clientX - rect.left
-        : (event as React.MouseEvent).clientX - rect.left;
-      const y = 'touches' in event
-        ? event.touches[0].clientY - rect.top
-        : (event as React.MouseEvent).clientY - rect.top;
+        const rect = (
+          event.currentTarget as HTMLElement
+        ).getBoundingClientRect();
+        const x =
+          'touches' in event
+            ? event.touches[0].clientX - rect.left
+            : (event as React.MouseEvent).clientX - rect.left;
+        const y =
+          'touches' in event
+            ? event.touches[0].clientY - rect.top
+            : (event as React.MouseEvent).clientY - rect.top;
 
-      const newRipple = { id: Math.random().toString(36), x, y };
-      setRipples(prev => [...prev, newRipple]);
+        const newRipple = { id: Math.random().toString(36), x, y };
+        setRipples(prev => [...prev, newRipple]);
 
-      setTimeout(() => {
-        setRipples(prev => prev.filter(r => r.id !== newRipple.id));
-      }, 600);
-    }, [enableRipple]);
+        setTimeout(() => {
+          setRipples(prev => prev.filter(r => r.id !== newRipple.id));
+        }, 600);
+      },
+      [enableRipple]
+    );
 
     // Handle pan end for swipe gestures
     const handlePanEnd = React.useCallback(
@@ -102,7 +114,16 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
         x.set(0);
         y.set(0);
       },
-      [x, y, swipeThreshold, onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown, triggerHaptic],
+      [
+        x,
+        y,
+        swipeThreshold,
+        onSwipeLeft,
+        onSwipeRight,
+        onSwipeUp,
+        onSwipeDown,
+        triggerHaptic,
+      ]
     );
 
     return (
@@ -110,7 +131,7 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
         ref={ref}
         className={cn(
           'relative overflow-hidden rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md active:shadow-lg select-none',
-          className,
+          className
         )}
         style={{
           x,
@@ -131,10 +152,10 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
 
         {/* Touch Ripples */}
         {enableRipple &&
-          ripples.map((ripple) => (
+          ripples.map(ripple => (
             <motion.span
               key={ripple.id}
-              className='absolute pointer-events-none rounded-full bg-primary/20'
+              className="absolute pointer-events-none rounded-full bg-primary/20"
               initial={{
                 x: ripple.x - 10,
                 y: ripple.y - 10,
@@ -155,7 +176,7 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
           ))}
       </motion.div>
     );
-  },
+  }
 );
 
 TouchCard.displayName = 'TouchCard';

@@ -1,4 +1,4 @@
-# JuntaDeVecinos Theme System
+# PintoPellines Theme System
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![Themes](https://img.shields.io/badge/themes-light/dark/system-green.svg)]
@@ -25,7 +25,7 @@
 
 ## Overview
 
-JuntaDeVecinos features a **world-class theme system** that goes beyond standard light/dark mode implementations. Built with modern web standards, accessibility best practices, and developer experience in mind, this system provides seamless theme switching across web and mobile platforms.
+PintoPellines features a **world-class theme system** that goes beyond standard light/dark mode implementations. Built with modern web standards, accessibility best practices, and developer experience in mind, this system provides seamless theme switching across web and mobile platforms.
 
 ## Key Features
 
@@ -88,11 +88,11 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 
 ```tsx
 <ThemeProvider
-  enableKeyboardShortcuts={true}    // Ctrl+Shift+T support
-  enableAnalytics={true}           // Usage tracking
-  enableReducedMotion={true}       // Accessibility
-  enableHighContrast={true}        // Enhanced contrast
-  themeTransitionDuration={0.3}    // Smooth transitions
+  enableKeyboardShortcuts={true} // Ctrl+Shift+T support
+  enableAnalytics={true} // Usage tracking
+  enableReducedMotion={true} // Accessibility
+  enableHighContrast={true} // Enhanced contrast
+  themeTransitionDuration={0.3} // Smooth transitions
 >
   {children}
 </ThemeProvider>
@@ -142,33 +142,29 @@ JuntaDeVecinos features a **world-class theme system** that goes beyond standard
 ### Basic Usage
 
 ```tsx
-import { useTheme } from "next-themes"
-import { ModeToggle } from "@/components/mode-toggle"
+import { useTheme } from 'next-themes';
+import { ModeToggle } from '@/components/mode-toggle';
 
 function MyComponent() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
     <div>
       <ModeToggle />
       <p>Current theme: {theme}</p>
     </div>
-  )
+  );
 }
 ```
 
 ### Advanced Usage with Context
 
 ```tsx
-import { useThemeContext } from "@/components/theme-provider"
+import { useThemeContext } from '@/components/theme-provider';
 
 function AdvancedComponent() {
-  const {
-    themeAnalytics,
-    highContrast,
-    reducedMotion,
-    systemTheme
-  } = useThemeContext()
+  const { themeAnalytics, highContrast, reducedMotion, systemTheme } =
+    useThemeContext();
 
   return (
     <div>
@@ -177,44 +173,42 @@ function AdvancedComponent() {
       {highContrast && <p>High contrast mode active</p>}
       {reducedMotion && <p>Reduced motion active</p>}
     </div>
-  )
+  );
 }
 ```
 
 ### Theme Utilities
 
 ```tsx
-import { themeUtils, useThemeUtils } from "@/lib/theme-utils"
+import { themeUtils, useThemeUtils } from '@/lib/theme-utils';
 
 function UtilityExample() {
   const {
     currentTheme,
     effectiveTheme,
     prefersReducedMotion,
-    exportThemeData
-  } = useThemeUtils()
+    exportThemeData,
+  } = useThemeUtils();
 
   const handleExport = () => {
-    const data = exportThemeData(currentTheme)
+    const data = exportThemeData(currentTheme);
     // Export logic here
-  }
+  };
 
   return (
-    <button onClick={handleExport}>
-      Export Theme ({effectiveTheme})
-    </button>
-  )
+    <button onClick={handleExport}>Export Theme ({effectiveTheme})</button>
+  );
 }
 ```
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
+| Shortcut           | Action                                       |
+| ------------------ | -------------------------------------------- |
 | `Ctrl + Shift + T` | Cycle through themes (Light → Dark → System) |
-| `Tab` | Navigate through theme controls |
-| `Enter` / `Space` | Activate theme options |
-| `Escape` | Close theme dropdown |
+| `Tab`              | Navigate through theme controls              |
+| `Enter` / `Space`  | Activate theme options                       |
+| `Escape`           | Close theme dropdown                         |
 
 ## Analytics & Insights
 
@@ -251,25 +245,25 @@ The theme system tracks:
 ```tsx
 // Export current theme
 const exportTheme = () => {
-  const data = themeUtils.exportThemeData(theme)
+  const data = themeUtils.exportThemeData(theme);
   const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json"
-  })
+    type: 'application/json',
+  });
   // Download logic
-}
+};
 
 // Import theme
 const importTheme = (file: File) => {
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    const data = JSON.parse(e.target?.result as string)
-    const result = themeUtils.importThemeData(data)
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = JSON.parse(e.target?.result as string);
+    const result = themeUtils.importThemeData(data);
     if (result.valid) {
-      setTheme(result.theme!)
+      setTheme(result.theme!);
     }
-  }
-  reader.readAsText(file)
-}
+  };
+  reader.readAsText(file);
+};
 ```
 
 ### Custom CSS Variables
@@ -355,16 +349,13 @@ The theme uses modern OKLCH color space for:
 
 ```css
 /* Semantic color variables */
---background: oklch(1 0 0)        /* Pure white */
---foreground: oklch(0.145 0 0)    /* Dark text */
---muted: oklch(0.97 0 0)          /* Light gray */
---accent: oklch(0.97 0 0)         /* Light accent */
---primary: oklch(0.205 0 0)       /* Brand primary */
---secondary: oklch(0.97 0 0)      /* Brand secondary */
---destructive: oklch(0.577 0.245 27.325)  /* Error red */
---border: oklch(0.922 0 0)        /* Subtle borders */
---input: oklch(0.922 0 0)         /* Input backgrounds */
---ring: oklch(0.708 0 0)          /* Focus rings */
+--background: oklch(1 0 0) /* Pure white */ --foreground: oklch(0.145 0 0)
+  /* Dark text */ --muted: oklch(0.97 0 0) /* Light gray */
+  --accent: oklch(0.97 0 0) /* Light accent */ --primary: oklch(0.205 0 0)
+  /* Brand primary */ --secondary: oklch(0.97 0 0) /* Brand secondary */
+  --destructive: oklch(0.577 0.245 27.325) /* Error red */
+  --border: oklch(0.922 0 0) /* Subtle borders */ --input: oklch(0.922 0 0)
+  /* Input backgrounds */ --ring: oklch(0.708 0 0) /* Focus rings */;
 ```
 
 ## Performance Optimizations
@@ -415,34 +406,34 @@ npm run test:coverage
 
 ### ThemeProvider Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `enableKeyboardShortcuts` | `boolean` | `true` | Enable Ctrl+Shift+T shortcuts |
-| `enableAnalytics` | `boolean` | `false` | Track theme usage |
-| `enableReducedMotion` | `boolean` | `true` | Respect motion preferences |
-| `enableHighContrast` | `boolean` | `true` | Enable high contrast mode |
-| `themeTransitionDuration` | `number` | `0.3` | Transition duration in seconds |
+| Prop                      | Type      | Default | Description                    |
+| ------------------------- | --------- | ------- | ------------------------------ |
+| `enableKeyboardShortcuts` | `boolean` | `true`  | Enable Ctrl+Shift+T shortcuts  |
+| `enableAnalytics`         | `boolean` | `false` | Track theme usage              |
+| `enableReducedMotion`     | `boolean` | `true`  | Respect motion preferences     |
+| `enableHighContrast`      | `boolean` | `true`  | Enable high contrast mode      |
+| `themeTransitionDuration` | `number`  | `0.3`   | Transition duration in seconds |
 
 ### Theme Utils Functions
 
-| Function | Returns | Description |
-|----------|---------|-------------|
-| `getStoredTheme()` | `string` | Get current stored theme |
-| `setStoredTheme(theme)` | `void` | Set theme in storage |
-| `getSystemTheme()` | `string` | Get OS theme preference |
-| `applyThemeClass(theme)` | `void` | Apply theme to DOM |
+| Function                 | Returns  | Description                |
+| ------------------------ | -------- | -------------------------- |
+| `getStoredTheme()`       | `string` | Get current stored theme   |
+| `setStoredTheme(theme)`  | `void`   | Set theme in storage       |
+| `getSystemTheme()`       | `string` | Get OS theme preference    |
+| `applyThemeClass(theme)` | `void`   | Apply theme to DOM         |
 | `exportThemeData(theme)` | `object` | Export theme configuration |
-| `importThemeData(data)` | `object` | Import and validate theme |
+| `importThemeData(data)`  | `object` | Import and validate theme  |
 
 ### Hooks
 
-| Hook | Returns | Description |
-|------|---------|-------------|
-| `useTheme()` | Theme object | Next-themes hook |
-| `useThemeContext()` | Context object | Enhanced theme context |
-| `useThemeUtils()` | Utils object | Theme utility functions |
-| `useThemeMediaQuery()` | `boolean` | Dark mode media query |
-| `useThemeTransition()` | Transition object | Transition state management |
+| Hook                    | Returns            | Description                    |
+| ----------------------- | ------------------ | ------------------------------ |
+| `useTheme()`            | Theme object       | Next-themes hook               |
+| `useThemeContext()`     | Context object     | Enhanced theme context         |
+| `useThemeUtils()`       | Utils object       | Theme utility functions        |
+| `useThemeMediaQuery()`  | `boolean`          | Dark mode media query          |
+| `useThemeTransition()`  | Transition object  | Transition state management    |
 | `useThemePreferences()` | Preferences object | User accessibility preferences |
 
 ## 🔮 Future Enhancements
@@ -466,16 +457,16 @@ npm run test:coverage
 
 ## 🏆 Quality Metrics
 
-| Category | Score | Status |
-|----------|-------|---------|
-| **Functionality** | 100/100 | ✅ Complete |
-| **Accessibility** | 98/100 | ✅ Excellent |
-| **Performance** | 98/100 | ✅ Excellent |
-| **Developer Experience** | 96/100 | ✅ Excellent |
-| **Documentation** | 95/100 | ✅ Excellent |
-| **Cross-platform** | 100/100 | ✅ Complete |
-| **Error Handling** | 97/100 | ✅ Excellent |
-| **Testing Coverage** | 92/100 | 🟡 Good |
+| Category                 | Score   | Status       |
+| ------------------------ | ------- | ------------ |
+| **Functionality**        | 100/100 | ✅ Complete  |
+| **Accessibility**        | 98/100  | ✅ Excellent |
+| **Performance**          | 98/100  | ✅ Excellent |
+| **Developer Experience** | 96/100  | ✅ Excellent |
+| **Documentation**        | 95/100  | ✅ Excellent |
+| **Cross-platform**       | 100/100 | ✅ Complete  |
+| **Error Handling**       | 97/100  | ✅ Excellent |
+| **Testing Coverage**     | 92/100  | 🟡 Good      |
 
 **Overall Score: 97/100** ✨
 

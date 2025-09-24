@@ -1,4 +1,5 @@
 # 🚀 DEEP MANUAL TESTING GUIDE - Pinto Los Pellines Platform
+
 ## Ultimate Path Coverage Without Playwright or E2E Tests
 
 > **WARNING**: This guide covers EVERY SINGLE PATH, FEATURE, and EDGE CASE manually. Terminal logs are your debugger - watch them like a hawk!
@@ -8,6 +9,7 @@
 ## 📋 PRE-TEST SETUP
 
 ### 1. Environment Preparation
+
 ```bash
 # Start the dev server and keep terminal visible
 npm run dev
@@ -22,13 +24,16 @@ npm run seed:all
 ```
 
 ### 2. Browser Setup
+
 - Open Chrome/Firefox with DevTools Console open
 - Enable Network tab for API calls
 - Keep Application tab open for localStorage/sessionStorage
 - Disable cache for fresh requests
 
 ### 3. Test User Accounts
+
 Create multiple test accounts via Clerk:
+
 - **Admin User**: Full permissions
 - **Regular User**: Basic community member
 - **Guest User**: Limited access
@@ -38,6 +43,7 @@ Create multiple test accounts via Clerk:
 ## 🏠 PHASE 1: LANDING PAGE & AUTHENTICATION FLOWS
 
 ### 1.1 Public Landing Pages
+
 ```
 🌐 VISIT EACH PATH MANUALLY:
 ├── / (Home)
@@ -49,12 +55,14 @@ Create multiple test accounts via Clerk:
 ```
 
 **TERMINAL LOG CHECKS:**
+
 - [ ] Next.js route changes logged
 - [ ] Theme provider initialization
 - [ ] PWA service worker registration
 - [ ] Mobile initializer loads
 
 ### 1.2 Authentication Flow
+
 ```
 🔐 AUTH PATHS TO TEST:
 ├── /sign-in
@@ -64,6 +72,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **MANUAL STEPS:**
+
 1. **Sign Up Flow:**
    - Visit `/sign-up`
    - Fill form with test data
@@ -84,6 +93,7 @@ Create multiple test accounts via Clerk:
 ## 🏢 PHASE 2: DASHBOARD CORE FUNCTIONALITY
 
 ### 2.1 Dashboard Layout & Navigation
+
 ```
 📊 DASHBOARD PATHS:
 ├── /dashboard (Overview)
@@ -93,6 +103,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **NAVIGATION TESTING:**
+
 - [ ] Sidebar expands/collapses
 - [ ] All navigation links work
 - [ ] Mobile responsiveness
@@ -100,6 +111,7 @@ Create multiple test accounts via Clerk:
 - **TERMINAL:** Convex query calls for each page
 
 ### 2.2 Security & Safety Features
+
 ```
 🛡️ SECURITY PATHS:
 ├── /dashboard/cameras
@@ -110,6 +122,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **CAMERA TESTING:**
+
 1. **Camera Management:**
    - Visit `/dashboard/cameras`
    - **CHECK TERMINAL:** `getCameras` query execution
@@ -139,6 +152,7 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** `recordProtocolAccess` mutation
 
 ### 2.3 Community Hub
+
 ```
 👥 COMMUNITY PATHS:
 ├── /dashboard/announcements
@@ -149,6 +163,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **ANNOUNCEMENTS:**
+
 1. **View Announcements:**
    - Visit `/dashboard/announcements`
    - **CHECK TERMINAL:** `getAnnouncements` query
@@ -177,6 +192,7 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** `exportCalendarICS` action
 
 ### 2.4 Communication Features
+
 ```
 📡 COMMUNICATION PATHS:
 ├── /dashboard/radio
@@ -184,6 +200,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **RADIO SYSTEM:**
+
 1. **Radio Stations:**
    - Visit `/dashboard/radio`
    - **CHECK TERMINAL:** `getRadioStations` query
@@ -199,6 +216,7 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** `registerDeviceToken` action
 
 ### 2.5 Financial Management
+
 ```
 💰 FINANCIAL PATHS:
 ├── /dashboard/payments
@@ -209,6 +227,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **PAYMENT SYSTEM:**
+
 1. **Payments:**
    - Visit `/dashboard/payments`
    - **CHECK TERMINAL:** Payment queries
@@ -230,6 +249,7 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** Contribution queries
 
 ### 2.6 Resources & Information
+
 ```
 📚 RESOURCE PATHS:
 ├── /dashboard/weather
@@ -238,6 +258,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **WEATHER SYSTEM:**
+
 1. **Weather Dashboard:**
    - Visit `/dashboard/weather`
    - **CHECK TERMINAL:** `getCurrentWeather` and `getWeatherData` queries
@@ -258,6 +279,7 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** Search queries
 
 ### 2.7 Administration
+
 ```
 ⚙️ ADMIN PATHS:
 ├── /dashboard/admin
@@ -266,6 +288,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **ADMIN FEATURES:**
+
 1. **Admin Dashboard:**
    - Visit `/dashboard/admin`
    - **CHECK TERMINAL:** Admin-only queries
@@ -285,6 +308,7 @@ Create multiple test accounts via Clerk:
 ## 🌐 PHASE 3: PUBLIC PAGES & EXTERNAL INTEGRATIONS
 
 ### 3.1 Public Community Pages
+
 ```
 🌍 PUBLIC PATHS:
 ├── /anuncios (Announcements)
@@ -301,6 +325,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **TEST EACH PAGE:**
+
 - [ ] Page loads correctly
 - [ ] Content displays
 - [ ] Navigation works
@@ -308,6 +333,7 @@ Create multiple test accounts via Clerk:
 - **TERMINAL:** Public page queries
 
 ### 3.2 API Endpoints Testing
+
 ```
 🔌 API ENDPOINTS:
 ├── /api/camera/stream/[id]
@@ -318,6 +344,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **MANUAL API TESTING:**
+
 1. **Camera Streams:**
    - Test `/api/camera/stream/[id]` URLs
    - **CHECK TERMINAL:** Stream route logs
@@ -337,7 +364,9 @@ Create multiple test accounts via Clerk:
 ## 📱 PHASE 4: MOBILE & PWA FEATURES
 
 ### 4.1 Mobile Responsiveness
+
 **TEST ON MOBILE VIEWPORT:**
+
 - [ ] All dashboard pages
 - [ ] Landing pages
 - [ ] Forms and modals
@@ -345,6 +374,7 @@ Create multiple test accounts via Clerk:
 - **TERMINAL:** Mobile initializer logs
 
 ### 4.2 PWA Features
+
 ```
 📲 PWA TESTING:
 ├── Service worker registration
@@ -355,6 +385,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **PWA CHECKS:**
+
 - [ ] Manifest loads: `/manifest.json`
 - [ ] Service worker registers
 - [ ] Offline mode works
@@ -365,6 +396,7 @@ Create multiple test accounts via Clerk:
 ## 🔄 PHASE 5: DATA OPERATIONS & EDGE CASES
 
 ### 5.1 Database Operations
+
 **TEST ALL CRUD OPERATIONS:**
 
 1. **Cameras:**
@@ -388,7 +420,9 @@ Create multiple test accounts via Clerk:
    - **CHECK TERMINAL:** Weather mutations
 
 ### 5.2 Error Handling
+
 **TEST ERROR SCENARIOS:**
+
 - [ ] Network disconnection
 - [ ] Invalid API calls
 - [ ] Permission denied
@@ -396,7 +430,9 @@ Create multiple test accounts via Clerk:
 - **TERMINAL:** Error boundary logs and Convex error handling
 
 ### 5.3 Performance & Loading States
+
 **CHECK LOADING BEHAVIORS:**
+
 - [ ] Page transitions
 - [ ] Data fetching states
 - [ ] Image loading
@@ -408,6 +444,7 @@ Create multiple test accounts via Clerk:
 ## 🧪 PHASE 6: ADVANCED FEATURES & INTEGRATIONS
 
 ### 6.1 Alarm System
+
 ```
 🚨 ALARM TESTING:
 ├── Scheduled alarms
@@ -418,6 +455,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **ALARM SYSTEM CHECKS:**
+
 - [ ] Alarm scheduling works
 - **CHECK TERMINAL:** `checkScheduledAlarms` action
 - [ ] Emergency alarm triggers
@@ -426,6 +464,7 @@ Create multiple test accounts via Clerk:
 - **CHECK TERMINAL:** Notification broadcasts
 
 ### 6.2 RSS & External Feeds
+
 ```
 📰 RSS TESTING:
 ├── RSS feed parsing
@@ -435,10 +474,12 @@ Create multiple test accounts via Clerk:
 ```
 
 **RSS CHECKS:**
+
 - [ ] RSS feeds load correctly
 - **CHECK TERMINAL:** RSS seeding and parsing
 
 ### 6.3 Capacitor Mobile App
+
 ```
 📱 MOBILE APP TESTING:
 ├── Android build
@@ -448,6 +489,7 @@ Create multiple test accounts via Clerk:
 ```
 
 **MOBILE BUILD CHECKS:**
+
 ```bash
 # Test builds
 npm run cap:build:android
@@ -461,7 +503,9 @@ npm run cap:build:ios
 ## 🔍 PHASE 7: TERMINAL LOG MONITORING CHECKLIST
 
 ### 7.1 Convex Operations
+
 **MONITOR THESE LOGS:**
+
 - [ ] Query executions (`getCameras`, `getEvents`, etc.)
 - [ ] Mutation calls (`addCamera`, `createEvent`, etc.)
 - [ ] Action executions (`exportCalendarICS`, etc.)
@@ -470,7 +514,9 @@ npm run cap:build:ios
 - [ ] Subscription/real-time updates
 
 ### 7.2 Next.js Operations
+
 **MONITOR THESE LOGS:**
+
 - [ ] Route changes and navigation
 - [ ] API route executions
 - [ ] Server-side rendering
@@ -479,7 +525,9 @@ npm run cap:build:ios
 - [ ] Theme switching
 
 ### 7.3 External API Calls
+
 **MONITOR THESE LOGS:**
+
 - [ ] Stripe webhook processing
 - [ ] Weather API calls
 - [ ] Clerk authentication webhooks
@@ -487,7 +535,9 @@ npm run cap:build:ios
 - [ ] Camera stream connections
 
 ### 7.4 Performance Metrics
+
 **CHECK THESE METRICS:**
+
 - [ ] Query execution times
 - [ ] API response times
 - [ ] Page load times
@@ -499,7 +549,9 @@ npm run cap:build:ios
 ## 🎯 PHASE 8: EDGE CASES & STRESS TESTING
 
 ### 8.1 Boundary Conditions
+
 **TEST LIMITS:**
+
 - [ ] Maximum camera feeds
 - [ ] Large event lists
 - [ ] Many announcements
@@ -507,7 +559,9 @@ npm run cap:build:ios
 - [ ] Large file uploads
 
 ### 8.2 Error Scenarios
+
 **SIMULATE FAILURES:**
+
 - [ ] Network timeouts
 - [ ] Database connection loss
 - [ ] API rate limits
@@ -515,7 +569,9 @@ npm run cap:build:ios
 - [ ] Permission violations
 
 ### 8.3 Browser Compatibility
+
 **TEST IN MULTIPLE BROWSERS:**
+
 - [ ] Chrome/Chromium
 - [ ] Firefox
 - [ ] Safari
@@ -527,7 +583,9 @@ npm run cap:build:ios
 ## 📊 PHASE 9: FINAL VERIFICATION
 
 ### 9.1 Feature Completeness
+
 **VERIFY ALL FEATURES WORK:**
+
 - [ ] Authentication flows
 - [ ] Dashboard navigation
 - [ ] Camera management
@@ -540,7 +598,9 @@ npm run cap:build:ios
 - [ ] API endpoints
 
 ### 9.2 Log Analysis
+
 **REVIEW ALL LOGS FOR:**
+
 - [ ] Error-free execution
 - [ ] Expected query/mutation counts
 - [ ] Proper error handling
@@ -553,6 +613,7 @@ npm run cap:build:ios
 ## 🚨 CRITICAL CHECKLIST
 
 ### Pre-Production Verification
+
 - [ ] All paths load without errors
 - [ ] All CRUD operations work
 - [ ] Authentication guards function
@@ -564,6 +625,7 @@ npm run cap:build:ios
 - [ ] Security measures in place
 
 ### Production Monitoring
+
 - [ ] Set up log aggregation
 - [ ] Monitor error rates
 - [ ] Track performance metrics

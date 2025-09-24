@@ -15,57 +15,57 @@
 
 ### 🚀 Getting Started
 
-| Document | Description |
-|----------|-------------|
-| [Getting Started](getting-started/README.md) | Complete setup guide for development environment |
+| Document                                                         | Description                                       |
+| ---------------------------------------------------------------- | ------------------------------------------------- |
+| [Getting Started](getting-started/README.md)                     | Complete setup guide for development environment  |
 | [Environment Setup](getting-started/README.md#environment-setup) | Configure required services (Convex, Clerk, etc.) |
 
 ### 🏗️ Architecture & Design
 
-| Document | Description |
-|----------|-------------|
-| [Architecture Overview](architecture/README.md) | System architecture and design principles |
-| [Component Patterns](development/README.md#component-development) | React component development standards |
-| [Backend Integration](development/README.md#backend-development) | Convex database and API patterns |
+| Document                                                          | Description                               |
+| ----------------------------------------------------------------- | ----------------------------------------- |
+| [Architecture Overview](architecture/README.md)                   | System architecture and design principles |
+| [Component Patterns](development/README.md#component-development) | React component development standards     |
+| [Backend Integration](development/README.md#backend-development)  | Convex database and API patterns          |
 
 ### 💻 Development
 
-| Document | Description |
-|----------|-------------|
-| [Development Standards](development/README.md) | Complete coding conventions and practices |
-| [TypeScript Configuration](development/README.md#typescript-configuration) | TypeScript setup and best practices |
-| [Testing Strategy](development/README.md#testing-standards) | Testing patterns and quality assurance |
-| [Manual Testing Guide](manual-testing-guide.md) | Comprehensive manual testing procedures |
-| [Theme System](development/theme-system.md) | Design system and theming |
+| Document                                                                   | Description                               |
+| -------------------------------------------------------------------------- | ----------------------------------------- |
+| [Development Standards](development/README.md)                             | Complete coding conventions and practices |
+| [TypeScript Configuration](development/README.md#typescript-configuration) | TypeScript setup and best practices       |
+| [Testing Strategy](development/README.md#testing-standards)                | Testing patterns and quality assurance    |
+| [Manual Testing Guide](manual-testing-guide.md)                            | Comprehensive manual testing procedures   |
+| [Theme System](development/theme-system.md)                                | Design system and theming                 |
 
 ### 🚀 Deployment
 
-| Document | Description |
-|----------|-------------|
-| [Deployment Overview](deployment/README.md) | Deployment strategies and platforms |
-| [Web Deployment](deployment/README.md#web-deployment) | Vercel deployment and CI/CD |
-| [Mobile Deployment](deployment/mobile-deployment.md) | Android, iOS, and PWA deployment |
-| [App Store Guidelines](deployment/mobile-deployment.md#app-store-guidelines) | Store submission requirements |
+| Document                                                                     | Description                         |
+| ---------------------------------------------------------------------------- | ----------------------------------- |
+| [Deployment Overview](deployment/README.md)                                  | Deployment strategies and platforms |
+| [Web Deployment](deployment/README.md#web-deployment)                        | Vercel deployment and CI/CD         |
+| [Mobile Deployment](deployment/mobile-deployment.md)                         | Android, iOS, and PWA deployment    |
+| [App Store Guidelines](deployment/mobile-deployment.md#app-store-guidelines) | Store submission requirements       |
 
 ### 🔌 Integrations & APIs
 
-| Document | Description |
-|----------|-------------|
-| [API Integrations Overview](api/README.md) | External API integrations and architecture |
-| [Weather Integration](api/weather-integration.md) | Weather system setup and configuration |
-| [Payment Processing](api/README.md#payment-processing) | Stripe payment integration |
-| [Camera System](api/README.md#camera-system) | Security camera integration |
+| Document                                               | Description                                |
+| ------------------------------------------------------ | ------------------------------------------ |
+| [API Integrations Overview](api/README.md)             | External API integrations and architecture |
+| [Weather Integration](api/weather-integration.md)      | Weather system setup and configuration     |
+| [Payment Processing](api/README.md#payment-processing) | Stripe payment integration                 |
+| [Camera System](api/README.md#camera-system)           | Security camera integration                |
 
 ### 🤝 Contributing
 
-| Document | Description |
-|----------|-------------|
-| [Contributing Guide](contributing/README.md) | How to contribute to the project |
-| [Code of Conduct](../CODE_OF_CONDUCT.md) | Community standards and guidelines |
+| Document                                     | Description                        |
+| -------------------------------------------- | ---------------------------------- |
+| [Contributing Guide](contributing/README.md) | How to contribute to the project   |
+| [Code of Conduct](../CODE_OF_CONDUCT.md)     | Community standards and guidelines |
 
 ## 🏘️ Project Overview
 
-JuntaDeVecinos is a comprehensive community management platform designed specifically for Pinto Los Pellines, Chile, providing:
+PintoPellines is a comprehensive community management platform designed specifically for Pinto Los Pellines, Chile, providing:
 
 - **🏠 Community Governance**: Tools for neighborhood management and citizen participation
 - **📹 Security Systems**: 24/7 camera monitoring and surveillance

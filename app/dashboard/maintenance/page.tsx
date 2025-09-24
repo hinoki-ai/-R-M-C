@@ -1,82 +1,111 @@
-import { IconBolt, IconCalendar, IconChartBar, IconTool } from '@tabler/icons-react';
+// Force dynamic rendering to avoid prerendering issues
+export const dynamic = 'force-dynamic';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  IconBolt,
+  IconCalendar,
+  IconChartBar,
+  IconTool,
+} from '@tabler/icons-react';
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing';
 
 export default function MaintenancePage() {
   return (
     <div className={DASHBOARD_SPACING.page.container}>
-      <div className={`${DASHBOARD_SPACING.page.header} flex justify-between items-start`}>
+      <div
+        className={`${DASHBOARD_SPACING.page.header} flex justify-between items-start`}
+      >
         <div>
-          <h1 className='text-2xl font-bold'>Maintenance Operations</h1>
-          <p className='text-muted-foreground'>
-            Comprehensive maintenance scheduling, tracking, and asset management.
+          <h1 className="text-2xl font-bold">Operaciones de Mantenimiento</h1>
+          <p className="text-muted-foreground">
+            Programación integral de mantenimiento, seguimiento y gestión de
+            activos.
           </p>
         </div>
       </div>
 
-      <div className={`${DASHBOARD_SPACING.grid.cols[4]} ${DASHBOARD_SPACING.grid.gap} ${DASHBOARD_SPACING.page.header}`}>
+      <div
+        className={`${DASHBOARD_SPACING.grid.cols[4]} ${DASHBOARD_SPACING.grid.gap} ${DASHBOARD_SPACING.page.header}`}
+      >
         <Card>
           <CardHeader className={DASHBOARD_SPACING.card.header}>
-            <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-              <IconTool className='h-5 w-5' />
-              Maintenance Operations
+            <CardTitle
+              className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}
+            >
+              <IconTool className="h-5 w-5" />
+              Operaciones de Mantenimiento
             </CardTitle>
             <CardDescription>
-              Scheduled and unscheduled maintenance
+              Mantenimiento programado y no programado
             </CardDescription>
           </CardHeader>
           <CardContent className={DASHBOARD_SPACING.card.padding}>
-            <div className='text-2xl font-bold'>28</div>
-            <p className='text-sm text-muted-foreground'>Active tasks</p>
+            <div className="text-2xl font-bold">28</div>
+            <p className="text-sm text-muted-foreground">Tareas activas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className={DASHBOARD_SPACING.card.header}>
-            <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-              <IconCalendar className='h-5 w-5' />
-              Maintenance Calendar
+            <CardTitle
+              className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}
+            >
+              <IconCalendar className="h-5 w-5" />
+              Calendario de Mantenimiento
             </CardTitle>
             <CardDescription>
-              Scheduled maintenance calendar
+              Calendario de mantenimiento programado
             </CardDescription>
           </CardHeader>
           <CardContent className={DASHBOARD_SPACING.card.padding}>
-            <div className='text-2xl font-bold'>156</div>
-            <p className='text-sm text-muted-foreground'>Scheduled tasks</p>
+            <div className="text-2xl font-bold">156</div>
+            <p className="text-sm text-muted-foreground">Tareas programadas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className={DASHBOARD_SPACING.card.header}>
-            <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-              <IconChartBar className='h-5 w-5' />
-              Maintenance Analytics
+            <CardTitle
+              className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}
+            >
+              <IconChartBar className="h-5 w-5" />
+              Análisis de Mantenimiento
             </CardTitle>
             <CardDescription>
-              Maintenance performance and trends
+              Rendimiento de mantenimiento y tendencias
             </CardDescription>
           </CardHeader>
           <CardContent className={DASHBOARD_SPACING.card.padding}>
-            <div className='text-2xl font-bold text-green-600'>98.2%</div>
-            <p className='text-sm text-muted-foreground'>Uptime</p>
+            <div className="text-2xl font-bold text-green-600">98.2%</div>
+            <p className="text-sm text-muted-foreground">Tiempo de actividad</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className={DASHBOARD_SPACING.card.header}>
-            <CardTitle className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}>
-              <IconBolt className='h-5 w-5' />
-              Maintenance Automation
+            <CardTitle
+              className={`flex items-center ${DASHBOARD_SPACING.component.badge}`}
+            >
+              <IconBolt className="h-5 w-5" />
+              Automatización de Mantenimiento
             </CardTitle>
             <CardDescription>
-              Automated maintenance workflows
+              Flujos de trabajo de mantenimiento automatizados
             </CardDescription>
           </CardHeader>
           <CardContent className={DASHBOARD_SPACING.card.padding}>
-            <div className='text-2xl font-bold'>12</div>
-            <p className='text-sm text-muted-foreground'>Automated processes</p>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-sm text-muted-foreground">
+              Procesos automatizados
+            </p>
           </CardContent>
         </Card>
       </div>

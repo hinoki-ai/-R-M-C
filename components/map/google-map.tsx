@@ -2,7 +2,21 @@
 
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import React, { useRef, useEffect, useState, ReactElement } from 'react';
-import { AlertTriangle, Building, MapPin, ShoppingCart, Layers, Satellite, Map, Route, Eye, PenTool, Square, Circle, Minus } from 'lucide-react';
+import {
+  AlertTriangle,
+  Building,
+  MapPin,
+  ShoppingCart,
+  Layers,
+  Satellite,
+  Map,
+  Route,
+  Eye,
+  PenTool,
+  Square,
+  Circle,
+  Minus,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -29,19 +43,27 @@ interface GoogleMapProps {
 
 const getTypeIcon = (type: string) => {
   switch (type) {
-    case 'emergency': return AlertTriangle;
-    case 'business': return ShoppingCart;
-    case 'service': return Building;
-    default: return MapPin;
+    case 'emergency':
+      return AlertTriangle;
+    case 'business':
+      return ShoppingCart;
+    case 'service':
+      return Building;
+    default:
+      return MapPin;
   }
 };
 
 const getTypeColor = (type: string) => {
   switch (type) {
-    case 'emergency': return '#ef4444'; // red-500
-    case 'business': return '#10b981'; // green-500
-    case 'service': return '#3b82f6'; // blue-500
-    default: return '#6b7280'; // gray-500
+    case 'emergency':
+      return '#ef4444'; // red-500
+    case 'business':
+      return '#10b981'; // green-500
+    case 'service':
+      return '#3b82f6'; // blue-500
+    default:
+      return '#6b7280'; // gray-500
   }
 };
 
@@ -51,7 +73,7 @@ const MapComponent = ({
   zoom,
   locations,
   selectedLocation,
-  onLocationSelect
+  onLocationSelect,
 }: {
   center: google.maps.LatLngLiteral;
   zoom: number;
@@ -72,9 +94,9 @@ const MapComponent = ({
           {
             featureType: 'poi',
             elementType: 'labels',
-            stylers: [{ visibility: 'off' }]
-          }
-        ]
+            stylers: [{ visibility: 'off' }],
+          },
+        ],
       });
       setMap(newMap);
     }
@@ -83,7 +105,9 @@ const MapComponent = ({
   return (
     <div ref={ref} className="w-full h-full relative">
       <div className="absolute top-4 left-4 z-10">
-        <p className="text-white bg-black p-2 rounded">Map Component - Simplified</p>
+        <p className="text-white bg-black p-2 rounded">
+          Map Component - Simplified
+        </p>
       </div>
     </div>
   );
@@ -108,7 +132,8 @@ function MapErrorComponent(): ReactElement {
         <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-2" />
         <p className="text-gray-600 mb-2">Error al cargar el mapa</p>
         <p className="text-sm text-gray-500">
-          Verifica que la clave de API de Google Maps esté configurada correctamente.
+          Verifica que la clave de API de Google Maps esté configurada
+          correctamente.
         </p>
       </div>
     </div>
@@ -120,7 +145,7 @@ export default function GoogleMap({
   locations,
   selectedLocation,
   onLocationSelect,
-  className = ''
+  className = '',
 }: GoogleMapProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -131,7 +156,7 @@ export default function GoogleMap({
   // Default center for Pinto Los Pellines, Chile
   const defaultCenter: google.maps.LatLngLiteral = {
     lat: -36.698,
-    lng: -71.897
+    lng: -71.897,
   };
 
   const render = (status: Status): ReactElement => {

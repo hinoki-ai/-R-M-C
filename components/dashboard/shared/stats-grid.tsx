@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
+import { motion } from 'framer-motion';
 
-import { Card, CardContent } from '@/components/ui/card'
-import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing'
-import { SystemStats } from '@/types/dashboard'
+import { Card, CardContent } from '@/components/ui/card';
+import { DASHBOARD_SPACING } from '@/lib/dashboard-spacing';
+import { SystemStats } from '@/types/dashboard';
 
 interface StatsGridProps {
-  stats: SystemStats[]
-  columns?: 2 | 3 | 4
+  stats: SystemStats[];
+  columns?: 2 | 3 | 4;
 }
 
 export function StatsGrid({ stats, columns = 4 }: StatsGridProps) {
@@ -20,7 +20,7 @@ export function StatsGrid({ stats, columns = 4 }: StatsGridProps) {
       className={`${DASHBOARD_SPACING.grid.cols[columns]} ${DASHBOARD_SPACING.grid.gap} mb-8`}
     >
       {stats.map((stat, index) => {
-        const Icon = stat.icon
+        const Icon = stat.icon;
         return (
           <motion.div
             key={stat.label}
@@ -28,33 +28,39 @@ export function StatsGrid({ stats, columns = 4 }: StatsGridProps) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 + index * 0.1 }}
           >
-            <Card className='hover:shadow-lg transition-shadow'>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardContent className={DASHBOARD_SPACING.card.padding}>
-                <div className='flex items-center justify-between'>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       {stat.label}
                     </p>
-                    <p className='text-2xl font-bold text-gray-900 dark:text-white'>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {stat.value}
                     </p>
-                    <p className={`text-sm font-medium ${
-                      stat.trend === 'up' ? 'text-green-600' :
-                      stat.trend === 'down' ? 'text-red-600' :
-                      'text-gray-600'
-                    }`}>
+                    <p
+                      className={`text-sm font-medium ${
+                        stat.trend === 'up'
+                          ? 'text-green-600'
+                          : stat.trend === 'down'
+                            ? 'text-red-600'
+                            : 'text-gray-600'
+                      }`}
+                    >
                       {stat.change} from last month
                     </p>
                   </div>
-                  <div className={'p-3 rounded-full bg-gray-100 dark:bg-gray-800'}>
+                  <div
+                    className={'p-3 rounded-full bg-gray-100 dark:bg-gray-800'}
+                  >
                     <Icon className={`w-6 h-6 ${stat.color}`} />
                   </div>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-        )
+        );
       })}
     </motion.div>
-  )
+  );
 }

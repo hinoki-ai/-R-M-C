@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useCallback } from 'react'
-import { useAudioSystem } from './use-audio-system'
+import { useCallback } from 'react';
+import { useAudioSystem } from './use-audio-system';
 
 // Navigation sound variations for variety
 const NAVIGATION_SOUNDS = [
@@ -31,18 +31,19 @@ const NAVIGATION_SOUNDS = [
   'transition.loading',
   'feedback.warning',
   'feedback.error',
-]
+];
 
 export const useNavigationSound = () => {
-  const { playUI } = useAudioSystem()
+  const { playUI } = useAudioSystem();
 
   const playRandomSound = useCallback(() => {
-    const randomSound = NAVIGATION_SOUNDS[Math.floor(Math.random() * NAVIGATION_SOUNDS.length)]
-    const [action, subtype] = randomSound.split('.')
+    const randomSound =
+      NAVIGATION_SOUNDS[Math.floor(Math.random() * NAVIGATION_SOUNDS.length)];
+    const [action, subtype] = randomSound.split('.');
 
     // Use the main audio system with consistent volume settings
-    playUI(action, subtype)
-  }, [playUI])
+    playUI(action, subtype);
+  }, [playUI]);
 
-  return { playRandomSound }
-}
+  return { playRandomSound };
+};

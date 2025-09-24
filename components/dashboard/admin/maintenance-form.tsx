@@ -1,44 +1,50 @@
-'use client'
+'use client';
 
-import { useMutation } from 'convex/react'
-import { motion } from 'framer-motion'
-import { Camera, Minus, Plus, Upload, X } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { useMutation } from 'convex/react';
+import { motion } from 'framer-motion';
+import { Camera, Minus, Plus, Upload, X } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 
 interface MaintenanceRequest {
-  id: string
-  title: string
-  description: string
-  location: string
-  priority: 'low' | 'medium' | 'high' | 'critical'
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
-  category: 'roads' | 'lighting' | 'water' | 'sewage' | 'buildings' | 'other'
-  reportedBy: string
-  reportedAt: number
-  assignedTo?: string
-  assignedAt?: number
-  completedAt?: number
-  estimatedCost?: number
-  actualCost?: number
-  photos: string[]
-  notes?: string
-  createdAt: number
-  updatedAt: number
+  _id: string;
+  title: string;
+  description: string;
+  location: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
+  category: 'roads' | 'lighting' | 'water' | 'sewage' | 'buildings' | 'other';
+  reportedBy: string;
+  reportedAt: number;
+  assignedTo?: string;
+  assignedAt?: number;
+  completedAt?: number;
+  estimatedCost?: number;
+  actualCost?: number;
+  photos: string[];
+  notes?: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 interface MaintenanceFormProps {
-  request?: MaintenanceRequest
-  onSuccess: () => void
-  onCancel: () => void
+  request?: MaintenanceRequest;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
 const categoryOptions = [
@@ -48,113 +54,129 @@ const categoryOptions = [
   { value: 'sewage', label: '🚽 Alcantarillado' },
   { value: 'buildings', label: '🏢 Edificios' },
   { value: 'other', label: '🔧 Otro' },
-]
+];
 
 const priorityOptions = [
   { value: 'low', label: 'Bajo - Mantenimiento rutinario' },
   { value: 'medium', label: 'Medio - Requiere atención' },
   { value: 'high', label: 'Alto - Importante' },
   { value: 'critical', label: 'Crítico - Urgente' },
-]
+];
 
 const statusOptions = [
   { value: 'pending', label: '⏳ Pendiente' },
   { value: 'in-progress', label: '🔧 En progreso' },
   { value: 'completed', label: '✅ Completado' },
   { value: 'cancelled', label: '❌ Cancelado' },
-]
+];
 
-export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFormProps) {
+export function MaintenanceForm({
+  request,
+  onSuccess,
+  onCancel,
+}: MaintenanceFormProps) {
   const [formData, setFormData] = useState({
     title: request?.title || '',
     description: request?.description || '',
     location: request?.location || '',
-    category: request?.category || 'other' as const,
-    priority: request?.priority || 'medium' as const,
-    status: request?.status || 'pending' as const,
+    category: request?.category || ('other' as const),
+    priority: request?.priority || ('medium' as const),
+    status: request?.status || ('pending' as const),
     assignedTo: request?.assignedTo || '',
     estimatedCost: request?.estimatedCost?.toString() || '',
     actualCost: request?.actualCost?.toString() || '',
     photos: request?.photos || [''],
     notes: request?.notes || '',
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const updateRequest = useMutation(api.maintenance.updateMaintenanceRequest)
+  const updateRequest = useMutation(api.maintenance.updateMaintenanceRequest);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!formData.title.trim() || !formData.description.trim() || !formData.location.trim()) {
-      toast.error('El título, descripción y ubicación son obligatorios.')
-      return
+    if (
+      !formData.title.trim() ||
+      !formData.description.trim() ||
+      !formData.location.trim()
+    ) {
+      toast.error('El título, descripción y ubicación son obligatorios.');
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      const validPhotos = formData.photos.filter(photo => photo.trim())
+      const validPhotos = formData.photos.filter(photo => photo.trim());
 
       await updateRequest({
-        requestId: request!.id as Id<'maintenanceRequests'>,
+        requestId: request!._id as Id<'maintenanceRequests'>,
         title: formData.title.trim(),
         description: formData.description.trim(),
         location: formData.location.trim(),
         category: formData.category,
         priority: formData.priority,
         status: formData.status,
-        assignedTo: formData.assignedTo.trim() ? formData.assignedTo as Id<'users'> : undefined,
-        estimatedCost: formData.estimatedCost ? parseFloat(formData.estimatedCost) : undefined,
-        actualCost: formData.actualCost ? parseFloat(formData.actualCost) : undefined,
+        assignedTo: formData.assignedTo.trim()
+          ? (formData.assignedTo as Id<'users'>)
+          : undefined,
+        estimatedCost: formData.estimatedCost
+          ? parseFloat(formData.estimatedCost)
+          : undefined,
+        actualCost: formData.actualCost
+          ? parseFloat(formData.actualCost)
+          : undefined,
         photos: validPhotos,
         notes: formData.notes.trim() || undefined,
-      })
+      });
 
-      toast.success('Solicitud de mantenimiento actualizada exitosamente.')
-      onSuccess()
+      toast.success('Solicitud de mantenimiento actualizada exitosamente.');
+      onSuccess();
     } catch (error) {
-      console.error('Error updating maintenance request:', error)
-      toast.error('Error al actualizar la solicitud de mantenimiento.')
+      console.error('Error updating maintenance request:', error);
+      toast.error('Error al actualizar la solicitud de mantenimiento.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const addPhotoField = () => {
     setFormData(prev => ({
       ...prev,
-      photos: [...prev.photos, '']
-    }))
-  }
+      photos: [...prev.photos, ''],
+    }));
+  };
 
   const removePhotoField = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      photos: prev.photos.filter((_, i) => i !== index)
-    }))
-  }
+      photos: prev.photos.filter((_, i) => i !== index),
+    }));
+  };
 
   const updatePhotoField = (index: number, value: string) => {
     setFormData(prev => ({
       ...prev,
-      photos: prev.photos.map((photo, i) => i === index ? value : photo)
-    }))
-  }
+      photos: prev.photos.map((photo, i) => (i === index ? value : photo)),
+    }));
+  };
 
   const handleFileUpload = async (file: File) => {
-    setIsUploading(true)
+    setIsUploading(true);
     try {
       // TODO: Implement file upload to Convex storage
-      toast.info('Funcionalidad de subida de archivos próximamente disponible.')
+      toast.info(
+        'Funcionalidad de subida de archivos próximamente disponible.'
+      );
     } catch (error) {
-      console.error('Error uploading file:', error)
-      toast.error('Error al subir el archivo.')
+      console.error('Error uploading file:', error);
+      toast.error('Error al subir el archivo.');
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   return (
     <motion.div
@@ -164,7 +186,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
     >
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">
-          {request ? 'Editar Solicitud de Mantenimiento' : 'Nueva Solicitud de Mantenimiento'}
+          {request
+            ? 'Editar Solicitud de Mantenimiento'
+            : 'Nueva Solicitud de Mantenimiento'}
         </h2>
         <Button variant="outline" size="sm" onClick={onCancel}>
           <X className="h-4 w-4 mr-2" />
@@ -179,7 +203,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, title: e.target.value }))
+              }
               placeholder="Ej: Reparación de bache en Calle Principal"
               required
             />
@@ -190,7 +216,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <Input
               id="location"
               value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, location: e.target.value }))
+              }
               placeholder="Ej: Calle Principal #123, Ñuble"
               required
             />
@@ -202,7 +230,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
           <Textarea
             id="description"
             value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, description: e.target.value }))
+            }
             placeholder="Describe detalladamente el problema de mantenimiento..."
             rows={4}
             required
@@ -214,7 +244,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <Label htmlFor="category">Categoría</Label>
             <Select
               value={formData.category}
-              onValueChange={(value: any) => setFormData(prev => ({ ...prev, category: value }))}
+              onValueChange={(value: any) =>
+                setFormData(prev => ({ ...prev, category: value }))
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -233,7 +265,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <Label htmlFor="priority">Prioridad</Label>
             <Select
               value={formData.priority}
-              onValueChange={(value: any) => setFormData(prev => ({ ...prev, priority: value }))}
+              onValueChange={(value: any) =>
+                setFormData(prev => ({ ...prev, priority: value }))
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -252,7 +286,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <Label htmlFor="status">Estado</Label>
             <Select
               value={formData.status}
-              onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
+              onValueChange={(value: any) =>
+                setFormData(prev => ({ ...prev, status: value }))
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -275,7 +311,12 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
               id="estimatedCost"
               type="number"
               value={formData.estimatedCost}
-              onChange={(e) => setFormData(prev => ({ ...prev, estimatedCost: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({
+                  ...prev,
+                  estimatedCost: e.target.value,
+                }))
+              }
               placeholder="Ej: 50000"
             />
           </div>
@@ -286,7 +327,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
               id="actualCost"
               type="number"
               value={formData.actualCost}
-              onChange={(e) => setFormData(prev => ({ ...prev, actualCost: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, actualCost: e.target.value }))
+              }
               placeholder="Ej: 45000"
             />
           </div>
@@ -297,7 +340,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
           <Input
             id="assignedTo"
             value={formData.assignedTo}
-            onChange={(e) => setFormData(prev => ({ ...prev, assignedTo: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, assignedTo: e.target.value }))
+            }
             placeholder="Ej: user_1234567890"
           />
         </div>
@@ -321,14 +366,16 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             <div key={index} className="flex gap-2">
               <Input
                 value={photo}
-                onChange={(e) => updatePhotoField(index, e.target.value)}
+                onChange={e => updatePhotoField(index, e.target.value)}
                 placeholder="URL de la foto o subir archivo..."
               />
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => {/* TODO: Implement file upload */}}
+                onClick={() => {
+                  /* TODO: Implement file upload */
+                }}
                 disabled={isUploading}
               >
                 <Upload className="h-4 w-4" />
@@ -352,7 +399,9 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
           <Textarea
             id="notes"
             value={formData.notes}
-            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, notes: e.target.value }))
+            }
             placeholder="Notas adicionales sobre la solicitud..."
             rows={3}
           />
@@ -363,10 +412,14 @@ export function MaintenanceForm({ request, onSuccess, onCancel }: MaintenanceFor
             Cancelar
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Guardando...' : request ? 'Actualizar Solicitud' : 'Crear Solicitud'}
+            {isSubmitting
+              ? 'Guardando...'
+              : request
+                ? 'Actualizar Solicitud'
+                : 'Crear Solicitud'}
           </Button>
         </div>
       </form>
     </motion.div>
-  )
+  );
 }

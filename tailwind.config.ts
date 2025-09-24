@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: 'class',
+  darkMode: ['class', 'class'],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -26,7 +26,7 @@ const config: Config = {
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--foreground))',
+          foreground: 'hsl(var(--destructive-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -69,12 +69,20 @@ const config: Config = {
       },
       keyframes: {
         'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         pulse: {
           '0%, 100%': {
@@ -85,12 +93,20 @@ const config: Config = {
           },
         },
         shimmer: {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' },
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+          },
         },
         float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
+          '0%, 100%': {
+            transform: 'translateY(0px)',
+          },
+          '50%': {
+            transform: 'translateY(-6px)',
+          },
         },
       },
       animation: {
@@ -111,20 +127,20 @@ const config: Config = {
         '2xl': 'var(--shadow-2xl)',
       },
       width: {
-        'sidebar': 'var(--sidebar-width)',
+        sidebar: 'var(--sidebar-width)',
         'sidebar-icon': 'var(--sidebar-width-icon)',
       },
       minWidth: {
-        'sidebar': 'var(--sidebar-width)',
+        sidebar: 'var(--sidebar-width)',
         'sidebar-icon': 'var(--sidebar-width-icon)',
       },
       maxWidth: {
-        'sidebar': 'var(--sidebar-width)',
+        sidebar: 'var(--sidebar-width)',
         'sidebar-icon': 'var(--sidebar-width-icon)',
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 };
 
 export default config;

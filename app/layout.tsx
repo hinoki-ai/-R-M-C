@@ -1,32 +1,42 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import dynamic from 'next/dynamic';
 
 import './globals.css';
 
+import { RouterProvider } from '@/lib/router-context';
 import { MobileInitializer } from '@/components/mobile/mobile-initializer';
 import ConvexClientProvider from '@/components/providers/convex-client-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { OfflineIndicator } from '@/components/shared/offline-indicator';
 import { PWA } from '@/components/shared/pwa';
+import { SetupError } from '@/components/setup-error';
 
 import { RootErrorBoundary } from '@/components/shared/root-error-boundary';
 
-// Font configuration
-const geistSans = Geist({
+// Font configuration using system fonts
+const geistSans = {
   variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
+  className: '',
+};
 
-const geistMono = Geist_Mono({
+const geistMono = {
   variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+  className: '',
+};
 
 export const metadata: Metadata = {
   title: 'Pinto Los Pellines - Plataforma de Gestión Comunitaria',
-  description: 'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
-  keywords: ['comunidad', 'vecindario', 'seguridad', 'gestión', 'cámaras', 'pagos'],
+  description:
+    'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
+  keywords: [
+    'comunidad',
+    'vecindario',
+    'seguridad',
+    'gestión',
+    'cámaras',
+    'pagos',
+  ],
   authors: [{ name: 'ARAMAC' }],
   creator: 'ARAMAC',
   publisher: 'ARAMAC',
@@ -35,13 +45,18 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://hinoki-ai.github.io/-R-M-C'),
+  metadataBase: new URL(
+    process.env.APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      'https://hinoki-ai.github.io/-R-M-C'
+  ),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Pinto Los Pellines - Plataforma de Gestión Comunitaria',
-    description: 'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
+    description:
+      'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
     url: '/',
     siteName: 'Pinto Los Pellines',
     images: [
@@ -58,7 +73,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Pinto Los Pellines - Plataforma de Gestión Comunitaria',
-    description: 'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
+    description:
+      'Plataforma avanzada de gestión comunitaria con cámaras de seguridad, integración de pagos y herramientas completas de gestión vecinal.',
     images: ['/hero-section-main-app-dark.png'],
     creator: '@ARAMAC',
   },
@@ -94,27 +110,44 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+// Client-side wrapper to ensure Next.js children render within RouterProvider
+function ClientWrapper({ children }: { children: React.ReactNode }) {
+  return <RouterProvider>{children}</RouterProvider>;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Check for missing environment variables early
+  const missingCriticalVars =
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+    !process.env.NEXT_PUBLIC_CONVEX_URL;
+
+  // Clerk Frontend API is configured via environment; modern ClerkProvider does not need frontendApi prop
+
   return (
-    <html lang='es' suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
       >
         <RootErrorBoundary>
-          <ThemeProvider>
-            <OfflineIndicator />
-            <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-              <ConvexClientProvider>
-                <MobileInitializer />
-                {children}
-                <PWA />
-              </ConvexClientProvider>
-            </ClerkProvider>
-          </ThemeProvider>
+          {missingCriticalVars ? (
+            <SetupError />
+          ) : (
+            <ThemeProvider>
+              <OfflineIndicator />
+              {/* Register PWA and offline capabilities */}
+              <PWA />
+              <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+                <ConvexClientProvider>
+                  <MobileInitializer />
+                  <ClientWrapper>{children}</ClientWrapper>
+                </ConvexClientProvider>
+              </ClerkProvider>
+            </ThemeProvider>
+          )}
         </RootErrorBoundary>
       </body>
     </html>

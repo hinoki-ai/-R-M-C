@@ -1,1 +1,1 @@
-export * from './services/pwa'
+export * from './services/pwa';

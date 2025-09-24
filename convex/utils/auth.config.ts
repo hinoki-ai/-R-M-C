@@ -6,10 +6,10 @@ export const getUserId = async (ctx: { auth: Auth }) => {
 };
 
 export default {
-    providers: [
-      {
-        domain: process.env.NEXT_PUBLIC_CLERK_FRONTEND_API_URL,
-        applicationID: 'convex',
-      },
-    ]
-  };
+  providers: [
+    {
+      domain: process.env.NEXT_PUBLIC_CLERK_FRONTEND_API_URL,
+      applicationID: 'convex',
+    },
+  ],
+};

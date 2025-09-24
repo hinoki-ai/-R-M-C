@@ -12,7 +12,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'local' as const,
     region: 'Ñuble',
     fetchInterval: 60, // 1 hour
-    logoUrl: 'https://www.ladiscusion.cl/wp-content/themes/ladiscusion/images/logo.png',
+    logoUrl:
+      'https://www.ladiscusion.cl/wp-content/themes/ladiscusion/images/logo.png',
   },
   // National news
   {
@@ -31,7 +32,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'news' as const,
     region: 'Nacional',
     fetchInterval: 30,
-    logoUrl: 'https://www.cooperativa.cl/wp-content/themes/cooperativa/images/logo-cooperativa.svg',
+    logoUrl:
+      'https://www.cooperativa.cl/wp-content/themes/cooperativa/images/logo-cooperativa.svg',
   },
   // Sports
   {
@@ -41,7 +43,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'sports' as const,
     region: 'Nacional',
     fetchInterval: 45,
-    logoUrl: 'https://as01.epimg.net/img/comunes/favicons/as/v2.0/apple-touch-icon.png',
+    logoUrl:
+      'https://as01.epimg.net/img/comunes/favicons/as/v2.0/apple-touch-icon.png',
   },
   // Local Pinto/Ñuble news - using regional news
   {
@@ -51,7 +54,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'local' as const,
     region: 'Ñuble',
     fetchInterval: 120, // 2 hours
-    logoUrl: 'https://www.latribuna.cl/wp-content/themes/latribuna/images/logo.png',
+    logoUrl:
+      'https://www.latribuna.cl/wp-content/themes/latribuna/images/logo.png',
   },
   // Emergency information
   {
@@ -61,7 +65,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'emergency' as const,
     region: 'Nacional',
     fetchInterval: 15, // 15 minutes - critical updates
-    logoUrl: 'https://www.onemi.cl/wp-content/themes/onemi/images/logo-onemi.png',
+    logoUrl:
+      'https://www.onemi.cl/wp-content/themes/onemi/images/logo-onemi.png',
   },
   // Politics
   {
@@ -71,7 +76,8 @@ const CHILEAN_RSS_FEEDS = [
     category: 'politics' as const,
     region: 'Nacional',
     fetchInterval: 60,
-    logoUrl: 'https://www.elmostrador.cl/wp-content/themes/elmostrador/images/logo-elmostrador.svg',
+    logoUrl:
+      'https://www.elmostrador.cl/wp-content/themes/elmostrador/images/logo-elmostrador.svg',
   },
   // Additional news sources
   {
@@ -102,9 +108,10 @@ export const seedRssFeeds = mutation({
     console.log('📰 Starting RSS feeds seeding...');
 
     // PRODUCTION SAFETY CHECK
-    const isProduction = process.env.NODE_ENV === 'production' ||
-                        process.env.CONVEX_ENV === 'production' ||
-                        !process.env.CONVEX_DEV;
+    const isProduction =
+      process.env.NODE_ENV === 'production' ||
+      process.env.CONVEX_ENV === 'production' ||
+      !process.env.CONVEX_DEV;
 
     if (isProduction && !args.forceProduction) {
       console.log('🚨 PRODUCTION ENVIRONMENT DETECTED!');
@@ -113,7 +120,8 @@ export const seedRssFeeds = mutation({
       return {
         seeded: 0,
         skipped: true,
-        message: 'Production seeding skipped - use forceProduction: true to override'
+        message:
+          'Production seeding skipped - use forceProduction: true to override',
       };
     }
 
@@ -121,15 +129,18 @@ export const seedRssFeeds = mutation({
     let skipped = 0;
 
     // Get the first admin user to set as creator
-    const adminUser = await ctx.db.query('users').filter(q => q.eq(q.field('role'), 'admin')).first();
-    const defaultUser = adminUser || await ctx.db.query('users').first();
+    const adminUser = await ctx.db
+      .query('users')
+      .filter(q => q.eq(q.field('role'), 'admin'))
+      .first();
+    const defaultUser = adminUser || (await ctx.db.query('users').first());
 
     if (!defaultUser) {
       console.log('⚠️ No users found in database. Please create a user first.');
       return {
         seeded: 0,
         skipped: true,
-        message: 'No users available to create RSS feeds'
+        message: 'No users available to create RSS feeds',
       };
     }
 
@@ -175,7 +186,7 @@ export const seedRssFeeds = mutation({
       seeded: feedsCreated,
       skipped,
       total: feedsCreated + skipped,
-      message: 'RSS feeds seeding completed successfully'
+      message: 'RSS feeds seeding completed successfully',
     };
   },
 });

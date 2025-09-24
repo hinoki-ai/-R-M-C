@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Radio Comunitaria - JuntaDeVecinos',
-  description: 'Escucha estaciones de radio locales y comunitarias de Pinto Los Pellines',
+  description:
+    'Escucha estaciones de radio locales y comunitarias de Pinto Los Pellines',
 };
 
 export default function RadioLayout({
@@ -10,11 +11,5 @@ export default function RadioLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8">
-        {children}
-      </main>
-    </div>
-  );
+  return children;
 }

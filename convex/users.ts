@@ -11,18 +11,20 @@ import {
   withErrorHandling,
   createValidationError,
   createNotFoundError,
-  createConflictError
+  createConflictError,
 } from './utils/error_handler';
 
 // Get all users (for admin purposes)
 export const listUsers = query({
   args: {},
-  returns: v.array(v.object({
-    _id: v.id('users'),
-    name: v.string(),
-    externalId: v.string(),
-  })),
-  handler: withErrorHandling(async (ctx) => {
+  returns: v.array(
+    v.object({
+      _id: v.id('users'),
+      name: v.string(),
+      externalId: v.string(),
+    })
+  ),
+  handler: withErrorHandling(async ctx => {
     const users = await safeDbQuery(ctx, 'users');
 
     return users.map(user => ({
@@ -44,7 +46,9 @@ export const getUserByExternalId = query({
 
     const user = await ctx.db
       .query('users')
-      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.externalId))
+      .withIndex('byExternalId', (q: any) =>
+        q.eq('externalId', args.externalId)
+      )
       .first();
 
     if (!user) return null;
@@ -60,13 +64,12 @@ export const getUserByExternalId = query({
 // Get current user (authenticated user)
 export const current = query({
   args: {},
-  handler: withErrorHandling(async (ctx) => {
-    const userId = await ctx.auth.getUserIdentity();
-    if (!userId) return null;
+  handler: withErrorHandling(async ctx => {
+    const userId = await requireAuth(ctx);
 
     const user = await ctx.db
       .query('users')
-      .withIndex('byExternalId', (q: any) => q.eq('externalId', userId.subject))
+      .withIndex('byExternalId', (q: any) => q.eq('externalId', userId))
       .first();
 
     return user;
@@ -153,7 +156,9 @@ export const deleteFromClerk = internalMutation({
     // Find user by external ID
     const user = await ctx.db
       .query('users')
-      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.clerkUserId))
+      .withIndex('byExternalId', (q: any) =>
+        q.eq('externalId', args.clerkUserId)
+      )
       .first();
 
     if (user) {
@@ -178,51 +183,67 @@ export const updateUserExternalId = mutation({
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   }),
-  handler: withErrorHandling(async (ctx, args: { currentExternalId: string; newExternalId: string; newName?: string }) => {
-    validateRequired(args.currentExternalId, 'currentExternalId');
-    validateRequired(args.newExternalId, 'newExternalId');
-    validateStringLength(args.currentExternalId, 'currentExternalId', 1, 100);
-    validateStringLength(args.newExternalId, 'newExternalId', 1, 100);
+  handler: withErrorHandling(
+    async (
+      ctx,
+      args: {
+        currentExternalId: string;
+        newExternalId: string;
+        newName?: string;
+      }
+    ) => {
+      validateRequired(args.currentExternalId, 'currentExternalId');
+      validateRequired(args.newExternalId, 'newExternalId');
+      validateStringLength(args.currentExternalId, 'currentExternalId', 1, 100);
+      validateStringLength(args.newExternalId, 'newExternalId', 1, 100);
 
-    if (args.newName) {
-      validateStringLength(args.newName, 'newName', 1, 200);
-    }
+      if (args.newName) {
+        validateStringLength(args.newName, 'newName', 1, 200);
+      }
 
-    // Find user by current external ID
-    const user = await ctx.db
-      .query('users')
-      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.currentExternalId))
-      .first();
-
-    if (!user) {
-      throw createNotFoundError(`User with external ID ${args.currentExternalId}`);
-    }
-
-    // Check if new external ID is already taken
-    if (args.currentExternalId !== args.newExternalId) {
-      const existingUser = await ctx.db
+      // Find user by current external ID
+      const user = await ctx.db
         .query('users')
-        .withIndex('byExternalId', (q: any) => q.eq('externalId', args.newExternalId))
+        .withIndex('byExternalId', (q: any) =>
+          q.eq('externalId', args.currentExternalId)
+        )
         .first();
 
-      if (existingUser) {
-        throw createConflictError('External ID already exists');
+      if (!user) {
+        throw createNotFoundError(
+          `User with external ID ${args.currentExternalId}`
+        );
       }
-    }
 
-    // Update the user
-    await ctx.db.patch(user._id, {
-      externalId: args.newExternalId,
-      name: args.newName || user.name,
-    });
+      // Check if new external ID is already taken
+      if (args.currentExternalId !== args.newExternalId) {
+        const existingUser = await ctx.db
+          .query('users')
+          .withIndex('byExternalId', (q: any) =>
+            q.eq('externalId', args.newExternalId)
+          )
+          .first();
 
-    return {
-      _id: user._id,
-      name: args.newName || user.name,
-      externalId: args.newExternalId,
-      role: user.role,
-    };
-  }, 'updateUserExternalId'),
+        if (existingUser) {
+          throw createConflictError('External ID already exists');
+        }
+      }
+
+      // Update the user
+      await ctx.db.patch(user._id, {
+        externalId: args.newExternalId,
+        name: args.newName || user.name,
+      });
+
+      return {
+        _id: user._id,
+        name: args.newName || user.name,
+        externalId: args.newExternalId,
+        role: user.role,
+      };
+    },
+    'updateUserExternalId'
+  ),
 });
 
 // Create admin user manually (for bootstrapping) - public wrapper
@@ -238,49 +259,57 @@ export const createAdminUser = mutation({
     externalId: v.string(),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   }),
-  handler: withErrorHandling(async (ctx, args: { name: string; externalId: string; role?: 'user' | 'admin' }) => {
-    validateRequired(args.name, 'name');
-    validateRequired(args.externalId, 'externalId');
-    validateStringLength(args.name, 'name', 1, 200);
-    validateStringLength(args.externalId, 'externalId', 1, 100);
+  handler: withErrorHandling(
+    async (
+      ctx,
+      args: { name: string; externalId: string; role?: 'user' | 'admin' }
+    ) => {
+      validateRequired(args.name, 'name');
+      validateRequired(args.externalId, 'externalId');
+      validateStringLength(args.name, 'name', 1, 200);
+      validateStringLength(args.externalId, 'externalId', 1, 100);
 
-    if (args.role) {
-      validateEnum(args.role, ['user', 'admin'], 'role');
-    }
+      if (args.role) {
+        validateEnum(args.role, ['user', 'admin'], 'role');
+      }
 
-    // Check if user already exists
-    const existingUser = await ctx.db
-      .query('users')
-      .withIndex('byExternalId', (q: any) => q.eq('externalId', args.externalId))
-      .first();
+      // Check if user already exists
+      const existingUser = await ctx.db
+        .query('users')
+        .withIndex('byExternalId', (q: any) =>
+          q.eq('externalId', args.externalId)
+        )
+        .first();
 
-    if (existingUser) {
-      // Update existing user to admin
-      await ctx.db.patch(existingUser._id, {
-        name: args.name,
-        role: args.role || 'admin',
-      });
+      if (existingUser) {
+        // Update existing user to admin
+        await ctx.db.patch(existingUser._id, {
+          name: args.name,
+          role: args.role || 'admin',
+        });
 
-      return {
-        _id: existingUser._id,
-        name: args.name,
-        externalId: args.externalId,
-        role: args.role || 'admin',
-      };
-    } else {
-      // Create new admin user
-      const userId = await ctx.db.insert('users', {
-        name: args.name,
-        externalId: args.externalId,
-        role: args.role || 'admin',
-      });
+        return {
+          _id: existingUser._id,
+          name: args.name,
+          externalId: args.externalId,
+          role: args.role || 'admin',
+        };
+      } else {
+        // Create new admin user
+        const userId = await ctx.db.insert('users', {
+          name: args.name,
+          externalId: args.externalId,
+          role: args.role || 'admin',
+        });
 
-      return {
-        _id: userId,
-        name: args.name,
-        externalId: args.externalId,
-        role: args.role || 'admin',
-      };
-    }
-  }, 'createAdminUser'),
+        return {
+          _id: userId,
+          name: args.name,
+          externalId: args.externalId,
+          role: args.role || 'admin',
+        };
+      }
+    },
+    'createAdminUser'
+  ),
 });

@@ -1,4 +1,4 @@
-# JuntaDeVecinos Mobile Deployment
+# PintoPellines Mobile Deployment
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hinoki-ai/-R-M-C)
 [![PWA](https://img.shields.io/badge/PWA-supported-green.svg)](#-progressive-web-app-pwa)
@@ -6,7 +6,7 @@
 [![iOS](https://img.shields.io/badge/iOS-supported-green.svg)](#-ios-deployment)
 [![Capacitor](https://img.shields.io/badge/Capacitor-7.0-blue.svg)](#-capacitor-integration)
 
-> Complete mobile deployment guide for JuntaDeVecinos - PWA, Android, and iOS deployment
+> Complete mobile deployment guide for PintoPellines - PWA, Android, and iOS deployment
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@
 
 ## 📋 Overview
 
-JuntaDeVecinos supports multiple mobile deployment strategies to ensure your application reaches users on all platforms with optimal performance and user experience.
+PintoPellines supports multiple mobile deployment strategies to ensure your application reaches users on all platforms with optimal performance and user experience.
 
 ### Deployment Options
 
@@ -73,19 +73,21 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 ### Installation Process
 
 #### Android Installation
-1. **Open Chrome Browser**: Navigate to your deployed JuntaDeVecinos site
+
+1. **Open Chrome Browser**: Navigate to your deployed PintoPellines site
 2. **Access Menu**: Tap the menu button (⋮) in the top-right corner
 3. **Add to Home Screen**: Select "Add to Home screen" or "Install app"
 4. **Confirm Installation**: Tap "Add" to install the PWA
-5. **Launch**: Find JuntaDeVecinos icon on home screen
+5. **Launch**: Find PintoPellines icon on home screen
 
 #### iOS Installation
-1. **Open Safari Browser**: Navigate to your deployed JuntaDeVecinos site
+
+1. **Open Safari Browser**: Navigate to your deployed PintoPellines site
 2. **Tap Share Button**: Located at the bottom center of the screen
 3. **Add to Home Screen**: Select "Add to Home Screen" from the share menu
 4. **Name the App**: Optionally rename the app
 5. **Install**: Tap "Add" to complete installation
-6. **Launch**: Find JuntaDeVecinos icon on home screen
+6. **Launch**: Find PintoPellines icon on home screen
 
 ### PWA Features Included
 
@@ -107,6 +109,7 @@ JuntaDeVecinos supports multiple mobile deployment strategies to ensure your app
 ## ⚡ Capacitor Integration
 
 ### What is Capacitor?
+
 Capacitor is an open-source native runtime that allows you to build native mobile applications using web technologies. It provides a bridge between your web app and native mobile features.
 
 ### Capacitor Features
@@ -122,6 +125,7 @@ Capacitor is an open-source native runtime that allows you to build native mobil
 ### Development Setup
 
 #### Initial Android Project Setup
+
 ```bash
 # Install Android dependencies (if not already done)
 npm install
@@ -145,6 +149,7 @@ npm run cap:open:android
 4. **Configure Signing**: Set up code signing for release builds
 
 ### Development Workflow
+
 ```bash
 # Quick development cycle
 npm run build:mobile
@@ -160,6 +165,7 @@ npm run cap:open:android
 ### Production Build Process
 
 #### Generate Signed APK
+
 ```bash
 # In Android Studio:
 # Build → Generate Signed Bundle/APK
@@ -198,6 +204,7 @@ npm run cap:open:android
 ### iOS Development Setup
 
 #### Initial iOS Project Setup
+
 ```bash
 # Install iOS dependencies (macOS only)
 npm install
@@ -222,6 +229,7 @@ npm run cap:open:ios
 5. **Capabilities**: Enable required app capabilities
 
 ### iOS Development Workflow
+
 ```bash
 # Quick development cycle
 npm run build:mobile
@@ -237,6 +245,7 @@ npm run cap:open:ios
 ### iOS Production Build Process
 
 #### Create Archive
+
 ```bash
 # In Xcode:
 # Product → Archive
@@ -275,35 +284,37 @@ npm run cap:open:ios
 ## ⚙️ Configuration
 
 ### Capacitor Configuration
+
 ```typescript
 // capacitor.config.ts
-import { CapacitorConfig } from '@capacitor/cli'
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.juntadevecinos.app',
-  appName: 'JuntaDeVecinos',
+  appName: 'PintoPellines',
   webDir: 'out',
   bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
     },
     StatusBar: {
-      style: 'default'
-    }
-  }
-}
+      style: 'default',
+    },
+  },
+};
 
-export default config
+export default config;
 ```
 
 ### PWA Configuration
+
 ```json
 // public/manifest.json
 {
-  "name": "JuntaDeVecinos",
-  "short_name": "JuntaDeVecinos",
+  "name": "PintoPellines",
+  "short_name": "PintoPellines",
   "description": "Community management platform",
   "start_url": "/",
   "display": "standalone",
@@ -326,18 +337,18 @@ export default config
 
 ### Build Scripts Reference
 
-| Command | Description |
-|---------|-------------|
-| `npm run build:mobile` | Build web app optimized for mobile |
-| `npm run cap:sync` | Sync web assets to all platforms |
-| `npm run cap:sync:android` | Sync to Android project only |
-| `npm run cap:sync:ios` | Sync to iOS project only |
-| `npm run cap:open:android` | Open Android Studio |
-| `npm run cap:open:ios` | Open Xcode |
-| `npm run cap:build:android` | Complete Android build workflow |
-| `npm run cap:build:ios` | Complete iOS build workflow |
-| `npx cap add android` | Add Android platform |
-| `npx cap add ios` | Add iOS platform |
+| Command                     | Description                        |
+| --------------------------- | ---------------------------------- |
+| `npm run build:mobile`      | Build web app optimized for mobile |
+| `npm run cap:sync`          | Sync web assets to all platforms   |
+| `npm run cap:sync:android`  | Sync to Android project only       |
+| `npm run cap:sync:ios`      | Sync to iOS project only           |
+| `npm run cap:open:android`  | Open Android Studio                |
+| `npm run cap:open:ios`      | Open Xcode                         |
+| `npm run cap:build:android` | Complete Android build workflow    |
+| `npm run cap:build:ios`     | Complete iOS build workflow        |
+| `npx cap add android`       | Add Android platform               |
+| `npx cap add ios`           | Add iOS platform                   |
 
 ## 🧪 Testing Strategy
 
@@ -356,6 +367,7 @@ export default config
 - **App Store Compliance**: Test against store submission requirements
 
 ### Cross-Platform Testing
+
 ```bash
 # Run comprehensive test suite
 npm run test
@@ -406,8 +418,10 @@ npm run quality-check
 ### Common PWA Issues
 
 #### Installation Problems
+
 **Issue**: PWA won't install on mobile device
 **Solution**:
+
 ```bash
 # Check manifest.json validity
 curl -s https://your-domain.com/manifest.json | jq .
@@ -417,8 +431,10 @@ curl -s https://your-domain.com/manifest.json | jq .
 ```
 
 #### Offline Functionality
+
 **Issue**: App doesn't work offline
 **Solution**:
+
 ```bash
 # Check service worker status
 # Verify cache storage in DevTools → Application → Storage
@@ -428,8 +444,10 @@ curl -s https://your-domain.com/manifest.json | jq .
 ### Common Native Build Issues
 
 #### Android Build Failures
+
 **Issue**: Gradle build fails
 **Solution**:
+
 ```bash
 # Clean Gradle cache
 cd android
@@ -441,8 +459,10 @@ cd android
 ```
 
 #### iOS Build Failures
+
 **Issue**: Xcode build fails
 **Solution**:
+
 ```bash
 # Clean Xcode project
 # Product → Clean Build Folder
@@ -452,11 +472,13 @@ cd android
 ```
 
 ### Capacitor-Specific Issues
+
 - **Plugin Installation**: Ensure all required plugins are installed
 - **Platform Sync**: Run `npm run cap:sync` after dependency changes
 - **Permission Issues**: Configure app permissions in native projects
 
 ### Network and API Issues
+
 - **CORS Errors**: Configure proper CORS headers for mobile requests
 - **Certificate Issues**: Ensure SSL certificates are properly configured
 - **API Timeouts**: Implement proper timeout handling for mobile networks
@@ -466,12 +488,14 @@ cd android
 ### Google Play Store Requirements
 
 #### Android Technical Requirements
+
 - **Target API Level**: API 34 (Android 14) or higher
 - **Minimum API Level**: API 21 (Android 5.0) or higher
 - **App Size**: Keep under 150MB for optimal download
 - **64-bit Support**: Required for all new apps
 
 #### Android Content Guidelines
+
 - **Privacy Policy**: Required for apps with user data
 - **Content Rating**: Complete rating questionnaire
 - **Target Audience**: Clearly define appropriate age groups
@@ -480,12 +504,14 @@ cd android
 ### Apple App Store Requirements
 
 #### iOS Technical Requirements
+
 - **iOS Version**: Support iOS 12.0 or later
 - **Device Family**: iPhone and iPad support
 - **App Size**: Optimize for cellular downloads
 - **Performance**: Meet Apple's performance guidelines
 
 #### iOS Content Guidelines
+
 - **App Review Guidelines**: Comply with all 31 guidelines
 - **Privacy Labels**: Detailed privacy information required
 - **Kids Category**: Special requirements for children's apps
@@ -494,18 +520,21 @@ cd android
 ## 📊 Monitoring & Analytics
 
 ### PWA Analytics
+
 - **Installation Tracking**: Monitor PWA installation rates
 - **Usage Metrics**: Track user engagement and session data
 - **Performance Monitoring**: Core Web Vitals and loading times
 - **Error Tracking**: JavaScript errors and service worker issues
 
 ### Native App Analytics
+
 - **Crash Reporting**: Automatic crash detection and reporting
 - **Performance Metrics**: App startup time and memory usage
 - **User Behavior**: Screen navigation and feature usage
 - **Device Information**: Platform versions and device types
 
 ### Mobile-Specific Metrics
+
 - **App Store Ratings**: Monitor user reviews and ratings
 - **Download Statistics**: Track installation and update rates
 - **Retention Analytics**: User retention and engagement metrics
@@ -515,9 +544,10 @@ cd android
 
 ## ✅ Deployment Complete
 
-**🎉 Your JuntaDeVecinos mobile deployment is ready!**
+**🎉 Your PintoPellines mobile deployment is ready!**
 
 ### What's Available
+
 - ✅ **Progressive Web App**: Instant installation from any browser
 - ✅ **Android Native App**: Full Android app for Google Play Store
 - ✅ **iOS Native App**: Full iOS app for App Store
@@ -526,6 +556,7 @@ cd android
 - ✅ **App Store Optimized**: Ready for store submission and approval
 
 ### Distribution Channels
+
 1. **Web Browsers**: Instant PWA installation
 2. **Google Play Store**: Android app distribution
 3. **Apple App Store**: iOS app distribution
@@ -541,4 +572,3 @@ cd android
 ---
 
 **Built with ❤️ using Capacitor 7 for perfect cross-platform mobile experiences.**
-

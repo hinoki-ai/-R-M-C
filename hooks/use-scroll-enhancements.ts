@@ -8,7 +8,8 @@ export function useScrollProgress() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.scrollY / totalHeight) * 100;
       setScrollProgress(Math.min(Math.max(progress, 0), 100));
     };
@@ -71,7 +72,8 @@ export function scrollToElement(
   }
 
   if (targetElement) {
-    const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+    const elementPosition =
+      targetElement.getBoundingClientRect().top + window.scrollY;
     const offsetPosition = elementPosition - offset;
 
     window.scrollTo({
@@ -91,7 +93,9 @@ export function scrollToTop(behavior: ScrollBehavior = 'smooth') {
 
 // Scroll direction detection
 export function useScrollDirection(threshold: number = 10) {
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(
+    null
+  );
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {

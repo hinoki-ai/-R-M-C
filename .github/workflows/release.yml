@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
       - name: Checkout code
@@ -40,6 +42,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,11 +57,68 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel (if configured)
-        if: env.VERCEL_TOKEN
         run: |
-          npm i -g vercel
-          vercel --prod --yes
+          # Check if Vercel token is configured
+          if [ -n "$VERCEL_TOKEN" ]; then
+            npm i -g vercel
+            vercel --prod --yes
+          else
+            echo "Vercel deployment skipped - VERCEL_TOKEN not configured"
+          fi
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  build-mobile:
+    runs-on: ubuntu-latest
+    needs: release
+    if: contains(github.event.head_commit.message, 'mobile') || contains(github.event.head_commit.message, 'app')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build mobile web assets
+        run: npm run build:mobile:optimized
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Sync Capacitor
+        run: npm run cap:sync:android
+
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          asset_name: pinto-pellines-v${{ steps.get_version.outputs.version }}.apk
+          asset_content_type: application/vnd.android.package-archive

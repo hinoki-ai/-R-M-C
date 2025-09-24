@@ -35,8 +35,9 @@ async function linkAdminToClerk(currentExternalId, clerkUserId, newName) {
     console.log(`   Role: ${result.role}`);
     console.log('');
     console.log('🎉 agustinaramac@gmail.com now has full admin access!');
-    console.log('   You can sign in with your email and password to access admin features.');
-
+    console.log(
+      '   You can sign in with your email and password to access admin features.'
+    );
   } catch (error) {
     console.error('❌ Error linking admin account:', error.message);
     process.exit(1);
@@ -51,15 +52,25 @@ const newName = process.argv[4];
 if (!currentExternalId || !clerkUserId || !newName) {
   console.log('🔗 Link Admin to Clerk Account Script');
   console.log('');
-  console.log('Usage: node link-admin-to-clerk.js <currentExternalId> <clerkUserId> <newName>');
+  console.log(
+    'Usage: node link-admin-to-clerk.js <currentExternalId> <clerkUserId> <newName>'
+  );
   console.log('');
   console.log('Parameters:');
-  console.log('  currentExternalId: The current external ID in Convex (e.g., "admin_agustinaramac_email")');
-  console.log('  clerkUserId: The Clerk user ID from sign-up (starts with "user_")');
-  console.log('  newName: The name from the Clerk account (e.g., "Agustin Aramác")');
+  console.log(
+    '  currentExternalId: The current external ID in Convex (e.g., "admin_agustinaramac_email")'
+  );
+  console.log(
+    '  clerkUserId: The Clerk user ID from sign-up (starts with "user_")'
+  );
+  console.log(
+    '  newName: The name from the Clerk account (e.g., "Agustin Aramác")'
+  );
   console.log('');
   console.log('Example:');
-  console.log('  node link-admin-to-clerk.js admin_agustinaramac_email user_2abcd123ef "Agustin Aramác"');
+  console.log(
+    '  node link-admin-to-clerk.js admin_agustinaramac_email user_2abcd123ef "Agustin Aramác"'
+  );
   console.log('');
   process.exit(1);
 }

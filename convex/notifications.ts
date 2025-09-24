@@ -14,10 +14,14 @@ export const sendAlarmNotification = internalAction({
   returns: v.boolean(),
   handler: async (ctx, args) => {
     // Actions cannot directly access ctx.db, so we need to call queries
-    const trigger = await ctx.runQuery(api.alarms.getTrigger, { triggerId: args.triggerId });
+    const trigger = await ctx.runQuery(api.alarms.getTrigger, {
+      triggerId: args.triggerId,
+    });
     if (!trigger) return false;
 
-    const alarm = await ctx.runQuery(api.alarms.getAlarm, { alarmId: trigger.alarmId });
+    const alarm = await ctx.runQuery(api.alarms.getAlarm, {
+      alarmId: trigger.alarmId,
+    });
     if (!alarm) return false;
 
     // In a real implementation, this would integrate with a push notification service
@@ -117,10 +121,14 @@ export const broadcastEmergencyNotification = internalAction({
       }
 
       // Get user's emergency alarm settings
-      const settings = await ctx.runQuery(api.alarms.getAlarmSettings, { userId: user._id });
+      const settings = await ctx.runQuery(api.alarms.getAlarmSettings, {
+        userId: user._id,
+      });
 
       if (settings?.emergencyOverride) {
-        console.log(`🚨 Emergency broadcast to user ${user._id}: ${args.message}`);
+        console.log(
+          `🚨 Emergency broadcast to user ${user._id}: ${args.message}`
+        );
         notificationCount++;
       }
     }

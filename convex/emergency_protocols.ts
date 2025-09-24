@@ -5,30 +5,46 @@ import { mutation, query } from './_generated/server';
 // Get all active emergency protocols
 export const getEmergencyProtocols = query({
   args: {
-    category: v.optional(v.union(v.literal('fire'), v.literal('medical'), v.literal('police'), v.literal('natural_disaster'), v.literal('security'), v.literal('evacuation'), v.literal('general'))),
+    category: v.optional(
+      v.union(
+        v.literal('fire'),
+        v.literal('medical'),
+        v.literal('police'),
+        v.literal('natural_disaster'),
+        v.literal('security'),
+        v.literal('evacuation'),
+        v.literal('general')
+      )
+    ),
   },
-  returns: v.array(v.object({
-    _id: v.id('emergencyProtocols'),
-    title: v.string(),
-    description: v.string(),
-    category: v.string(),
-    priority: v.string(),
-    pdfUrl: v.string(),
-    thumbnailUrl: v.optional(v.string()),
-    emergencyContacts: v.array(v.object({
-      name: v.string(),
-      phone: v.string(),
-      role: v.string(),
-    })),
-    steps: v.array(v.string()),
-    isActive: v.boolean(),
-    offlineAvailable: v.boolean(),
-    downloadCount: v.number(),
-    lastDownloaded: v.optional(v.number()),
-    createdAt: v.number(),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('emergencyProtocols'),
+      title: v.string(),
+      description: v.string(),
+      category: v.string(),
+      priority: v.string(),
+      pdfUrl: v.string(),
+      thumbnailUrl: v.optional(v.string()),
+      emergencyContacts: v.array(
+        v.object({
+          name: v.string(),
+          phone: v.string(),
+          role: v.string(),
+        })
+      ),
+      steps: v.array(v.string()),
+      isActive: v.boolean(),
+      offlineAvailable: v.boolean(),
+      downloadCount: v.number(),
+      lastDownloaded: v.optional(v.number()),
+      createdAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
-    let query = ctx.db.query('emergencyProtocols').filter(q => q.eq(q.field('isActive'), true));
+    let query = ctx.db
+      .query('emergencyProtocols')
+      .filter(q => q.eq(q.field('isActive'), true));
 
     if (args.category) {
       query = query.filter(q => q.eq(q.field('category'), args.category));
@@ -58,22 +74,31 @@ export const getEmergencyProtocols = query({
 // Get protocols by priority (for quick access in emergencies)
 export const getProtocolsByPriority = query({
   args: {
-    priority: v.union(v.literal('critical'), v.literal('high'), v.literal('medium'), v.literal('low')),
+    priority: v.union(
+      v.literal('critical'),
+      v.literal('high'),
+      v.literal('medium'),
+      v.literal('low')
+    ),
   },
-  returns: v.array(v.object({
-    _id: v.id('emergencyProtocols'),
-    title: v.string(),
-    description: v.string(),
-    category: v.string(),
-    priority: v.string(),
-    pdfUrl: v.string(),
-    emergencyContacts: v.array(v.object({
-      name: v.string(),
-      phone: v.string(),
-      role: v.string(),
-    })),
-    steps: v.array(v.string()),
-  })),
+  returns: v.array(
+    v.object({
+      _id: v.id('emergencyProtocols'),
+      title: v.string(),
+      description: v.string(),
+      category: v.string(),
+      priority: v.string(),
+      pdfUrl: v.string(),
+      emergencyContacts: v.array(
+        v.object({
+          name: v.string(),
+          phone: v.string(),
+          role: v.string(),
+        })
+      ),
+      steps: v.array(v.string()),
+    })
+  ),
   handler: async (ctx, args) => {
     const protocols = await ctx.db
       .query('emergencyProtocols')
@@ -125,15 +150,30 @@ export const createEmergencyProtocol = mutation({
   args: {
     title: v.string(),
     description: v.string(),
-    category: v.union(v.literal('fire'), v.literal('medical'), v.literal('police'), v.literal('natural_disaster'), v.literal('security'), v.literal('evacuation'), v.literal('general')),
-    priority: v.union(v.literal('critical'), v.literal('high'), v.literal('medium'), v.literal('low')),
+    category: v.union(
+      v.literal('fire'),
+      v.literal('medical'),
+      v.literal('police'),
+      v.literal('natural_disaster'),
+      v.literal('security'),
+      v.literal('evacuation'),
+      v.literal('general')
+    ),
+    priority: v.union(
+      v.literal('critical'),
+      v.literal('high'),
+      v.literal('medium'),
+      v.literal('low')
+    ),
     pdfUrl: v.string(),
     thumbnailUrl: v.optional(v.string()),
-    emergencyContacts: v.array(v.object({
-      name: v.string(),
-      phone: v.string(),
-      role: v.string(),
-    })),
+    emergencyContacts: v.array(
+      v.object({
+        name: v.string(),
+        phone: v.string(),
+        role: v.string(),
+      })
+    ),
     steps: v.array(v.string()),
     offlineAvailable: v.optional(v.boolean()),
     createdBy: v.id('users'),
@@ -158,5 +198,150 @@ export const createEmergencyProtocol = mutation({
     });
 
     return protocolId;
+  },
+});
+
+// Get all emergency protocols for admin management (includes inactive)
+export const getAllEmergencyProtocols = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id('emergencyProtocols'),
+      title: v.string(),
+      description: v.string(),
+      category: v.string(),
+      priority: v.string(),
+      pdfUrl: v.string(),
+      thumbnailUrl: v.optional(v.string()),
+      emergencyContacts: v.array(
+        v.object({
+          name: v.string(),
+          phone: v.string(),
+          role: v.string(),
+        })
+      ),
+      steps: v.array(v.string()),
+      isActive: v.boolean(),
+      offlineAvailable: v.boolean(),
+      downloadCount: v.number(),
+      lastDownloaded: v.optional(v.number()),
+      createdBy: v.id('users'),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
+  handler: async ctx => {
+    const protocols = await ctx.db
+      .query('emergencyProtocols')
+      .order('desc')
+      .collect();
+
+    return protocols.map(protocol => ({
+      _id: protocol._id,
+      title: protocol.title,
+      description: protocol.description,
+      category: protocol.category,
+      priority: protocol.priority,
+      pdfUrl: protocol.pdfUrl,
+      thumbnailUrl: protocol.thumbnailUrl,
+      emergencyContacts: protocol.emergencyContacts,
+      steps: protocol.steps,
+      isActive: protocol.isActive,
+      offlineAvailable: protocol.offlineAvailable,
+      downloadCount: protocol.downloadCount,
+      lastDownloaded: protocol.lastDownloaded,
+      createdBy: protocol.createdBy,
+      createdAt: protocol.createdAt,
+      updatedAt: protocol.updatedAt,
+    }));
+  },
+});
+
+// Update an emergency protocol (admin only)
+export const updateEmergencyProtocol = mutation({
+  args: {
+    protocolId: v.id('emergencyProtocols'),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    category: v.optional(
+      v.union(
+        v.literal('fire'),
+        v.literal('medical'),
+        v.literal('police'),
+        v.literal('natural_disaster'),
+        v.literal('security'),
+        v.literal('evacuation'),
+        v.literal('general')
+      )
+    ),
+    priority: v.optional(
+      v.union(
+        v.literal('critical'),
+        v.literal('high'),
+        v.literal('medium'),
+        v.literal('low')
+      )
+    ),
+    pdfUrl: v.optional(v.string()),
+    thumbnailUrl: v.optional(v.string()),
+    emergencyContacts: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          phone: v.string(),
+          role: v.string(),
+        })
+      )
+    ),
+    steps: v.optional(v.array(v.string())),
+    isActive: v.optional(v.boolean()),
+    offlineAvailable: v.optional(v.boolean()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const protocol = await ctx.db.get(args.protocolId);
+    if (!protocol) {
+      throw new Error('Protocol not found');
+    }
+
+    const updates: any = {
+      updatedAt: Date.now(),
+    };
+
+    if (args.title !== undefined) updates.title = args.title;
+    if (args.description !== undefined) updates.description = args.description;
+    if (args.category !== undefined) updates.category = args.category;
+    if (args.priority !== undefined) updates.priority = args.priority;
+    if (args.pdfUrl !== undefined) updates.pdfUrl = args.pdfUrl;
+    if (args.thumbnailUrl !== undefined)
+      updates.thumbnailUrl = args.thumbnailUrl;
+    if (args.emergencyContacts !== undefined)
+      updates.emergencyContacts = args.emergencyContacts;
+    if (args.steps !== undefined) updates.steps = args.steps;
+    if (args.isActive !== undefined) updates.isActive = args.isActive;
+    if (args.offlineAvailable !== undefined)
+      updates.offlineAvailable = args.offlineAvailable;
+
+    await ctx.db.patch(args.protocolId, updates);
+
+    return null;
+  },
+});
+
+// Delete an emergency protocol (admin only)
+export const deleteEmergencyProtocol = mutation({
+  args: {
+    protocolId: v.id('emergencyProtocols'),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const protocol = await ctx.db.get(args.protocolId);
+    if (!protocol) {
+      throw new Error('Protocol not found');
+    }
+
+    await ctx.db.delete(args.protocolId);
+
+    return null;
   },
 });

@@ -128,7 +128,15 @@ export interface SettingSection {
   description: string;
   icon: string;
   color: string;
-  category: 'system' | 'security' | 'database' | 'notifications' | 'performance' | 'ui' | 'features' | 'advanced';
+  category:
+    | 'system'
+    | 'security'
+    | 'database'
+    | 'notifications'
+    | 'performance'
+    | 'ui'
+    | 'features'
+    | 'advanced';
 }
 
 export const settingSections: SettingSection[] = [
@@ -254,7 +262,6 @@ export const settingsPresets: SettingsPreset[] = [
   },
 ];
 
-
 // SYSTEM HEALTH STATUS
 export interface SystemHealth {
   configValid: boolean;
@@ -273,24 +280,35 @@ export interface ValidationResult {
   warnings: string[];
 }
 
-export const validateSettings = (settings: Partial<SettingsState>): ValidationResult => {
+export const validateSettings = (
+  settings: Partial<SettingsState>
+): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  if (settings.sessionTimeout && (settings.sessionTimeout < 5 || settings.sessionTimeout > 480)) {
+  if (
+    settings.sessionTimeout &&
+    (settings.sessionTimeout < 5 || settings.sessionTimeout > 480)
+  ) {
     errors.push('El timeout de sesión debe estar entre 5 y 480 minutos');
   }
 
   if (settings.passwordMinLength && settings.passwordMinLength < 6) {
-    errors.push('La longitud mínima de contraseña debe ser al menos 6 caracteres');
+    errors.push(
+      'La longitud mínima de contraseña debe ser al menos 6 caracteres'
+    );
   }
 
   if (settings.dbConnectionPool && settings.dbConnectionPool > 100) {
-    warnings.push('Un pool de conexiones muy grande puede afectar el rendimiento');
+    warnings.push(
+      'Un pool de conexiones muy grande puede afectar el rendimiento'
+    );
   }
 
   if (settings.memoryLimit && settings.memoryLimit > 2048) {
-    warnings.push('Límite de memoria muy alto puede causar problemas de estabilidad');
+    warnings.push(
+      'Límite de memoria muy alto puede causar problemas de estabilidad'
+    );
   }
 
   return {

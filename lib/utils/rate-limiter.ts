@@ -9,7 +9,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Extend globalThis to include our custom properties
 declare global {
-  var rateLimitStore: Map<string, { count: number; resetTime: number }> | undefined;
+  var rateLimitStore:
+    | Map<string, { count: number; resetTime: number }>
+    | undefined;
 }
 
 // Rate limit configurations
@@ -21,7 +23,7 @@ export const RATE_LIMITS = {
     message: {
       error: 'Too many requests',
       message: 'You have exceeded the request limit. Please try again later.',
-      retryAfter: '15 minutes'
+      retryAfter: '15 minutes',
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -33,8 +35,9 @@ export const RATE_LIMITS = {
     max: 20, // Limit each IP to 20 auth requests per windowMs
     message: {
       error: 'Too many authentication attempts',
-      message: 'Too many authentication attempts. Please wait before trying again.',
-      retryAfter: '15 minutes'
+      message:
+        'Too many authentication attempts. Please wait before trying again.',
+      retryAfter: '15 minutes',
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -46,8 +49,9 @@ export const RATE_LIMITS = {
     max: 30, // Limit each IP to 30 camera requests per minute
     message: {
       error: 'Camera access rate limited',
-      message: 'Too many camera requests. Please wait before accessing camera feeds.',
-      retryAfter: '1 minute'
+      message:
+        'Too many camera requests. Please wait before accessing camera feeds.',
+      retryAfter: '1 minute',
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -59,8 +63,9 @@ export const RATE_LIMITS = {
     max: 10, // Limit each IP to 10 uploads per hour
     message: {
       error: 'Upload rate limited',
-      message: 'Too many file uploads. Please wait before uploading more files.',
-      retryAfter: '1 hour'
+      message:
+        'Too many file uploads. Please wait before uploading more files.',
+      retryAfter: '1 hour',
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -72,8 +77,9 @@ export const RATE_LIMITS = {
     max: 60, // Allow more requests for admin users
     message: {
       error: 'Admin endpoint rate limited',
-      message: 'Too many admin requests. Please wait before making more requests.',
-      retryAfter: '1 minute'
+      message:
+        'Too many admin requests. Please wait before making more requests.',
+      retryAfter: '1 minute',
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -85,12 +91,13 @@ export const RATE_LIMITS = {
     max: 10, // Very restrictive for public endpoints
     message: {
       error: 'Public API rate limited',
-      message: 'Too many public API requests. Please wait before making more requests.',
-      retryAfter: '1 minute'
+      message:
+        'Too many public API requests. Please wait before making more requests.',
+      retryAfter: '1 minute',
     },
     standardHeaders: true,
     legacyHeaders: false,
-  }
+  },
 } as const;
 
 /**
@@ -135,13 +142,18 @@ export function getEndpointType(pathname: string): keyof typeof RATE_LIMITS {
 /**
  * Next.js middleware for rate limiting
  */
-export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS = 'general') {
+export function createRateLimitMiddleware(
+  endpointType: keyof typeof RATE_LIMITS = 'general'
+) {
   const config = getRateLimitConfig(endpointType);
 
   return function rateLimitMiddleware(request: NextRequest) {
     // For Next.js middleware, we'll use a simple in-memory store
     // In production, consider using Redis or another distributed store
-    const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
+    const clientIP =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     const key = `${endpointType}:${clientIP}`;
     const now = Date.now();
 
@@ -150,7 +162,10 @@ export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS
       globalThis.rateLimitStore = new Map();
     }
 
-    const store = globalThis.rateLimitStore as Map<string, { count: number; resetTime: number }>;
+    const store = globalThis.rateLimitStore as Map<
+      string,
+      { count: number; resetTime: number }
+    >;
 
     if (!store.has(key)) {
       store.set(key, { count: 1, resetTime: now + config.windowMs });
@@ -185,7 +200,10 @@ export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS
     const response = NextResponse.next();
     response.headers.set('X-RateLimit-Limit', config.max.toString());
     response.headers.set('X-RateLimit-Remaining', remaining.toString());
-    response.headers.set('X-RateLimit-Reset', new Date(data.resetTime).toISOString());
+    response.headers.set(
+      'X-RateLimit-Reset',
+      new Date(data.resetTime).toISOString()
+    );
 
     return response;
   };
@@ -198,15 +216,21 @@ export function createRateLimitMiddleware(endpointType: keyof typeof RATE_LIMITS
 export class ConvexRateLimiter {
   private store = new Map<string, { count: number; resetTime: number }>();
 
-  constructor(private config: {
-    windowMs: number;
-    max: number;
-    message: { error: string; message: string; retryAfter: string };
-    standardHeaders: boolean;
-    legacyHeaders: boolean;
-  }) {}
+  constructor(
+    private config: {
+      windowMs: number;
+      max: number;
+      message: { error: string; message: string; retryAfter: string };
+      standardHeaders: boolean;
+      legacyHeaders: boolean;
+    }
+  ) {}
 
-  checkLimit(identifier: string): { allowed: boolean; resetTime?: number; remaining?: number } {
+  checkLimit(identifier: string): {
+    allowed: boolean;
+    resetTime?: number;
+    remaining?: number;
+  } {
     const key = identifier;
     const now = Date.now();
 

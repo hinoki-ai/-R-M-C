@@ -196,7 +196,7 @@ NEXT_PUBLIC_CLERK_FRONTEND_API_URL=your_clerk_url
 CLERK_WEBHOOK_SECRET=your_webhook_secret
 
 # Optional but recommended
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_weather_api_key
+# Weather Integration - No API key required (uses free Open-Meteo API)
 CONVEX_ADMIN_KEY=your_admin_key
 ```
 

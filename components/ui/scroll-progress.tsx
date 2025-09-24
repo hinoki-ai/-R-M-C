@@ -3,7 +3,10 @@
 import { IconArrowUp } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
-import { useScrollDirection, useScrollProgress } from '@/hooks/use-scroll-enhancements';
+import {
+  useScrollDirection,
+  useScrollProgress,
+} from '@/hooks/use-scroll-enhancements';
 import { cn } from '@/lib/utils';
 
 interface ScrollProgressProps {
@@ -17,7 +20,7 @@ export function ScrollProgress({
   className,
   showBackToTop = true,
   backToTopThreshold = 300,
-  size = 'md'
+  size = 'md',
 }: ScrollProgressProps) {
   const scrollProgress = useScrollProgress();
   const scrollDirection = useScrollDirection();
@@ -30,7 +33,7 @@ export function ScrollProgress({
   const sizeClasses = {
     sm: 'w-1 h-1',
     md: 'w-1.5 h-1.5',
-    lg: 'w-2 h-2'
+    lg: 'w-2 h-2',
   };
 
   const handleBackToTop = () => {
@@ -43,9 +46,9 @@ export function ScrollProgress({
   return (
     <div className={cn('fixed top-0 left-0 right-0 z-50', className)}>
       {/* Progress Bar */}
-      <div className='h-1 bg-muted/30 backdrop-blur-sm'>
+      <div className="h-1 bg-muted/30 backdrop-blur-sm">
         <div
-          className='h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300 ease-out'
+          className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300 ease-out"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>
@@ -71,14 +74,14 @@ export function ScrollProgress({
               sizeClasses[size],
               'p-3'
             )}
-            aria-label='Back to top'
+            aria-label="Back to top"
           >
-            <IconArrowUp className='h-4 w-4 transition-transform group-hover:-translate-y-0.5' />
+            <IconArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
 
             {/* Tooltip */}
-            <div className='absolute bottom-full right-0 mb-2 px-2 py-1 text-xs bg-popover text-popover-foreground rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap'>
+            <div className="absolute bottom-full right-0 mb-2 px-2 py-1 text-xs bg-popover text-popover-foreground rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
               Back to top
-              <div className='absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-popover' />
+              <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-popover" />
             </div>
           </button>
         </div>
@@ -103,7 +106,7 @@ export function ScrollReveal({
   delay = 0,
   direction = 'up',
   threshold = 0.1,
-  duration = 600
+  duration = 600,
 }: ScrollRevealProps) {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -133,7 +136,7 @@ export function ScrollReveal({
     down: 'translate-y-8',
     left: '-translate-x-8',
     right: 'translate-x-8',
-    fade: 'opacity-0'
+    fade: 'opacity-0',
   };
 
   return (
@@ -148,7 +151,7 @@ export function ScrollReveal({
       )}
       style={{
         transitionDuration: `${duration}ms`,
-        transitionDelay: isVisible ? '0ms' : `${delay}ms`
+        transitionDelay: isVisible ? '0ms' : `${delay}ms`,
       }}
     >
       {children}
@@ -168,7 +171,7 @@ export function StaggerReveal({
   children,
   className,
   staggerDelay = 100,
-  direction = 'up'
+  direction = 'up',
 }: StaggerRevealProps) {
   return (
     <div className={className}>

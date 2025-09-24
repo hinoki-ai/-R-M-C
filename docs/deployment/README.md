@@ -9,6 +9,20 @@
 
 This guide covers the deployment process for both web and mobile platforms of the PintoPellines application.
 
+## 🚀 Quick Start
+
+For the simplest deployment experience, just run:
+
+```bash
+./deploy
+```
+
+This single command will:
+
+- Build your Next.js application
+- Deploy your Convex backend functions
+- Deploy to Vercel production
+
 ## 📋 Table of Contents
 
 1. [Web Deployment](#web-deployment)
@@ -35,14 +49,21 @@ This guide covers the deployment process for both web and mobile platforms of th
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
    NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-app.clerk.accounts.dev
    CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
-   NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
-   ```
+   # Weather Integration - No API key required (uses free Open-Meteo API)
+```
 
-1. **Deploy**: Push to main branch or use Vercel CLI:
+1. **Deploy**: Push to main branch or use the simple deploy command:
 
 ```bash
+# Simple deployment (recommended)
+./deploy
+
+# Or using npm
+npm run deploy
+
+# Or manual Vercel deployment
 npm i -g vercel
-vercel --prod
+vercel --prod --yes
 ```
 
 #### Manual Deployment
@@ -114,7 +135,7 @@ NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-app.clerk.accounts.dev
 CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 
 # Optional
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
+# Weather Integration - No API key required (uses free Open-Meteo API)
 NEXT_PUBLIC_GA_TRACKING_ID=GA_MEASUREMENT_ID
 ```
 
@@ -123,11 +144,11 @@ NEXT_PUBLIC_GA_TRACKING_ID=GA_MEASUREMENT_ID
 ```bash
 # Android
 CAPACITOR_APP_ID=com.juntadevecinos.app
-CAPACITOR_APP_NAME=JuntaDeVecinos
+CAPACITOR_APP_NAME=PintoPellines
 
 # iOS
 CAPACITOR_APP_ID=com.juntadevecinos.app
-CAPACITOR_APP_NAME=JuntaDeVecinos
+CAPACITOR_APP_NAME=PintoPellines
 
 # Push Notifications (Optional)
 ONESIGNAL_APP_ID=your_onesignal_app_id

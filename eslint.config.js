@@ -12,8 +12,8 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ['**/*']
-  }
+    ignores: ['**/*'],
+  },
 ];
 
 export default eslintConfig;

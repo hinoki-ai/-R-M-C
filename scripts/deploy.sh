@@ -13,9 +13,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_NAME="JuntaDeVecinos"
-WEB_APP_DIR="apps/web"
-MOBILE_APP_DIR="apps/mobile"
+PROJECT_NAME="PintoPellines"
+WEB_APP_DIR="."
+MOBILE_APP_DIR="."
 ENV_FILE=".env.local"
 
 # Functions
@@ -106,8 +106,6 @@ EOF
 deploy_web_app() {
     log_info "Deploying web application..."
 
-    cd "$WEB_APP_DIR"
-
     # Install dependencies
     log_info "Installing web app dependencies..."
     npm install
@@ -116,31 +114,28 @@ deploy_web_app() {
     log_info "Building web application..."
     npm run build
 
+    # Deploy Convex functions first
+    log_info "Deploying Convex functions..."
+    npx convex deploy
+
     # Deploy to Vercel
     log_info "Deploying to Vercel..."
     if [ -n "$VERCEL_TOKEN" ]; then
         vercel --prod --yes
     else
         log_warning "VERCEL_TOKEN not set. Please set it or deploy manually"
-        log_info "Run: vercel --prod"
+        log_info "Run: vercel --prod --yes"
     fi
 
-    cd - > /dev/null
     log_success "Web application deployment completed"
 }
 
 deploy_mobile_app() {
     log_info "Deploying mobile application..."
 
-    cd "$MOBILE_APP_DIR"
-
-    # Install dependencies
-    log_info "Installing mobile app dependencies..."
-    npm install
-
-    # Build the application
+    # Build mobile version
     log_info "Building mobile application..."
-    npm run build
+    npm run build:mobile
 
     # Sync with Capacitor
     log_info "Syncing with Capacitor..."
@@ -150,11 +145,14 @@ deploy_mobile_app() {
     log_info "Building Android APK..."
     npx cap build android
 
-    # Build iOS app
-    log_info "Building iOS app..."
-    npx cap build ios
+    # Build iOS app (if on macOS)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        log_info "Building iOS app..."
+        npx cap build ios
+    else
+        log_warning "Skipping iOS build (not on macOS)"
+    fi
 
-    cd - > /dev/null
     log_success "Mobile application deployment completed"
 }
 

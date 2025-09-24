@@ -14,7 +14,7 @@ PintoPellines is a comprehensive community management platform designed specific
 - **🏘️ Community Management**: Tools for neighborhood governance and citizen participation
 - **📹 Security Camera System**: 24/7 neighborhood monitoring and surveillance
 - **📢 Direct Communication**: Official announcements and community notifications
-- **💳 Contribution System**: Transparent financial management
+- **💳 Contribution System**: Transparent financial management and donations
 - **📱 Cross-Platform Experience**: Seamless web and mobile applications
 - **🔐 Secure Authentication**: Clerk-powered authentication with role management
 
@@ -49,11 +49,12 @@ Built with modern technologies for scalability and performance:
 
 Explore our comprehensive documentation:
 
-- **[📚 Complete Documentation](docs/README.md)** - Full documentation index
 - **[🚀 Getting Started](docs/getting-started/README.md)** - Development setup guide
 - **[🏗️ Architecture](docs/architecture/README.md)** - System design and patterns
 - **[💻 Development](docs/development/README.md)** - Coding standards and practices
 - **[🚀 Deployment](docs/deployment/README.md)** - Production deployment guides
+- **[🤝 Contributing](docs/contributing/README.md)** - How to contribute to the project
+- **[📚 Full Documentation Index](docs/README.md)** - Complete documentation overview
 
 ## 🤝 Community & Support
 
@@ -61,7 +62,6 @@ Explore our comprehensive documentation:
 - **💬 Discord**: [Join our community](https://discord.gg/hinoki-ai)
 - **🐛 Issues**: [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues)
 - **📚 Documentation**: [Complete Docs](docs/README.md)
-- **🤝 Contributing**: [Contributing Guide](docs/contributing/README.md)
 
 ## 🙏 Acknowledgments
 

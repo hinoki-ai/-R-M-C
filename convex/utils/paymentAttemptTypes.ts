@@ -6,10 +6,12 @@ export const paymentAttemptValidators = {
   charge_type: v.string(),
   created_at: v.number(),
   failed_at: v.optional(v.number()),
-  failed_reason: v.optional(v.object({
-    code: v.string(),
-    decline_code: v.optional(v.string()),
-  })),
+  failed_reason: v.optional(
+    v.object({
+      code: v.string(),
+      decline_code: v.optional(v.string()),
+    })
+  ),
   invoice_id: v.string(),
   paid_at: v.optional(v.number()),
   payment_id: v.string(),
@@ -26,26 +28,28 @@ export const paymentAttemptValidators = {
     card_type: v.string(),
     last4: v.string(),
   }),
-  subscription_items: v.array(v.object({
-    amount: v.object({
-      amount: v.number(),
-      amount_formatted: v.string(),
-      currency: v.string(),
-      currency_symbol: v.string(),
-    }),
-    plan: v.object({
-      id: v.string(),
-      name: v.string(),
-      slug: v.string(),
-      amount: v.number(),
-      currency: v.string(),
-      period: v.string(),
-      interval: v.number(),
-    }),
-    status: v.string(),
-    period_start: v.number(),
-    period_end: v.number(),
-  })),
+  subscription_items: v.array(
+    v.object({
+      amount: v.object({
+        amount: v.number(),
+        amount_formatted: v.string(),
+        currency: v.string(),
+        currency_symbol: v.string(),
+      }),
+      plan: v.object({
+        id: v.string(),
+        name: v.string(),
+        slug: v.string(),
+        amount: v.number(),
+        currency: v.string(),
+        period: v.string(),
+        interval: v.number(),
+      }),
+      status: v.string(),
+      period_start: v.number(),
+      period_end: v.number(),
+    })
+  ),
   totals: v.object({
     grand_total: v.object({
       amount: v.number(),
@@ -142,4 +146,4 @@ export function transformWebhookData(data: any) {
       },
     },
   };
-} 
+}

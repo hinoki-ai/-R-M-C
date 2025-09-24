@@ -33,15 +33,20 @@ async function seedAll() {
   console.log('');
 
   // PRODUCTION SAFETY CHECK
-  const isProduction = process.env.NODE_ENV === 'production' ||
-                      process.env.CONVEX_ENV === 'production' ||
-                      !process.env.CONVEX_DEV;
+  const isProduction =
+    process.env.NODE_ENV === 'production' ||
+    process.env.CONVEX_ENV === 'production' ||
+    !process.env.CONVEX_DEV;
 
   if (isProduction) {
     console.log('🚨 PRODUCTION ENVIRONMENT DETECTED!');
     console.log('❌ Seeding is DISABLED by default in production');
-    console.log('💡 To seed in production, you must manually run the mutation with forceProduction: true');
-    console.log('📋 This script will NOT seed any data in production environments');
+    console.log(
+      '💡 To seed in production, you must manually run the mutation with forceProduction: true'
+    );
+    console.log(
+      '📋 This script will NOT seed any data in production environments'
+    );
     console.log('');
     console.log('If you really need to seed production data:');
     console.log('1. Go to your Convex dashboard');
@@ -65,12 +70,20 @@ async function seedAll() {
       console.log('🎉 Seeding completed successfully!');
       console.log('');
       console.log('📊 Final Summary:');
-      console.log(`   📹 Cameras: ${result.results.cameras?.camerasCreated || 0} cameras`);
-      console.log(`   🌤️ Weather: ${result.results.weather?.weatherDataPoints || 0} data points`);
-      console.log(`   💰 Payments: ${result.results.payments?.paymentsCreated || 0} attempts`);
+      console.log(
+        `   📹 Cameras: ${result.results.cameras?.camerasCreated || 0} cameras`
+      );
+      console.log(
+        `   🌤️ Weather: ${result.results.weather?.weatherDataPoints || 0} data points`
+      );
+      console.log(
+        `   💰 Payments: ${result.results.payments?.paymentsCreated || 0} attempts`
+      );
       console.log(`   📻 Radio: ${result.results.radio?.seeded || 0} stations`);
       console.log(`   📰 RSS: ${result.results.rss?.seeded || 0} feeds`);
-      console.log(`   📋 Protocols: ${result.results.emergencyProtocols?.seeded || 0} protocols`);
+      console.log(
+        `   📋 Protocols: ${result.results.emergencyProtocols?.seeded || 0} protocols`
+      );
       console.log('');
       console.log('✨ Pinto Los Pellines is ready for action!');
     } else {
@@ -86,7 +99,10 @@ async function seedAll() {
 async function seedCameras() {
   console.log('📹 Seeding camera data...');
   try {
-    const result = await client.mutation((api as any)['seeds/cameras'].seedCameras, {});
+    const result = await client.mutation(
+      (api as any)['seeds/cameras'].seedCameras,
+      {}
+    );
     console.log('✅ Camera seeding completed:', result);
   } catch (error) {
     console.error('❌ Camera seeding failed:', error);
@@ -97,7 +113,10 @@ async function seedCameras() {
 async function seedWeather() {
   console.log('🌤️ Seeding weather data...');
   try {
-    const result = await client.mutation((api as any)['seeds/weather'].seedWeather, {});
+    const result = await client.mutation(
+      (api as any)['seeds/weather'].seedWeather,
+      {}
+    );
     console.log('✅ Weather seeding completed:', result);
   } catch (error) {
     console.error('❌ Weather seeding failed:', error);
@@ -108,7 +127,10 @@ async function seedWeather() {
 async function seedPayments() {
   console.log('💰 Seeding payment data...');
   try {
-    const result = await client.mutation((api as any)['seeds/payments'].seedPayments, {});
+    const result = await client.mutation(
+      (api as any)['seeds/payments'].seedPayments,
+      {}
+    );
     console.log('✅ Payment seeding completed:', result);
   } catch (error) {
     console.error('❌ Payment seeding failed:', error);
@@ -119,7 +141,10 @@ async function seedPayments() {
 async function seedRadio() {
   console.log('📻 Seeding radio station data...');
   try {
-    const result = await client.mutation((api as any)['seeds/radio'].seedRadioStations, { forceProduction: true });
+    const result = await client.mutation(
+      (api as any)['seeds/radio'].seedRadioStations,
+      { forceProduction: true }
+    );
     console.log('✅ Radio seeding completed:', result);
   } catch (error) {
     console.error('❌ Radio seeding failed:', error);
@@ -130,7 +155,10 @@ async function seedRadio() {
 async function seedRss() {
   console.log('📰 Seeding RSS feeds data...');
   try {
-    const result = await client.mutation((api as any)['seeds/rss'].seedRssFeeds, {});
+    const result = await client.mutation(
+      (api as any)['seeds/rss'].seedRssFeeds,
+      {}
+    );
     console.log('✅ RSS seeding completed:', result);
   } catch (error) {
     console.error('❌ RSS seeding failed:', error);
@@ -141,7 +169,10 @@ async function seedRss() {
 async function seedEmergencyProtocols() {
   console.log('📋 Seeding emergency protocols data...');
   try {
-    const result = await client.mutation((api as any)['seeds/emergency_protocols'].seedEmergencyProtocols, {});
+    const result = await client.mutation(
+      (api as any)['seeds/emergency_protocols'].seedEmergencyProtocols,
+      {}
+    );
     console.log('✅ Emergency protocols seeding completed:', result);
   } catch (error) {
     console.error('❌ Emergency protocols seeding failed:', error);
@@ -182,7 +213,9 @@ switch (command) {
     console.log('  npm run seed:payments   # Seed only payment data');
     console.log('  npm run seed:radio      # Seed only radio station data');
     console.log('  npm run seed:rss        # Seed only RSS feeds data');
-    console.log('  npm run seed:protocols  # Seed only emergency protocols data');
+    console.log(
+      '  npm run seed:protocols  # Seed only emergency protocols data'
+    );
     console.log('');
     console.log('Make sure NEXT_PUBLIC_CONVEX_URL is set in your environment.');
     process.exit(1);

@@ -91,24 +91,29 @@ npm run validate-config    # Configuration validation
 
 ```markdown
 ## Description
+
 Brief description of the changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing completed
 - [ ] Cross-platform testing (web/mobile)
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes
 
 ## Additional Notes
+
 Any additional context or considerations
 ```
 
@@ -213,7 +218,7 @@ git commit -m "feat(auth): add password reset functionality"
 
 - **Bug Reports**: Use [GitHub Issues](https://github.com/hinoki-ai/-R-M-C/issues) with bug template
 - **Feature Requests**: Use feature request template
-- **Security Issues**: Email [security@juntadevecinos.com](mailto:security@juntadevecinos.com)
+- **Security Issues**: Email [security@pintopellines.com](mailto:security@pintopellines.com)
 
 ## 📚 Additional Resources
 

@@ -11,10 +11,10 @@
  */
 
 export interface CopyrightConfig {
-  year?: number
-  brand?: string
-  showPoweredBy?: boolean
-  format?: 'standard' | 'minimal' | 'full' | 'modern' | 'compact' | 'legal'
+  year?: number;
+  brand?: string;
+  showPoweredBy?: boolean;
+  format?: 'standard' | 'minimal' | 'full' | 'modern' | 'compact' | 'legal';
 }
 
 export function getAramacCopyright(config: CopyrightConfig = {}): string {
@@ -22,66 +22,68 @@ export function getAramacCopyright(config: CopyrightConfig = {}): string {
     year = new Date().getFullYear(),
     brand = 'ΛRΛMΛC®',
     showPoweredBy = true,
-    format = 'standard'
-  } = config
+    format = 'standard',
+  } = config;
 
   switch (format) {
     case 'minimal':
-      return `${year} ${brand}`
+      return `${year} ${brand}`;
     case 'full':
-      return `${year} Powered by ${brand} - All rights reserved`
+      return `${year} Powered by ${brand} - All rights reserved`;
     case 'modern':
-      return `Powered by ${brand.replace('®', '')} - All rights reserved ${year}®`
+      return `Powered by ${brand.replace('®', '')} - All rights reserved ${year}®`;
     case 'compact':
-      return `Powered by ${brand} ${year} - All rights reserved`
+      return `Powered by ${brand} ${year} - All rights reserved`;
     case 'legal':
-      return `Copyright © ${year} ${brand.replace('®', '')}. All rights reserved.`
+      return `Copyright © ${year} ${brand.replace('®', '')}. All rights reserved.`;
     case 'standard':
     default:
-      return `${year} Powered by ${brand}`
+      return `${year} Powered by ${brand}`;
   }
 }
 
 export function getAramacCopyrightHTML(config: CopyrightConfig = {}): string {
-  const text = getAramacCopyright(config)
-  const brandMatch = text.match(/(ΛRΛMΛC)/)
+  const text = getAramacCopyright(config);
+  const brandMatch = text.match(/(ΛRΛMΛC)/);
 
   if (brandMatch) {
     return text.replace(
       brandMatch[0],
       `<span class="font-mono text-lg tracking-wider">${brandMatch[0]}</span>`
-    )
+    );
   }
 
-  return text
+  return text;
 }
 
 // Standard ARAMAC copyright text for use in console logs, README files, etc.
-export const ARAMAC_COPYRIGHT_STANDARD = getAramacCopyright()
+export const ARAMAC_COPYRIGHT_STANDARD = getAramacCopyright();
 
 // HTML version for use in templates
-export const ARAMAC_COPYRIGHT_HTML = getAramacCopyrightHTML()
+export const ARAMAC_COPYRIGHT_HTML = getAramacCopyrightHTML();
 
 // Plain text version for use in package.json, licenses, etc.
-export const ARAMAC_COPYRIGHT_PLAIN = `${new Date().getFullYear()} ΛRΛMΛC®`
+export const ARAMAC_COPYRIGHT_PLAIN = `${new Date().getFullYear()} ΛRΛMΛC®`;
 
 // Function to generate copyright for different contexts
-export function generateCopyright(context: 'web' | 'mobile' | 'desktop' | 'api' | 'readme' | 'license'): string {
-  const base = getAramacCopyright()
+export function generateCopyright(
+  context: 'web' | 'mobile' | 'desktop' | 'api' | 'readme' | 'license'
+): string {
+  const base = getAramacCopyright();
 
   switch (context) {
     case 'readme':
-      return `${base}\n\nBuilt with ❤️ by ARAMAC Team`
+      return `${base}\n\nBuilt with ❤️ by ARAMAC Team`;
     case 'license':
-      return `Copyright (c) ${new Date().getFullYear()} ARAMAC. All rights reserved.`
+      return `Copyright (c) ${new Date().getFullYear()} ARAMAC. All rights reserved.`;
     case 'web':
     case 'mobile':
     case 'desktop':
-      return base
+      return base;
     case 'api':
-      return `API powered by ${getAramacCopyright({ showPoweredBy: false })}`
+      return `API powered by ${getAramacCopyright({ showPoweredBy: false })}`;
     default:
-      return base
+      return base;
   }
 }
 
@@ -92,8 +94,8 @@ export const COPYRIGHT_VARIATIONS = {
   legal: getAramacCopyright({ format: 'legal' }),
   standard: getAramacCopyright({ format: 'standard' }),
   minimal: getAramacCopyright({ format: 'minimal' }),
-  full: getAramacCopyright({ format: 'full' })
-}
+  full: getAramacCopyright({ format: 'full' }),
+};
 
 // Array of copyright formats for easy iteration
 export const COPYRIGHT_FORMATS = [
@@ -102,15 +104,15 @@ export const COPYRIGHT_FORMATS = [
   { name: 'legal', text: getAramacCopyright({ format: 'legal' }) },
   { name: 'standard', text: getAramacCopyright({ format: 'standard' }) },
   { name: 'minimal', text: getAramacCopyright({ format: 'minimal' }) },
-  { name: 'full', text: getAramacCopyright({ format: 'full' }) }
-]
+  { name: 'full', text: getAramacCopyright({ format: 'full' }) },
+];
 
 // Validation function to ensure consistent copyright usage
 export function validateCopyright(text: string): boolean {
-  const aramacRegex = /ΛRΛMΛC/
-  const yearRegex = /\b20\d{2}\b/
+  const aramacRegex = /ΛRΛMΛC/;
+  const yearRegex = /\b20\d{2}\b/;
 
-  return aramacRegex.test(text) && yearRegex.test(text)
+  return aramacRegex.test(text) && yearRegex.test(text);
 }
 
 // Export for use in other projects
@@ -124,5 +126,5 @@ export const copyright = {
   plain: ARAMAC_COPYRIGHT_PLAIN,
   variations: COPYRIGHT_VARIATIONS,
   formats: COPYRIGHT_FORMATS,
-  modern: getAramacCopyright({ format: 'modern' })
-}
+  modern: getAramacCopyright({ format: 'modern' }),
+};

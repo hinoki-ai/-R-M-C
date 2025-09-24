@@ -1,8 +1,8 @@
-import { Slot } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
-import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive relative overflow-hidden",
@@ -21,12 +21,18 @@ const buttonVariants = cva(
           'hover:bg-accent hover:text-accent-foreground hover:shadow-sm dark:hover:bg-accent/50 active:scale-[0.98] transition-all duration-200',
         link: 'text-primary underline-offset-4 hover:underline hover:text-primary/80 active:scale-[0.98]',
         // Gradient variants
-        gradientPrimary: 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
-        gradientSunset: 'bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:shadow-red-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
-        gradientOcean: 'bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
-        gradientForest: 'bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600 text-white shadow-lg hover:shadow-xl hover:shadow-green-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
-        gradientWarm: 'bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl hover:shadow-orange-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
-        gradientCool: 'bg-gradient-to-r from-purple-400 via-pink-500 to-red-400 text-white shadow-lg hover:shadow-xl hover:shadow-pink-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientPrimary:
+          'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientSunset:
+          'bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:shadow-red-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientOcean:
+          'bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientForest:
+          'bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600 text-white shadow-lg hover:shadow-xl hover:shadow-green-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientWarm:
+          'bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl hover:shadow-orange-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
+        gradientCool:
+          'bg-gradient-to-r from-purple-400 via-pink-500 to-red-400 text-white shadow-lg hover:shadow-xl hover:shadow-pink-500/25 active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
@@ -40,7 +46,7 @@ const buttonVariants = cva(
       size: 'default',
     },
   }
-)
+);
 
 function Button({
   className,
@@ -50,17 +56,17 @@ function Button({
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
+    asChild?: boolean;
   }) {
-  const Comp = asChild ? Slot : 'button'
+  const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
-      data-slot='button'
+      data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
-  )
+  );
 }
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

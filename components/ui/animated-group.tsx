@@ -138,11 +138,11 @@ function AnimatedGroup({
         footer: motion.footer,
         nav: motion.nav,
         main: motion.main,
-      }
-      return componentMap[as] || motion.div
+      };
+      return componentMap[as] || motion.div;
     }
     // If 'as' is a React component, wrap it with motion
-    return motion(as)
+    return motion(as);
   }, [as]);
 
   const MotionChild = React.useMemo(() => {
@@ -168,17 +168,17 @@ function AnimatedGroup({
         footer: motion.footer,
         nav: motion.nav,
         main: motion.main,
-      }
-      return componentMap[asChild] || motion.div
+      };
+      return componentMap[asChild] || motion.div;
     }
     // If 'asChild' is a React component, wrap it with motion
-    return motion(asChild)
+    return motion(asChild);
   }, [asChild]);
 
   return (
     <MotionComponent
-      initial='hidden'
-      animate='visible'
+      initial="hidden"
+      animate="visible"
       variants={containerVariants}
       className={className}
     >

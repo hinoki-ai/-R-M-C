@@ -42,13 +42,16 @@ export function PWA() {
         // Initialize IndexedDB for offline data storage
         const request = indexedDB.open('ΛRΛMΛC-offline', 1);
 
-        request.onupgradeneeded = (event) => {
+        request.onupgradeneeded = event => {
           const db = (event.target as IDBOpenDBRequest).result;
           if (!db.objectStoreNames.contains('data')) {
             db.createObjectStore('data');
           }
           if (!db.objectStoreNames.contains('sync-queue')) {
-            db.createObjectStore('sync-queue', { keyPath: 'id', autoIncrement: true });
+            db.createObjectStore('sync-queue', {
+              keyPath: 'id',
+              autoIncrement: true,
+            });
           }
         };
 
@@ -59,7 +62,7 @@ export function PWA() {
     };
 
     // Subscribe to PWA status updates
-    const unsubscribe = pwaController.subscribeToUpdates((status) => {
+    const unsubscribe = pwaController.subscribeToUpdates(status => {
       setIsInstallable(status.canInstall);
       setIsInstalled(status.isInstalled);
       setIsOnline(status.isOnline);
@@ -80,9 +83,11 @@ export function PWA() {
       console.log('PWA install prompt available');
 
       // Dispatch custom event for other components
-      window.dispatchEvent(new CustomEvent('pwa-install-available', {
-        detail: { prompt: e }
-      }));
+      window.dispatchEvent(
+        new CustomEvent('pwa-install-available', {
+          detail: { prompt: e },
+        })
+      );
     };
 
     const handleAppInstalled = () => {
@@ -118,7 +123,10 @@ export function PWA() {
     // Cleanup
     return () => {
       unsubscribe();
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt
+      );
       window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('online', handleOnlineEvent);
       window.removeEventListener('offline', handleOfflineEvent);

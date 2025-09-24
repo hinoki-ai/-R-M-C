@@ -7,16 +7,27 @@ const EMERGENCY_PROTOCOLS = [
   // Fire emergency protocol
   {
     title: 'Protocolo de Incendio',
-    description: 'Procedimiento de emergencia para incendios forestales y urbanos',
+    description:
+      'Procedimiento de emergencia para incendios forestales y urbanos',
     category: 'fire' as const,
     priority: 'critical' as const,
-    pdfUrl: 'https://www.conaf.cl/wp-content/uploads/2023/05/Protocolo-Incendios-Forestales.pdf',
-    thumbnailUrl: 'https://www.conaf.cl/wp-content/uploads/2023/05/incendio-forestal-thumb.jpg',
+    pdfUrl:
+      'https://www.conaf.cl/wp-content/uploads/2023/05/Protocolo-Incendios-Forestales.pdf',
+    thumbnailUrl:
+      'https://www.conaf.cl/wp-content/uploads/2023/05/incendio-forestal-thumb.jpg',
     emergencyContacts: [
       { name: 'Bomberos Pinto', phone: '132', role: 'Servicio de Bomberos' },
-      { name: 'CONAF Ñuble', phone: '+56-42-222-0000', role: 'Corporación Nacional Forestal' },
+      {
+        name: 'CONAF Ñuble',
+        phone: '+56-42-222-0000',
+        role: 'Corporación Nacional Forestal',
+      },
       { name: 'Policía Local', phone: '133', role: 'Carabineros de Chile' },
-      { name: 'ONEMI Ñuble', phone: '2-2234-5000', role: 'Oficina Nacional de Emergencias' },
+      {
+        name: 'ONEMI Ñuble',
+        phone: '2-2234-5000',
+        role: 'Oficina Nacional de Emergencias',
+      },
     ],
     steps: [
       'Evaluar la situación y determinar el tipo de incendio',
@@ -34,12 +45,26 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo para situaciones médicas de urgencia',
     category: 'medical' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Emergencias-Medicas.pdf',
-    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/emergencia-medica-thumb.jpg',
+    pdfUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Emergencias-Medicas.pdf',
+    thumbnailUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/emergencia-medica-thumb.jpg',
     emergencyContacts: [
-      { name: 'SAMU', phone: '131', role: 'Servicio de Atención Médica de Urgencia' },
-      { name: 'Hospital Pinto', phone: '+56-42-123-4567', role: 'Hospital local' },
-      { name: 'Clínica Ñuble', phone: '+56-42-234-5678', role: 'Clínica privada' },
+      {
+        name: 'SAMU',
+        phone: '131',
+        role: 'Servicio de Atención Médica de Urgencia',
+      },
+      {
+        name: 'Hospital Pinto',
+        phone: '+56-42-123-4567',
+        role: 'Hospital local',
+      },
+      {
+        name: 'Clínica Ñuble',
+        phone: '+56-42-234-5678',
+        role: 'Clínica privada',
+      },
       { name: 'Cruz Roja', phone: '600-360-1000', role: 'Servicio voluntario' },
     ],
     steps: [
@@ -58,13 +83,27 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo para situaciones de seguridad y delitos',
     category: 'security' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Seguridad-Publica.pdf',
-    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/seguridad-thumb.jpg',
+    pdfUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Seguridad-Publica.pdf',
+    thumbnailUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/seguridad-thumb.jpg',
     emergencyContacts: [
       { name: 'Carabineros', phone: '133', role: 'Policía Nacional' },
-      { name: 'PDI Pinto', phone: '+56-42-345-6789', role: 'Policía de Investigaciones' },
-      { name: 'Guardia Municipal', phone: '+56-42-456-7890', role: 'Seguridad municipal' },
-      { name: 'Fiscalía Local', phone: '+56-42-567-8901', role: 'Ministerio Público' },
+      {
+        name: 'PDI Pinto',
+        phone: '+56-42-345-6789',
+        role: 'Policía de Investigaciones',
+      },
+      {
+        name: 'Guardia Municipal',
+        phone: '+56-42-456-7890',
+        role: 'Seguridad municipal',
+      },
+      {
+        name: 'Fiscalía Local',
+        phone: '+56-42-567-8901',
+        role: 'Ministerio Público',
+      },
     ],
     steps: [
       'Asegurar su propia seguridad primero',
@@ -83,13 +122,23 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Protocolo de respuesta ante terremotos y réplicas',
     category: 'natural_disaster' as const,
     priority: 'critical' as const,
-    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Terremoto.pdf',
-    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/terremoto-thumb.jpg',
+    pdfUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Terremoto.pdf',
+    thumbnailUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/terremoto-thumb.jpg',
     emergencyContacts: [
-      { name: 'ONEMI Nacional', phone: '2-2234-5000', role: 'Oficina Nacional de Emergencias' },
+      {
+        name: 'ONEMI Nacional',
+        phone: '2-2234-5000',
+        role: 'Oficina Nacional de Emergencias',
+      },
       { name: 'Carabineros', phone: '133', role: 'Policía Nacional' },
       { name: 'Bomberos', phone: '132', role: 'Servicio de Bomberos' },
-      { name: 'Defensa Civil', phone: '+56-42-678-9012', role: 'Protección Civil' },
+      {
+        name: 'Defensa Civil',
+        phone: '+56-42-678-9012',
+        role: 'Protección Civil',
+      },
     ],
     steps: [
       'Mantener la calma y protegerse bajo una mesa resistente',
@@ -108,11 +157,21 @@ const EMERGENCY_PROTOCOLS = [
     description: 'Procedimiento general de evacuación comunitaria',
     category: 'evacuation' as const,
     priority: 'high' as const,
-    pdfUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Evacuacion.pdf',
-    thumbnailUrl: 'https://www.onemi.cl/wp-content/uploads/2023/05/evacuacion-thumb.jpg',
+    pdfUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/Protocolo-Evacuacion.pdf',
+    thumbnailUrl:
+      'https://www.onemi.cl/wp-content/uploads/2023/05/evacuacion-thumb.jpg',
     emergencyContacts: [
-      { name: 'Centro de Operaciones', phone: '+56-42-789-0123', role: 'Junta de Vecinos' },
-      { name: 'Defensa Civil', phone: '+56-42-890-1234', role: 'Protección Civil' },
+      {
+        name: 'Centro de Operaciones',
+        phone: '+56-42-789-0123',
+        role: 'Junta de Vecinos',
+      },
+      {
+        name: 'Defensa Civil',
+        phone: '+56-42-890-1234',
+        role: 'Protección Civil',
+      },
       { name: 'Carabineros', phone: '133', role: 'Control de tránsito' },
       { name: 'Bomberos', phone: '132', role: 'Apoyo logístico' },
     ],
@@ -138,18 +197,22 @@ export const seedEmergencyProtocols = mutation({
     console.log('📋 Starting emergency protocols seeding...');
 
     // PRODUCTION SAFETY CHECK
-    const isProduction = process.env.NODE_ENV === 'production' ||
-                        process.env.CONVEX_ENV === 'production' ||
-                        !process.env.CONVEX_DEV;
+    const isProduction =
+      process.env.NODE_ENV === 'production' ||
+      process.env.CONVEX_ENV === 'production' ||
+      !process.env.CONVEX_DEV;
 
     if (isProduction && !args.forceProduction) {
       console.log('🚨 PRODUCTION ENVIRONMENT DETECTED!');
-      console.log('❌ Emergency protocols seeding is DISABLED by default in production');
+      console.log(
+        '❌ Emergency protocols seeding is DISABLED by default in production'
+      );
       console.log('💡 To seed in production, set forceProduction: true');
       return {
         seeded: 0,
         skipped: true,
-        message: 'Production seeding skipped - use forceProduction: true to override'
+        message:
+          'Production seeding skipped - use forceProduction: true to override',
       };
     }
 
@@ -157,15 +220,18 @@ export const seedEmergencyProtocols = mutation({
     let skipped = 0;
 
     // Get the first admin user to set as creator
-    const adminUser = await ctx.db.query('users').filter(q => q.eq(q.field('role'), 'admin')).first();
-    const defaultUser = adminUser || await ctx.db.query('users').first();
+    const adminUser = await ctx.db
+      .query('users')
+      .filter(q => q.eq(q.field('role'), 'admin'))
+      .first();
+    const defaultUser = adminUser || (await ctx.db.query('users').first());
 
     if (!defaultUser) {
       console.log('⚠️ No users found in database. Please create a user first.');
       return {
         seeded: 0,
         skipped: true,
-        message: 'No users available to create emergency protocols'
+        message: 'No users available to create emergency protocols',
       };
     }
 
@@ -201,7 +267,10 @@ export const seedEmergencyProtocols = mutation({
         console.log(`✅ Created emergency protocol: ${protocolData.title}`);
         protocolsCreated++;
       } catch (error) {
-        console.error(`❌ Failed to create protocol ${protocolData.title}:`, error);
+        console.error(
+          `❌ Failed to create protocol ${protocolData.title}:`,
+          error
+        );
       }
     }
 
@@ -213,7 +282,7 @@ export const seedEmergencyProtocols = mutation({
       seeded: protocolsCreated,
       skipped,
       total: protocolsCreated + skipped,
-      message: 'Emergency protocols seeding completed successfully'
+      message: 'Emergency protocols seeding completed successfully',
     };
   },
 });
